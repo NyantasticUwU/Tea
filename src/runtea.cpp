@@ -22,14 +22,14 @@ void runTea(std::vector<std::string> &parsedFile)
     for (std::string &statement : parsedFile)
     {
         emplaceVariables(statement, t_strings);
-        if (statement.find("system") == 0)
-        {
-            kSystem(statement);
-            continue;
-        }
-        else if (statement.find("string") == 0)
+        if (statement.find("string") == 0)
         {
             kString(statement, t_strings);
+            continue;
+        }
+        else if (statement.find("system") == 0)
+        {
+            kSystem(statement);
             continue;
         }
         else
