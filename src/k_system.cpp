@@ -9,5 +9,5 @@ void kSystem(std::string &statement)
         throwError(statement);
     statement.erase(0, statement.find_first_of('"') + 1);
     statement.erase(statement.find_last_of('"'));
-    system(statement.c_str());
+    std::system(statement.c_str());
 }
