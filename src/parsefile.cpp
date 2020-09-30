@@ -33,15 +33,15 @@ static void removeWhitespace(std::vector<std::string> &statementVector)
 }
 
 // This function is used to remove any non valid statements from the vector
-static void removeNonValidStatements(std::vector<std::string> &statementVector)
+static std::vector<std::string> removeNonValidStatements(std::vector<std::string> &statementVector)
 {
-    std::vector<std::string> colonVector{};
-    for (std::string &statement : statementVector)
+    std::vector<std::string> validStatementVector{};
+    for (const std::string &statement : statementVector)
     {
         if (statement.find(';') != statement.npos)
-            colonVector.push_back(statement);
+            validStatementVector.push_back(statement);
     }
-    statementVector = colonVector;
+    return validStatementVector;
 }
 
 // This function is used to remove any extra whitespace from the given file
@@ -49,10 +49,9 @@ std::vector<std::string> parseFile(char *&filename)
 {
     assert(std::ifstream{filename}.good() && "File is non-existent.");
     std::ifstream f{filename};
-    std::string filecontents{std::istreambuf_iterator<char>{f}, std::istreambuf_iterator<char>{}};
+    const std::string filecontents{std::istreambuf_iterator<char>{f}, std::istreambuf_iterator<char>{}};
     f.close();
     std::vector<std::string> statementVector{createStatementVector(filecontents)};
     removeWhitespace(statementVector);
-    removeNonValidStatements(statementVector);
-    return statementVector;
+    return removeNonValidStatements(statementVector);
 }
