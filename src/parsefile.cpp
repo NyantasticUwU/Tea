@@ -47,8 +47,8 @@ static std::vector<std::string> removeNonValidStatements(std::vector<std::string
 // This function is used to remove any extra whitespace from the given file
 std::vector<std::string> parseFile(char *&filename)
 {
-    assert(std::ifstream{filename}.good() && "File is non-existent.");
     std::ifstream f{filename};
+    assert(f.good() && "File is non-existent.");
     const std::string filecontents{std::istreambuf_iterator<char>{f}, std::istreambuf_iterator<char>{}};
     f.close();
     std::vector<std::string> statementVector{createStatementVector(filecontents)};
