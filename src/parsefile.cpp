@@ -44,15 +44,6 @@ static void removeNonValidStatements(std::vector<std::string> &statementVector)
     statementVector = colonVector;
 }
 
-// This function adds all vector statements to a string and returns it
-static std::string statementsToString(std::vector<std::string> &statementVector)
-{
-    std::string statements{""};
-    for (std::string &statement : statementVector)
-        statements.append(statement + '\n');
-    return statements;
-}
-
 // This function is used to remove any extra whitespace from the given file
 std::vector<std::string> parseFile(char *&filename)
 {
