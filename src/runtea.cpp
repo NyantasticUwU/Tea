@@ -9,8 +9,8 @@ static inline void emplaceVariables(std::string &statement,
 {
     for (std::pair<std::string, std::string> p : t_strings)
     {
-        while (statement.find('\\' + p.first) != statement.npos)
-            statement.replace(statement.find('\\' + p.first), 1 + p.first.size(), p.second);
+        while (statement.find('{' + p.first + '}') != statement.npos)
+            statement.replace(statement.find('{' + p.first + '}'), 2 + p.first.size(), p.second);
     }
 }
 
