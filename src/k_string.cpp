@@ -10,10 +10,6 @@ void kString(std::string &statement, std::vector<std::pair<std::string, std::str
     statement.erase(0, statement.find_first_of(' '));
     statement.erase(0, statement.find_first_not_of(' '));
     const std::string strname{statement.substr(0, statement.find_first_of(' '))};
-    if (std::find_if(t_strings.begin(), t_strings.end(), [&](std::pair<std::string, std::string> &p){
-        return strname == p.first;
-    }) != t_strings.end())
-        throwError(ostatement);
     statement.erase(0, statement.find_first_of(' '));
     statement.erase(0, statement.find_first_not_of(' '));
     if (std::count(statement.begin(), statement.end(), '"') <= 1)

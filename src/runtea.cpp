@@ -1,3 +1,4 @@
+#include "k_include.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "runtea.hpp"
@@ -19,10 +20,17 @@ void runTea(std::vector<std::string> &parsedFile)
 {
     std::system("cls");
     std::vector<std::pair<std::string, std::string>> t_strings{};
-    for (std::string &statement : parsedFile)
+    for (short index{0}; index < parsedFile.size(); ++index)
     {
+        std::string &statement{parsedFile[index]};
         emplaceVariables(statement, t_strings);
-        if (statement.find("string") == 0)
+        if (statement.find("include") == 0)
+        {
+            kInclude(statement, parsedFile, index);
+            --index;
+            continue;
+        }
+        else if (statement.find("string") == 0)
         {
             kString(statement, t_strings);
             continue;

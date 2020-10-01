@@ -4,6 +4,6 @@
 #include <vector>
 
 // This function is used to remove any extra whitespace from the given file
-std::vector<std::string> parseFile(char *&filename);
+std::vector<std::string> parseFile(std::string &filename);
 
 #endif
