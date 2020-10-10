@@ -33,7 +33,7 @@ static void removeWhitespace(std::vector<std::string> &statementVector)
 }
 
 // This function is used to remove any non valid statements from the vector
-static std::vector<std::string> removeNonValidStatements(std::vector<std::string> &statementVector)
+static std::vector<std::string> removeNonValidStatements(const std::vector<std::string> &statementVector)
 {
     std::vector<std::string> validStatementVector{};
     for (const std::string &statement : statementVector)

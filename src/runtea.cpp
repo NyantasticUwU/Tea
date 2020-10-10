@@ -6,12 +6,12 @@
 
 // This function is used to emplace variables into the statement
 static inline void emplaceVariables(std::string &statement,
-    std::vector<std::pair<std::string, std::string>> &t_strings)
+const std::vector<std::pair<std::string, std::string>> &t_strings)
 {
-    for (std::pair<std::string, std::string> p : t_strings)
+    for (const std::pair<std::string, std::string> &p : t_strings)
     {
         while (statement.find('{' + p.first + '}') != statement.npos)
-            statement.replace(statement.find('{' + p.first + '}'), 2 + p.first.size(), p.second);
+            statement.replace(statement.find('{' + p.first + '}'), p.first.size() + 2, p.second);
     }
 }
 
@@ -20,7 +20,7 @@ void runTea(std::vector<std::string> &parsedFile)
 {
     std::system("cls");
     std::vector<std::pair<std::string, std::string>> t_strings{};
-    for (short index{0}; index < parsedFile.size(); ++index)
+    for (int16_dynamic_t index{0}; index < parsedFile.size(); ++index)
     {
         std::string &statement{parsedFile[index]};
         emplaceVariables(statement, t_strings);
