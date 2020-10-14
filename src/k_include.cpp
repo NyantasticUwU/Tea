@@ -2,7 +2,7 @@
 #include "parsefile.hpp"
 #include "throwerror.hpp"
 
-// Defining globals
+// Defining static globals
 static std::vector<std::string> newParsedFile;
 
 // This function is called whenever the include keyword is used

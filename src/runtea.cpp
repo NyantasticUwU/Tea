@@ -1,12 +1,16 @@
+#include "k_function.hpp"
 #include "k_include.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "runtea.hpp"
 #include "throwerror.hpp"
 
+// Defining static globals
+static bool functionIsCalled;
+
 // This function is used to emplace variables into the statement
 static inline void emplaceVariables(std::string &statement,
-const std::vector<std::pair<std::string, std::string>> &t_strings)
+                                    const std::vector<std::pair<std::string, std::string>> &t_strings)
 {
     for (const std::pair<std::string, std::string> &p : t_strings)
     {
@@ -20,6 +24,8 @@ void runTea(std::vector<std::string> &parsedFile)
 {
     std::system("cls");
     std::vector<std::pair<std::string, std::string>> t_strings{};
+    function_t t_functions{};
+    function_t t_functionParams{};
     for (int16_dynamic_t index{0}; index < parsedFile.size(); ++index)
     {
         std::string &statement{parsedFile[index]};
@@ -40,7 +46,26 @@ void runTea(std::vector<std::string> &parsedFile)
             kSystem(statement);
             continue;
         }
+        else if (statement.find("function") == 0)
+        {
+            kFunction(statement, t_functions, t_functionParams, parsedFile, index);
+            continue;
+        }
         else
+        {
+            functionIsCalled = false;
+            for (std::pair<std::string, std::vector<std::string>> &f : t_functions)
+            {
+                if (statement.find(f.first) == 0)
+                {
+                    functionIsCalled = true;
+                    functionCalled(f.first, statement, f.second, t_functionParams, parsedFile, index);
+                    --index;
+                }
+            }
+            if (functionIsCalled)
+                continue;
             throwError(statement);
+        }
     }
 }

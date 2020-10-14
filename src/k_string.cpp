@@ -1,7 +1,7 @@
 #include "k_string.hpp"
 #include "throwerror.hpp"
 
-// Defining globals
+// Defining static globals
 static std::string ostatement;
 static std::string strname;
 static std::string strval;
@@ -24,5 +24,5 @@ void kString(std::string &statement, std::vector<std::pair<std::string, std::str
     if (std::count(statement.begin(), statement.end(), '"') <= 1)
         throwError(ostatement);
     strval = statement.substr(statement.find_first_of('"') + 1, statement.find_last_of('"') - 1);
-    t_strings.push_back(std::pair<std::string, std::string>(strname, strval));
+    t_strings.push_back(std::pair<std::string, std::string>{strname, strval});
 }
