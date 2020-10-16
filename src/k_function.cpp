@@ -3,6 +3,7 @@
 #include <algorithm>
 
 // Defining static globals
+static char endParamChar;
 static std::string estatement;
 static std::string funcName;
 static std::string toArgs;
@@ -32,21 +33,14 @@ static void parseHighParamCount(std::string &statement, std::vector<std::string>
     for (int8_dynamic_t i{0}; i < commaCount + 1; ++i)
     {
         statement.erase(0, statement.find_first_not_of(' '));
+        endParamChar = i != commaCount ? ',' : ')';
+        if (statement.find(' ') < statement.find(endParamChar))
+            statement.erase(
+                statement.find_first_of(' '),
+                statement.find_first_of(endParamChar) - statement.find_first_of(' '));
+        funcParams.push_back(statement.substr(0, statement.find_first_of(endParamChar)));
         if (i != commaCount)
-        {
-            if (statement.find(' ') < statement.find(','))
-                statement.erase(
-                    statement.find_first_of(' '), statement.find_first_of(',') - statement.find_first_of(' '));
-            funcParams.push_back(statement.substr(0, statement.find_first_of(',')));
-            statement.erase(0, statement.find_first_of(',') + 1);
-        }
-        else
-        {
-            if (statement.find(' ') < statement.find(')'))
-                statement.erase(
-                    statement.find_first_of(' '), statement.find_first_of(')') - statement.find_first_of(' '));
-            funcParams.push_back(statement.substr(0, statement.find_first_of(')')));
-        }
+            statement.erase(0, statement.find_first_of(endParamChar) + 1);
     }
 }
 
@@ -99,29 +93,20 @@ static std::vector<std::string> getArgs(std::string &statement)
     if (commaCount == 0)
     {
         if (statement != "" ||
-            !std::all_of(statement.begin(), statement.end(), [](const char &c) { return c == ' '; }))
+            !std::all_of(statement.begin(), statement.end(), [](const char &c) -> bool { return c == ' '; }))
             args.push_back(statement);
-        return args;
     }
     else
     {
         for (int8_dynamic_t i{0}; i < commaCount + 1; ++i)
         {
+            endParamChar = i != commaCount ? ',' : ')';
+            toArgs = statement.substr(0, statement.find_first_of(endParamChar));
+            toArgs.erase(0, toArgs.find_first_not_of(' '));
+            toArgs.erase(toArgs.find_last_not_of(' ') + 1, toArgs.size());
+            args.push_back(toArgs);
             if (i != commaCount)
-            {
-                toArgs = statement.substr(0, statement.find_first_of(','));
-                toArgs.erase(0, toArgs.find_first_not_of(' '));
-                toArgs.erase(toArgs.find_last_not_of(' ') + 1, toArgs.size());
-                args.push_back(toArgs);
-                statement.erase(0, statement.find_first_of(',') + 1);
-            }
-            else
-            {
-                toArgs = statement.substr(0, statement.find_first_of(')'));
-                toArgs.erase(0, toArgs.find_first_not_of(' '));
-                toArgs.erase(toArgs.find_last_not_of(' ') + 1, toArgs.size());
-                args.push_back(toArgs);
-            }
+                statement.erase(0, statement.find_first_of(endParamChar) + 1);
         }
     }
     return args;
