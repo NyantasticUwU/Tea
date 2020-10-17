@@ -8,8 +8,14 @@ namespace special_functions
     // Called when a special function is called in tea
     void specialFunctionCalled(std::string &statement, const int &funcIndex);
 
+    // Called when pause is called in tea
+    void sf_pause(std::string &statement);
+
     // Called when print is called in tea
     void sf_print(std::string &statement);
+
+    // Called when printline is called in tea
+    void sf_printline(std::string &statement);
 } // namespace special_functions
 
 #endif

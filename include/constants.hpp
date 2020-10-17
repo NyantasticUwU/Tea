@@ -4,10 +4,9 @@
 #define SPEED 1
 #define MEMORY_OR_SPEED SPEED
 #include "specialfunctions.hpp"
-#include <cstdint>
 #include <functional>
-#include <string>
-#include <vector>
+
+// Defining efficient int types
 #if MEMORY_OR_SPEED == MEMORY
 using int8_dynamic_t = std::int_least8_t;
 using int16_dynamic_t = std::int_least16_t;
@@ -23,9 +22,11 @@ using int64_dynamic_t = std::int_fast64_t;
 // Holds all constants for project
 namespace constants
 {
+    using special_function = std::pair<std::string, std::function<void(std::string &)>>;
     inline const std::vector<std::pair<std::string, std::function<void(std::string &)>>> specialFunctions{
-        std::pair<std::string, std::function<void(std::string &)>>{"print", special_functions::sf_print}
-    };
-}
+        special_function{"pause", special_functions::sf_pause},
+        special_function{"print", special_functions::sf_print},
+        special_function{"printline", special_functions::sf_printline}};
+} // namespace constants
 
 #endif

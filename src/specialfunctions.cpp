@@ -25,9 +25,22 @@ namespace special_functions
         constants::specialFunctions[funcIndex].second(statement);
     }
 
+    // Called when pause is called in tea
+    void sf_pause(std::string &statement)
+    {
+        std::cout << extractSingleParam(statement);
+        std::cin.ignore();
+    }
+
     // Called when print is called in tea
     void sf_print(std::string &statement)
     {
         std::cout << extractSingleParam(statement);
+    }
+
+    // Called when printline is called in tea
+    void sf_printline(std::string &statement)
+    {
+        std::cout << extractSingleParam(statement) << '\n';
     }
 } // namespace special_functions
