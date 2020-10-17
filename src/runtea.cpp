@@ -3,10 +3,12 @@
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "runtea.hpp"
+#include "specialfunctions.hpp"
 #include "throwerror.hpp"
 
 // Defining static globals
 static bool functionIsCalled;
+static bool specialFunctionIsCalled;
 
 // This function is used to emplace variables into the statement
 static inline void emplaceVariables(std::string &statement,
@@ -64,6 +66,19 @@ void runTea(std::vector<std::string> &parsedFile)
                 }
             }
             if (functionIsCalled)
+                continue;
+            specialFunctionIsCalled = false;
+            int funcIndex{0};
+            for (const std::pair<std::string, std::function<void(std::string &)>> &p : constants::specialFunctions)
+            {
+                if (statement.find(p.first) == 0)
+                {
+                    specialFunctionIsCalled = true;
+                    special_functions::specialFunctionCalled(statement, funcIndex);
+                }
+                ++funcIndex;
+            }
+            if (specialFunctionIsCalled)
                 continue;
             throwError(statement);
         }
