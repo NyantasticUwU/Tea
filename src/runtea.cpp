@@ -71,8 +71,8 @@ void runTea(std::vector<std::string> &parsedFile)
             int funcIndex{0};
             for (const std::pair<std::string, std::function<void(std::string &)>> &p : constants::specialFunctions)
             {
-                if (statement.find(p.first) == 0 && statement[p.first.size()] == ' ' ||
-                    statement[p.first.size()] == '(')
+                if (statement.find(p.first) == 0 && (statement[p.first.size()] == ' ' ||
+                    statement[p.first.size()] == '('))
                 {
                     specialFunctionIsCalled = true;
                     special_functions::specialFunctionCalled(statement, funcIndex);
