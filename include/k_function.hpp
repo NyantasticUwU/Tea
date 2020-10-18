@@ -12,7 +12,7 @@ void kFunction(std::string &statement, function_t &t_functions, function_t &t_fu
                const std::vector<std::string> &parsedFile, int16_dynamic_t &index);
 
 // This function is called when a tea function is encountered
-void functionCalled(const std::string funcName, std::string &statement, std::vector<std::string> &functionBody,
+void functionCalled(const std::string funcName, std::string &statement, std::vector<std::string> functionBody,
                     const function_t &t_functionParams, std::vector<std::string> &parsedFile,
                     const int16_dynamic_t &index);
 

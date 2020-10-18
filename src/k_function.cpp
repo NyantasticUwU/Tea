@@ -7,7 +7,6 @@ static char endParamChar;
 static std::string estatement;
 static std::string funcName;
 static std::string toArgs;
-static std::vector<std::string> oldFunctionBody{};
 static std::vector<std::string> funcBody{};
 static std::vector<std::string> funcParams{};
 static std::vector<std::string> funcArgs{};
@@ -113,7 +112,7 @@ static std::vector<std::string> getArgs(std::string &statement)
 }
 
 // This function is called when a tea function is encountered
-void functionCalled(const std::string funcName, std::string &statement, std::vector<std::string> &functionBody,
+void functionCalled(const std::string funcName, std::string &statement, std::vector<std::string> functionBody,
                     const function_t &t_functionParams, std::vector<std::string> &parsedFile,
                     const int16_dynamic_t &index)
 {
@@ -134,7 +133,6 @@ void functionCalled(const std::string funcName, std::string &statement, std::vec
         }
         ++functionParamsIndex;
     }
-    oldFunctionBody = functionBody;
     for (int16_dynamic_t bodyIndex{0}; bodyIndex < functionBody.size(); ++bodyIndex)
     {
         std::string &fbstatement{functionBody[bodyIndex]};
@@ -148,7 +146,5 @@ void functionCalled(const std::string funcName, std::string &statement, std::vec
     }
     parsedFile.insert(parsedFile.begin() + index, functionBody.begin(), functionBody.end());
     parsedFile.erase(parsedFile.begin() + index + functionBody.size());
-    functionBody = oldFunctionBody;
     funcArgs.clear();
-    oldFunctionBody.clear();
 }
