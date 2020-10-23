@@ -24,6 +24,8 @@ namespace constants
 {
     using special_function = std::pair<std::string, std::function<void(std::string &)>>;
     inline const std::vector<special_function> specialFunctions{
+        special_function{"faout", special_functions::sf_faout},
+        special_function{"fout", special_functions::sf_fout},
         special_function{"pause", special_functions::sf_pause},
         special_function{"print", special_functions::sf_print},
         special_function{"printline", special_functions::sf_printline}};
