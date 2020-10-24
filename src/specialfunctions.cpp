@@ -6,8 +6,9 @@
 #include <iostream>
 
 // Defining static globals
+static int8_dynamic_t i;
 static std::string param;
-static std::vector<std::string> params{};
+static std::vector<std::string> params;
 static std::ofstream f;
 
 // Used to get single parameter from tea function
@@ -31,7 +32,7 @@ static void extractMultipleParams(std::string &statement, const int8_dynamic_t n
         std::count(statement.begin(), statement.end(), ',') != numberOfParams - 1)
         throwError(statement);
     statement.erase(0, statement.find_first_of('(') + 1);
-    for (int8_dynamic_t i{0}; i < numberOfParams; ++i)
+    for (i = 0; i < numberOfParams; ++i)
     {
         statement.erase(0, statement.find_first_not_of(' '));
         if (i + 1 != numberOfParams)
