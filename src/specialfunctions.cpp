@@ -2,6 +2,7 @@
 #include "specialfunctions.hpp"
 #include "throwerror.hpp"
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -106,5 +107,11 @@ namespace special_functions
     void sf_printline(std::string &statement)
     {
         std::cout << extractSingleParam(statement) << '\n';
+    }
+
+    // Called when remove_file is called in tea
+    void sf_remove_file(std::string &statement)
+    {
+        std::filesystem::remove(extractSingleParam(statement));
     }
 } // namespace special_functions

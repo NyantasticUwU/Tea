@@ -29,7 +29,8 @@ namespace constants
         special_function{"fout", special_functions::sf_fout},
         special_function{"pause", special_functions::sf_pause},
         special_function{"print", special_functions::sf_print},
-        special_function{"printline", special_functions::sf_printline}};
+        special_function{"printline", special_functions::sf_printline},
+        special_function{"remove_file", special_functions::sf_remove_file}};
 } // namespace constants
 
 #endif

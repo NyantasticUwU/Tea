@@ -25,6 +25,9 @@ namespace special_functions
 
     // Called when printline is called in tea
     void sf_printline(std::string &statement);
+
+    // Called when remove_file is called in tea
+    void sf_remove_file(std::string &statement);
 } // namespace special_functions
 
 #endif
