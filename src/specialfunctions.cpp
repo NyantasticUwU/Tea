@@ -11,13 +11,18 @@ static std::string param;
 static std::vector<std::string> params;
 static std::ofstream f;
 
-// Used to get single parameter from tea function
-static std::string extractSingleParam(std::string &statement)
+// Verifies a function call
+static void verifyCall(const std::string &statement)
 {
     if (std::count(statement.begin(), statement.end(), '(') < 1 ||
         std::count(statement.begin(), statement.end(), ')') < 1 ||
         statement.find_first_of('(') > statement.find_first_of(')'))
         throwError(statement);
+}
+
+// Used to get single parameter from tea function
+static std::string extractSingleParam(std::string &statement)
+{
     statement.erase(0, statement.find_first_of('(') + 1);
     statement.erase(statement.find_last_of(')'), statement.size());
     return statement;
@@ -26,10 +31,7 @@ static std::string extractSingleParam(std::string &statement)
 // Used to get multiple parameters from tea function
 static void extractMultipleParams(std::string &statement, const int8_dynamic_t numberOfParams)
 {
-    if (std::count(statement.begin(), statement.end(), '(') < 1 ||
-        std::count(statement.begin(), statement.end(), ')') < 1 ||
-        statement.find_first_of('(') > statement.find_first_of(')') ||
-        std::count(statement.begin(), statement.end(), ',') != numberOfParams - 1)
+    if (std::count(statement.begin(), statement.end(), ',') != numberOfParams - 1)
         throwError(statement);
     statement.erase(0, statement.find_first_of('(') + 1);
     for (i = 0; i < numberOfParams; ++i)
@@ -57,7 +59,14 @@ namespace special_functions
     // Called when a special function is called in tea
     void specialFunctionCalled(std::string &statement, const int &funcIndex)
     {
+        verifyCall(statement);
         constants::specialFunctions[funcIndex].second(statement);
+    }
+
+    // Called when exit is called in tea
+    void sf_exit(std::string &statement)
+    {
+        std::exit(0);
     }
 
     // Called when faout is called in tea

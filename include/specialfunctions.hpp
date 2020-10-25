@@ -8,6 +8,9 @@ namespace special_functions
     // Called when a special function is called in tea
     void specialFunctionCalled(std::string &statement, const int &funcIndex);
 
+    // Called when exit is called in tea
+    void sf_exit(std::string &statement);
+
     // Called when faout is called in tea
     void sf_faout(std::string &statement);
 
