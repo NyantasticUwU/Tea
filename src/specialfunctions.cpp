@@ -21,7 +21,7 @@ static void verifyCall(const std::string &statement)
 }
 
 // Used to get single parameter from tea function
-static std::string extractSingleParam(std::string &statement)
+static std::string &extractSingleParam(std::string &statement)
 {
     statement.erase(0, statement.find_first_of('(') + 1);
     statement.erase(statement.find_last_of(')'), statement.size());
