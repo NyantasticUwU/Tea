@@ -1,6 +1,7 @@
 #include "cmd.hpp"
 #include "fileIO.hpp"
 #include "parsefile.hpp"
+#include "runtea.hpp"
 
 // Main entry point of program
 int main(const int argc, const char **argv)
@@ -9,5 +10,6 @@ int main(const int argc, const char **argv)
     checkMainFile(filename);
     std::vector<std::string> mainfile;
     parseFile(filename, mainfile);
+    runTea(mainfile);
     return 0;
 }
