@@ -1,7 +1,7 @@
 #ifndef TEA_CMD_HPP_INCLUDED
 #define TEA_CMD_HPP_INCLUDED
 
-// This function is used to extract the filename of the .tea file
-char *&getFilename(const int &argc, char **&argv);
+// Extracts the file name of the .tea file from the argument vector
+const char *&getMainFileName(const int &argc, const char **&argv);
 
 #endif

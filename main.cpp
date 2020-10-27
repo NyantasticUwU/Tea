@@ -1,12 +1,10 @@
 #include "cmd.hpp"
-#include "parsefile.hpp"
-#include "runtea.hpp"
+#include "fileIO.hpp"
 
 // Main entry point of program
-int main(int argc, char **argv)
+int main(const int argc, const char **argv)
 {
-    std::string filename{getFilename(argc, argv)};
-    std::vector<std::string> parsedfile{parseFile(filename)};
-    runTea(parsedfile);
+    const char *&filename{getMainFileName(argc, argv)};
+    checkMainFile(filename);
     return 0;
 }

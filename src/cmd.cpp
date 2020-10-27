@@ -1,13 +1,15 @@
 #include "cmd.hpp"
 #include <iostream>
 
-// This function is used to extract the filename of the .tea file
-char *&getFilename(const int &argc, char **&argv)
+// Extracts the file name of the .tea file from the argument vector
+const char *&getMainFileName(const int &argc, const char **&argv)
 {
-    if (argc <= 1)
+    // Making sure a file name was given in the argument vector
+    if (argc < 2)
     {
-        std::cout << "ERROR: No file given!";
-        std::exit(1);
+        std::cerr << "ERROR: File name was not supplied in the argument vector.\n"
+                     "Exiting with code 1639 (ERROR_INVALID_COMMAND_LINE).";
+        std::exit(1639); // Windows' ERROR_INVALID_COMMAND_LINE (1639)
     }
     return argv[1];
 }
