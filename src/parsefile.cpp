@@ -1,6 +1,6 @@
+#include "error.hpp"
 #include "parsefile.hpp"
 #include <fstream>
-#include <iostream>
 
 // Defining static globals
 // These are defined here for performance reasons
@@ -15,9 +15,9 @@ void parseFile(const char *&filename, std::vector<std::string> &file)
     if (!f)
     {
         f.close();
-        std::cerr << "ERROR: The given file was unable to be opened.\n"
-                     "Exiting with code 110 (ERROR_OPEN_FAILED).";
-        std::exit(110); // Windows' ERROR_OPEN_FAILED (110)
+        teaError("ERROR: The given file was unable to be opened.\n"
+                 "Exiting with code 110 (ERROR_OPEN_FAILED).",
+                 110); // Windows' ERROR_OPEN_FAILED (110)
     }
     // Reading data from file into the file string vector (line by line)
     while (f)
