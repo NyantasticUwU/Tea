@@ -1,4 +1,5 @@
 #include "error.hpp"
+#include "k_system.hpp"
 #include "runtea.hpp"
 #include <algorithm>
 
@@ -7,12 +8,18 @@ void runTea(std::vector<std::string> &teafile)
 {
     // Looping through tea file lines
     int line{0};
-    for (std::string &statement : teafile)
+    for (const std::string &statement : teafile)
     {
         ++line;
         // Comment encountered
         if (!statement.find('#'))
             continue;
+        // System keyword called
+        else if (!statement.find("system "))
+        {
+            kSystem(statement, line);
+            continue;
+        }
         // Invalid statement
         else if (std::any_of(statement.begin(), statement.end(), [](const char &c) -> bool { return c != ' '; }))
             teaError("ERROR: Invalid statement on line " + std::to_string(line) + ".\n" +
