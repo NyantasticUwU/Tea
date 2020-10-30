@@ -48,8 +48,8 @@ static void checkRestOfStatement(const int &line)
 // Extracts chars inside string literal and puts it in command
 std::string &getStringLiteral(const std::string &statement, const int &line, const int &kwlen)
 {
-    if (statement[kwlen] != ' ')
-        teaSyntaxError(line, "A single space is required after any keyword.");
+    if (statement.size() < 9)
+        teaSyntaxError(line);
     if (statement[kwlen + 1] != '"')
         teaSyntaxError(line, "String literal required here.");
     statementSize = statement.size();
