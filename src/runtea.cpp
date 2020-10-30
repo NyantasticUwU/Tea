@@ -21,7 +21,7 @@ void runTea(std::vector<std::string> &teafile)
             continue;
         }
         // Invalid statement
-        else if (std::any_of(statement.begin(), statement.end(), [](const char &c) -> bool { return c != ' '; }))
+        else if (statement != "")
             teaError("ERROR: Invalid statement on line " + std::to_string(line) + ".\n" +
                          "Exiting with code 13 (ERROR_INVALID_DATA).",
                      13); // Windows' ERROR_INVALID_DATA (13)
