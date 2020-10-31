@@ -7,7 +7,6 @@
 static int statementSize;
 static std::string content;
 static int i;
-static int lastDQIndex;
 
 // Checks if the string literal is closed
 static void checkStringLiteral(const std::string &statement, const int &line, const int &kwlen)
@@ -18,14 +17,15 @@ static void checkStringLiteral(const std::string &statement, const int &line, co
 }
 
 // Loops through each character in the string literal and adds it to the command string
-static void getContent(const std::string &statement, const int &kwlen)
+static void getContent(const std::string &statement, const int &line, const int &kwlen)
 {
     content.clear();
     for (i = kwlen + 2; i < statementSize; ++i)
     {
         if (statement[i] == '"') // statement[i - 1] will not be a backslash
         {
-            lastDQIndex = i;
+            if (i + 1 != statementSize) // If statement has trailing characters
+                teaSyntaxError(line, "No characters are allowed after string literal.");
             break;
         }
         if (statement[i] == '\\' && statement[i + 1] == '"')
@@ -38,13 +38,6 @@ static void getContent(const std::string &statement, const int &kwlen)
     }
 }
 
-// Checks for any arbitrary characters after string literal
-static void checkRestOfStatement(const int &line)
-{
-    if (lastDQIndex + 1 != statementSize)
-        teaSyntaxError(line, "No characters are allowed after string literal.");
-}
-
 // Extracts chars inside string literal and puts it in command
 std::string &getStringLiteral(const std::string &statement, const int &line, const int &kwlen)
 {
@@ -54,7 +47,6 @@ std::string &getStringLiteral(const std::string &statement, const int &line, con
         teaSyntaxError(line, "String literal required here.");
     statementSize = statement.size();
     checkStringLiteral(statement, line, kwlen);
-    getContent(statement, kwlen);
-    checkRestOfStatement(line);
+    getContent(statement, line, kwlen);
     return content;
 }
