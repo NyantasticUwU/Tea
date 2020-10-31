@@ -4,9 +4,9 @@
 
 // Defining static globals
 // These are defined here for performance reasons
-static int statementSize;
-static std::string content;
-static int i;
+static int g_statementSize;
+static std::string g_content;
+static int g_i;
 
 // Checks if the string literal is closed
 static void checkStringLiteral(const std::string &statement, const int &line, const int &kwlen)
@@ -19,22 +19,22 @@ static void checkStringLiteral(const std::string &statement, const int &line, co
 // Loops through each character in the string literal and adds it to the command string
 static void getContent(const std::string &statement, const int &line, const int &kwlen)
 {
-    content.clear();
-    for (i = kwlen + 2; i < statementSize; ++i)
+    g_content.clear();
+    for (g_i = kwlen + 2; g_i < g_statementSize; ++g_i)
     {
-        if (statement[i] == '"') // statement[i - 1] will not be a backslash
+        if (statement[g_i] == '"') // statement[g_i - 1] will not be a backslash
         {
-            if (i + 1 != statementSize) // If statement has trailing characters
+            if (g_i + 1 != g_statementSize) // If statement has trailing characters
                 teaSyntaxError(line, "No characters are allowed after string literal.");
             break;
         }
-        if (statement[i] == '\\' && statement[i + 1] == '"')
+        if (statement[g_i] == '\\' && statement[g_i + 1] == '"')
         {
-            content.push_back('"');
-            ++i;
+            g_content.push_back('"');
+            ++g_i;
             continue;
         }
-        content.push_back(statement[i]);
+        g_content.push_back(statement[g_i]);
     }
 }
 
@@ -45,8 +45,8 @@ std::string &getStringLiteral(const std::string &statement, const int &line, con
         teaSyntaxError(line);
     if (statement[kwlen + 1] != '"')
         teaSyntaxError(line, "String literal required here.");
-    statementSize = statement.size();
+    g_statementSize = statement.size();
     checkStringLiteral(statement, line, kwlen);
     getContent(statement, line, kwlen);
-    return content;
+    return g_content;
 }
