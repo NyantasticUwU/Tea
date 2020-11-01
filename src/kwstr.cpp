@@ -1,40 +1,59 @@
 #include "error.hpp"
 #include "kwstr.hpp"
-#include <algorithm>
 
-// Defining static globals
+// Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static int g_statementSize;
-static std::string g_content;
-static int g_i;
+static std::string sg_content;
+static int sg_i;
+static int sg_quoteCount;
+static int sg_statementSize;
 
 // Checks if the string literal is closed
 static void checkStringLiteral(const std::string &statement, const int &line, const int &kwlen)
 {
-    if (std::count_if(statement.begin() + (kwlen + 1), statement.end(),
-                      [](const char &c) -> bool { return c == '"' && *(&c - 1) != '\\'; }) != 2)
+    sg_quoteCount = 0;
+    for (sg_i = kwlen + 1; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        {
+            ++sg_quoteCount;
+            continue;
+        }
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        {
+            ++sg_i;
+            continue;
+        }
+    }
+    if (sg_quoteCount != 2)
         teaSyntaxError(line, "String literal must be closed off.");
 }
 
 // Loops through each character in the string literal and adds it to the command string
 static void getContent(const std::string &statement, const int &line, const int &kwlen)
 {
-    g_content.clear();
-    for (g_i = kwlen + 2; g_i < g_statementSize; ++g_i)
+    sg_content.clear();
+    for (sg_i = kwlen + 2; sg_i < sg_statementSize; ++sg_i)
     {
-        if (statement[g_i] == '"') // statement[g_i - 1] will not be a backslash
+        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            if (g_i + 1 != g_statementSize) // If statement has trailing characters
+            if (sg_i + 1 != sg_statementSize) // If statement has trailing characters
                 teaSyntaxError(line, "No characters are allowed after string literal.");
             break;
         }
-        if (statement[g_i] == '\\' && statement[g_i + 1] == '"')
+        if (statement[sg_i] == '\\' && statement[sg_i + 1] == '\\')
         {
-            g_content.push_back('"');
-            ++g_i;
+            sg_content.push_back('\\');
+            ++sg_i;
             continue;
         }
-        g_content.push_back(statement[g_i]);
+        if (statement[sg_i] == '\\' && statement[sg_i + 1] == '"')
+        {
+            sg_content.push_back('"');
+            ++sg_i;
+            continue;
+        }
+        sg_content.push_back(statement[sg_i]);
     }
 }
 
@@ -45,8 +64,8 @@ std::string &getStringLiteral(const std::string &statement, const int &line, con
         teaSyntaxError(line);
     if (statement[kwlen + 1] != '"')
         teaSyntaxError(line, "String literal required here.");
-    g_statementSize = statement.size();
+    sg_statementSize = statement.size();
     checkStringLiteral(statement, line, kwlen);
     getContent(statement, line, kwlen);
-    return g_content;
+    return sg_content;
 }
