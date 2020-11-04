@@ -1,4 +1,5 @@
 #include "error.hpp"
+#include "k_delete.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "runtea.hpp"
@@ -67,8 +68,14 @@ void runTea(std::vector<std::string> &teafile)
             emplaceVariables(prestatement);
         const std::string &statement{prestatement};
 
+        // Delete keyword called
+        if (!statement.find("delete "))
+        {
+            kDelete(statement, line);
+            continue;
+        }
         // String keyword called
-        if (!statement.find("string "))
+        else if (!statement.find("string "))
         {
             kString(statement, line);
             continue;
