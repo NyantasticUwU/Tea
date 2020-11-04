@@ -9,6 +9,7 @@
 static int sg_foundIndex;
 static int sg_i;
 static bool sg_isInString;
+static std::string sg_teaEmplaceString;
 static std::string sg_teaStringName;
 
 // Defining tea value vectors
@@ -28,10 +29,18 @@ static void emplaceString(std::string &prestatement, const TeaString &ts)
         if (prestatement[sg_i] == '\\' && (prestatement[sg_i + 1] == '\\' || prestatement[sg_i + 1] == '"'))
             ++sg_i;
     }
+    sg_teaEmplaceString.clear();
+    for (const char &c : ts.getvalue())
+    {
+        if (c == '\\')
+            sg_teaEmplaceString.append("\\\\");
+        else
+            sg_teaEmplaceString.push_back(c);
+    }
     if (sg_isInString)
-        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 2, ts.getvalue());
+        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 2, sg_teaEmplaceString);
     else
-        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 4, '"' + ts.getvalue() + '"');
+        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 4, '"' + sg_teaEmplaceString + '"');
 }
 
 // Emplaces variables in statement
