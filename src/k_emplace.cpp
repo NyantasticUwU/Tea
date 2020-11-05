@@ -9,9 +9,6 @@ static bool sg_isInString;
 static std::string sg_teaEmplaceString;
 static std::string sg_teaStringName;
 
-// Defining tea value vectors
-extern teaString_t g_teaStrings;
-
 // Emplaces string into statement
 static void emplaceString(std::string &prestatement, const TeaString &ts)
 {
@@ -41,9 +38,9 @@ static void emplaceString(std::string &prestatement, const TeaString &ts)
 }
 
 // Emplaces variables into statement
-void kEmplace(std::string &prestatement)
+void kEmplace(std::string &prestatement, teaString_t &teaStrings)
 {
-    for (const TeaString &ts : g_teaStrings)
+    for (const TeaString &ts : teaStrings)
     {
         sg_teaStringName = ts.getname();
         while (true)

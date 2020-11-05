@@ -3,6 +3,6 @@
 #include "TeaString.hpp"
 
 // Called when string keyword is called in tea
-void kString(const std::string &statement, const int &line);
+void kString(const std::string &statement, const int &line, teaString_t &teaStrings);
 
 #endif

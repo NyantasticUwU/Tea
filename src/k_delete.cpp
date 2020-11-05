@@ -11,9 +11,6 @@ static teaString_t::iterator sg_nameIndex;
 static int sg_statementSize;
 static std::string sg_type;
 
-// Declaring tea value vectors
-extern teaString_t g_teaStrings;
-
 // Gets variable type
 static void getType(const std::string &statement)
 {
@@ -38,7 +35,7 @@ static void getName(const std::string &statement)
 }
 
 // Called when the delete keyword is called in tea
-void kDelete(const std::string &statement, const int &line)
+void kDelete(const std::string &statement, const int &line, teaString_t &teaStrings)
 {
     if (std::count(statement.begin(), statement.end(), ' ') != 2)
         teaSyntaxError(line);
@@ -47,13 +44,13 @@ void kDelete(const std::string &statement, const int &line)
     getName(statement);
     if (sg_type == "string")
     {
-        sg_nameIndex = std::find_if(g_teaStrings.begin(), g_teaStrings.end(),
+        sg_nameIndex = std::find_if(teaStrings.begin(), teaStrings.end(),
                                     [&](const TeaString &ts) -> const bool {
                                         return ts.getname() == sg_name;
                                     });
-        if (sg_nameIndex == g_teaStrings.end())
+        if (sg_nameIndex == teaStrings.end())
             teaSyntaxError(line, "Variable name not found.");
-        g_teaStrings.erase(sg_nameIndex);
+        teaStrings.erase(sg_nameIndex);
     }
     else
         teaSyntaxError(line, "Invalid type specifier.");

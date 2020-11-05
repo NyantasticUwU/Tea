@@ -5,12 +5,11 @@
 #include "k_system.hpp"
 #include "runtea.hpp"
 
-// Defining tea value vectors
-teaString_t g_teaStrings;
-
 // Runs tea string vector
 void runTea(std::vector<std::string> &teafile)
 {
+    // Defining tea value vectors
+    teaString_t teaStrings;
     // Looping through tea file lines
     int line{0};
     for (std::string &prestatement : teafile)
@@ -21,19 +20,19 @@ void runTea(std::vector<std::string> &teafile)
             continue;
         // Emplace keyword called
         else if (!prestatement.find("emplace "))
-            kEmplace(prestatement);
+            kEmplace(prestatement, teaStrings);
         const std::string &statement{prestatement};
 
         // Delete keyword called
         if (!statement.find("delete "))
         {
-            kDelete(statement, line);
+            kDelete(statement, line, teaStrings);
             continue;
         }
         // String keyword called
         else if (!statement.find("string "))
         {
-            kString(statement, line);
+            kString(statement, line, teaStrings);
             continue;
         }
         // System keyword called
