@@ -1,6 +1,7 @@
 #include "error.hpp"
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
+#include "k_include.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "runtea.hpp"
@@ -27,6 +28,12 @@ void runTea(std::vector<std::string> &teafile)
         if (!statement.find("delete "))
         {
             kDelete(statement, line, teaStrings);
+            continue;
+        }
+        // Include keyword called
+        else if (!statement.find("include "))
+        {
+            kInclude(statement, line);
             continue;
         }
         // String keyword called
