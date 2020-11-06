@@ -3,6 +3,6 @@
 #include <string>
 
 // Called when include keyword is called in tea
-void kInclude(const std::string &statement, const int &line);
+void kInclude(const std::string &statement, const int &line, const char *&filename);
 
 #endif

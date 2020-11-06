@@ -4,6 +4,6 @@
 #include <vector>
 
 // Runs tea string vector
-void runTea(std::vector<std::string> &teafile);
+void runTea(std::vector<std::string> &teafile, const char *&filename);
 
 #endif

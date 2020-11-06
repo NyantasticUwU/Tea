@@ -10,6 +10,6 @@ int main(const int argc, const char **argv)
     checkMainFile(filename);
     std::vector<std::string> mainfile;
     parseFile(filename, mainfile);
-    runTea(mainfile);
+    runTea(mainfile, filename);
     return 0;
 }

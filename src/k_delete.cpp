@@ -35,10 +35,10 @@ static void getName(const std::string &statement)
 }
 
 // Called when the delete keyword is called in tea
-void kDelete(const std::string &statement, const int &line, teaString_t &teaStrings)
+void kDelete(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings)
 {
     if (std::count(statement.begin(), statement.end(), ' ') != 2)
-        teaSyntaxError(line);
+        teaSyntaxError(line, filename);
     sg_statementSize = statement.size();
     getType(statement);
     getName(statement);
@@ -49,9 +49,9 @@ void kDelete(const std::string &statement, const int &line, teaString_t &teaStri
                                         return ts.getname() == sg_name;
                                     });
         if (sg_nameIndex == teaStrings.end())
-            teaSyntaxError(line, "Variable name not found.");
+            teaSyntaxError(line, filename, "Variable name not found.");
         teaStrings.erase(sg_nameIndex);
     }
     else
-        teaSyntaxError(line, "Invalid type specifier.");
+        teaSyntaxError(line, filename, "Invalid type specifier.");
 }

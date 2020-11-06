@@ -7,7 +7,7 @@
 #include "runtea.hpp"
 
 // Runs tea string vector
-void runTea(std::vector<std::string> &teafile)
+void runTea(std::vector<std::string> &teafile, const char *&filename)
 {
     // Defining tea value vectors
     teaString_t teaStrings;
@@ -27,29 +27,29 @@ void runTea(std::vector<std::string> &teafile)
         // Delete keyword called
         if (!statement.find("delete "))
         {
-            kDelete(statement, line, teaStrings);
+            kDelete(statement, line, filename, teaStrings);
             continue;
         }
         // Include keyword called
         else if (!statement.find("include "))
         {
-            kInclude(statement, line);
+            kInclude(statement, line, filename);
             continue;
         }
         // String keyword called
         else if (!statement.find("string "))
         {
-            kString(statement, line, teaStrings);
+            kString(statement, line, filename, teaStrings);
             continue;
         }
         // System keyword called
         else if (!statement.find("system "))
         {
-            kSystem(statement, line);
+            kSystem(statement, line, filename);
             continue;
         }
         // Invalid statement
         else if (statement != "")
-            teaSyntaxError(line);
+            teaSyntaxError(line, filename);
     }
 }

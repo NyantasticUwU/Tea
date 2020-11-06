@@ -6,6 +6,6 @@
 void teaError(const std::string &msg, const int &exitCode);
 
 // Throws ERROR_INVALID_DATA error with custom message
-void teaSyntaxError(const int &line, const std::string &msg = "");
+void teaSyntaxError(const int &line, const char *&filename, const std::string &msg = "");
 
 #endif

@@ -3,6 +3,6 @@
 #include <string>
 
 // Called when the system keyword is called in tea
-void kSystem(const std::string &statement, const int &line);
+void kSystem(const std::string &statement, const int &line, const char *&filename);
 
 #endif

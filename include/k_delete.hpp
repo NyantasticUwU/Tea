@@ -3,6 +3,6 @@
 #include "TeaString.hpp"
 
 // Called when the delete keyword is called in tea
-void kDelete(const std::string &statement, const int &line, teaString_t &teaStrings);
+void kDelete(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings);
 
 #endif

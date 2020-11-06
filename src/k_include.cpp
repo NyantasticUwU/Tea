@@ -2,13 +2,12 @@
 #include "kwstr.hpp"
 #include "parsefile.hpp"
 #include "runtea.hpp"
-#include <vector>
 
 // Called when include keyword is called in tea
-void kInclude(const std::string &statement, const int &line)
+void kInclude(const std::string &statement, const int &line, const char *&filename)
 {
-    const char *newfilename{getStringLiteral(statement, line, 7).c_str()};
+    const char *newfilename{getStringLiteral(statement, line, filename, 7).c_str()};
     std::vector<std::string> newfile;
     parseFile(newfilename, newfile);
-    runTea(newfile);
+    runTea(newfile, newfilename);
 }
