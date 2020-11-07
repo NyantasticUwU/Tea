@@ -6,12 +6,12 @@
 // Represents a tea string (holds string variable name and literal)
 class TeaString final
 {
-    std::string name;
-    std::string value;
+    std::string m_name;
+    std::string m_value;
 
 public:
     // Default constructor
-    TeaString(const std::string &_name = "", const std::string &_value = "");
+    TeaString(const std::string &name = "", const std::string &value = "");
     // Default deconstructor
     ~TeaString();
 
