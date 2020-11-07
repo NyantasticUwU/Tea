@@ -16,9 +16,9 @@ public:
     ~TeaString();
 
     // Gets name
-    const std::string &getname() const;
+    const std::string &getname() const noexcept;
     // Gets value
-    const std::string &getvalue() const;
+    const std::string &getvalue() const noexcept;
 
     // Sets name
     void setname(const std::string &newname);

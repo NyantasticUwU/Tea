@@ -6,9 +6,9 @@ TeaString::TeaString(const std::string &_name, const std::string &_value) : name
 TeaString::~TeaString() {}
 
 // Gets name
-const std::string &TeaString::getname() const { return name; }
+const std::string &TeaString::getname() const noexcept { return name; }
 // Gets value
-const std::string &TeaString::getvalue() const { return value; }
+const std::string &TeaString::getvalue() const noexcept { return value; }
 
 // Sets name
 void TeaString::setname(const std::string &newname) { name = newname; }
