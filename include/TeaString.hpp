@@ -21,9 +21,9 @@ public:
     const std::string &getvalue() const noexcept;
 
     // Sets name
-    void setname(const std::string &newname);
+    TeaString &setname(const std::string &newname);
     // Sets value
-    void setvalue(const std::string &newvalue);
+    TeaString &setvalue(const std::string &newvalue);
 };
 
 // Type def for tea string vector

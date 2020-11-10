@@ -11,7 +11,7 @@ void teaError(const std::string &msg, const int &exitCode)
 // Throws ERROR_INVALID_DATA error with custom message
 void teaSyntaxError(const int &line, const char *&filename, const std::string &msg)
 {
-    teaError("ERROR: Invalid statement on line " + std::to_string(line) + " (" + filename + ')' + ".\n" +
+    teaError("ERROR: Invalid statement on line " + std::to_string(line) + " (" + filename + ").\n" +
                  msg + (msg == "" ? "" : "\n") +
                  "Exiting with code 13 (ERROR_INVALID_DATA).",
              13); // Windows' ERROR_INVALID_DATA (13)

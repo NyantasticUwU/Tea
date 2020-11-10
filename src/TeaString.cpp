@@ -11,6 +11,14 @@ const std::string &TeaString::getname() const noexcept { return m_name; }
 const std::string &TeaString::getvalue() const noexcept { return m_value; }
 
 // Sets name
-void TeaString::setname(const std::string &newname) { m_name = newname; }
+TeaString &TeaString::setname(const std::string &newname)
+{
+    m_name = newname;
+    return *this;
+}
 // Sets value
-void TeaString::setvalue(const std::string &newvalue) { m_value = newvalue; }
+TeaString &TeaString::setvalue(const std::string &newvalue)
+{
+    m_value = newvalue;
+    return *this;
+}
