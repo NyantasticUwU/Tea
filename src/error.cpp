@@ -5,7 +5,7 @@
 // Outputs error message and exits program
 void teaError(const std::string &msg, const int &exitCode)
 {
-    std::cerr << msg;
+    spdlog::error(msg);
     std::exit(exitCode);
 }
 
