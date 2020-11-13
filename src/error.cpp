@@ -1,6 +1,5 @@
 #include "error.hpp"
 #include "spdlog/spdlog.h"
-#include <iostream>
 
 // Outputs error message and exits program
 void teaError(const std::string &msg, const int &exitCode)
