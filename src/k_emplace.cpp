@@ -37,7 +37,8 @@ static void emplaceString(std::string &prestatement, const TeaString &ts)
 }
 
 // Emplaces variables into statement
-void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts)
+void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts,
+              const teaFloat_t &teaFloats)
 {
     for (const TeaString &ts : teaStrings)
     {
@@ -54,12 +55,24 @@ void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const te
     for (const TeaInt &ti : teaInts)
     {
         sg_teaVarName = ti.getname();
-        sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
         while (true)
         {
             sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
             if (sg_foundIndex != prestatement.npos)
                 prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, std::to_string(ti.getvalue()));
+            else
+                break;
+        }
+    }
+    for (const TeaFloat &tf : teaFloats)
+    {
+        sg_teaVarName = tf.getname();
+        sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
+        while (true)
+        {
+            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
+            if (sg_foundIndex != prestatement.npos)
+                prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, std::to_string(tf.getvalue()));
             else
                 break;
         }

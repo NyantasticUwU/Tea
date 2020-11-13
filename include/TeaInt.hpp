@@ -23,7 +23,7 @@ public:
     // Sets name
     TeaInt &setname(const std::string &newname);
     // Sets value
-    TeaInt &setvalue(const int &newvalue);
+    TeaInt &setvalue(const int &newvalue) noexcept;
 };
 
 // Type def for tea int vector

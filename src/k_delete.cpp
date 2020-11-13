@@ -34,32 +34,42 @@ static void getName(const std::string &statement)
 
 // Called when the delete keyword is called in tea
 void kDelete(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-             teaInt_t &teaInts)
+             teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
     if (std::count(statement.begin(), statement.end(), ' ') != 2)
         teaSyntaxError(line, filename);
     sg_statementSize = statement.size();
     getType(statement);
     getName(statement);
-    if (sg_type == "string")
+    if (sg_type == "float")
     {
-        teaString_t::iterator sg_nameIndex = std::find_if(teaStrings.begin(), teaStrings.end(),
-                                                          [&](const TeaString &ts) noexcept -> const bool {
-                                                              return ts.getname() == sg_name;
-                                                          });
-        if (sg_nameIndex == teaStrings.end())
+        teaFloat_t::iterator nameIndex{std::find_if(teaFloats.begin(), teaFloats.end(),
+                                                    [&](const TeaFloat &tf) noexcept -> const bool {
+                                                        return tf.getname() == sg_name;
+                                                    })};
+        if (nameIndex == teaFloats.end())
             teaSyntaxError(line, filename, "Variable name not found.");
-        teaStrings.erase(sg_nameIndex);
+        teaFloats.erase(nameIndex);
     }
     else if (sg_type == "int")
     {
-        teaInt_t::iterator sg_nameIndex = std::find_if(teaInts.begin(), teaInts.end(),
-                                                       [&](const TeaInt &ti) noexcept -> const bool {
-                                                           return ti.getname() == sg_name;
-                                                       });
-        if (sg_nameIndex == teaInts.end())
+        teaInt_t::iterator nameIndex{std::find_if(teaInts.begin(), teaInts.end(),
+                                                  [&](const TeaInt &ti) noexcept -> const bool {
+                                                      return ti.getname() == sg_name;
+                                                  })};
+        if (nameIndex == teaInts.end())
             teaSyntaxError(line, filename, "Variable name not found.");
-        teaInts.erase(sg_nameIndex);
+        teaInts.erase(nameIndex);
+    }
+    else if (sg_type == "string")
+    {
+        teaString_t::iterator nameIndex{std::find_if(teaStrings.begin(), teaStrings.end(),
+                                                     [&](const TeaString &ts) noexcept -> const bool {
+                                                         return ts.getname() == sg_name;
+                                                     })};
+        if (nameIndex == teaStrings.end())
+            teaSyntaxError(line, filename, "Variable name not found.");
+        teaStrings.erase(nameIndex);
     }
     else
         teaSyntaxError(line, filename, "Invalid type specifier.");

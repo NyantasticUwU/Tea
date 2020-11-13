@@ -17,7 +17,7 @@ TeaInt &TeaInt::setname(const std::string &newname)
     return *this;
 }
 // Sets value
-TeaInt &TeaInt::setvalue(const int &newvalue)
+TeaInt &TeaInt::setvalue(const int &newvalue) noexcept
 {
     m_value = newvalue;
     return *this;

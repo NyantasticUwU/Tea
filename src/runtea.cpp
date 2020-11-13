@@ -1,6 +1,7 @@
 #include "error.hpp"
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
+#include "k_float.hpp"
 #include "k_include.hpp"
 #include "k_int.hpp"
 #include "k_string.hpp"
@@ -11,6 +12,7 @@
 void runTea(std::vector<std::string> &teafile, const char *&filename)
 {
     // Defining tea value vectors
+    teaFloat_t teaFloats;
     teaInt_t teaInts;
     teaString_t teaStrings;
     // Looping through tea file lines
@@ -23,13 +25,19 @@ void runTea(std::vector<std::string> &teafile, const char *&filename)
             continue;
         // Emplace keyword called
         else if (!prestatement.find("emplace "))
-            kEmplace(prestatement, teaStrings, teaInts);
+            kEmplace(prestatement, teaStrings, teaInts, teaFloats);
         const std::string &statement{prestatement};
 
         // Delete keyword called
         if (!statement.find("delete "))
         {
-            kDelete(statement, line, filename, teaStrings, teaInts);
+            kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
+            continue;
+        }
+        // Float keyword called
+        else if (!statement.find("float "))
+        {
+            kFloat(statement, line, filename, teaFloats);
             continue;
         }
         // Include keyword called
