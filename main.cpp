@@ -3,6 +3,16 @@
 #include "parsefile.hpp"
 #include "runtea.hpp"
 
+// Defining globals
+std::vector<std::string> cg_keywords{
+    "delete",
+    "emplace",
+    "float",
+    "include",
+    "int",
+    "string",
+    "system"};
+
 // Main entry point of program
 int main(const int argc, const char **argv)
 {

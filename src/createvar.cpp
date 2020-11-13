@@ -1,6 +1,7 @@
 #include "createvar.hpp"
 #include "error.hpp"
 #include <algorithm>
+#include <vector>
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
@@ -15,6 +16,9 @@ static int sg_varnameSize;
 // These are used by outside files
 int g_secondSpaceIndex;
 std::string g_varname;
+
+// Declaring globals
+extern std::vector<std::string> cg_keywords;
 
 // Checks for amount of spaces
 static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
@@ -59,6 +63,11 @@ static void getVarName(const std::string &statement, const int &kwlen)
 // Makes sure variable name is valid
 static void validateVarName(const int &line, const char *&filename)
 {
+    if (std::any_of(cg_keywords.begin(), cg_keywords.end(),
+                    [&](const std::string &str) noexcept -> const bool {
+                        return str == g_varname;
+                    }))
+        teaSyntaxError(line, filename, "Variable name cannot be a keyword.");
     if (std::none_of(std::begin(scg_validChars) + 10, std::end(scg_validChars),
                      [&](const char &c) noexcept -> const bool {
                          return c == g_varname[0];
