@@ -11,9 +11,13 @@ static int sg_spaceCount;
 static int sg_statementSize;
 static int sg_varnameSize;
 
+// Defining non-static globals
+// These are used by outside files
+int g_secondSpaceIndex;
+std::string g_varname;
+
 // Checks for amount of spaces
-static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen,
-                        int &secondSpaceIndex)
+static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
     sg_isInString = false;
     sg_spaceCount = 0;
@@ -33,7 +37,7 @@ static void checkSpaces(const std::string &statement, const int &line, const cha
         {
             ++sg_spaceCount;
             if (sg_spaceCount == 2)
-                secondSpaceIndex = sg_i;
+                g_secondSpaceIndex = sg_i;
         }
     }
     if (sg_spaceCount != 2)
@@ -41,42 +45,41 @@ static void checkSpaces(const std::string &statement, const int &line, const cha
 }
 
 // Gets variable name
-static void getVarName(const std::string &statement, const int &kwlen, std::string &varname)
+static void getVarName(const std::string &statement, const int &kwlen)
 {
-    varname.clear();
+    g_varname.clear();
     for (sg_i = kwlen + 1; sg_i < sg_statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
             break;
-        varname.push_back(statement[sg_i]);
+        g_varname.push_back(statement[sg_i]);
     }
 }
 
 // Makes sure variable name is valid
-static void validateVarName(const int &line, const char *&filename, const std::string &varname)
+static void validateVarName(const int &line, const char *&filename)
 {
     if (std::none_of(std::begin(scg_validChars) + 10, std::end(scg_validChars),
-                     [&](const char &c) -> const bool {
-                         return c == varname[0];
+                     [&](const char &c) noexcept -> const bool {
+                         return c == g_varname[0];
                      }))
         teaSyntaxError(line, filename, "Invalid variable name.");
-    sg_varnameSize = varname.size();
+    sg_varnameSize = g_varname.size();
     for (sg_i = 1; sg_i < sg_varnameSize; ++sg_i)
     {
         if (std::none_of(std::begin(scg_validChars), std::end(scg_validChars),
-                         [&](const char &c) -> const bool {
-                             return c == varname[sg_i];
+                         [&](const char &c) noexcept -> const bool {
+                             return c == g_varname[sg_i];
                          }))
             teaSyntaxError(line, filename, "Invalid variable name.");
     }
 }
 
 // Creates var
-void createvar(const std::string &statement, const int &line, const char *&filename, const int &kwlen,
-               std::string &varname, int &secondSpaceIndex)
+void createvar(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
     sg_statementSize = statement.size();
-    checkSpaces(statement, line, filename, kwlen, secondSpaceIndex);
-    getVarName(statement, kwlen, varname);
-    validateVarName(line, filename, varname);
+    checkSpaces(statement, line, filename, kwlen);
+    getVarName(statement, kwlen);
+    validateVarName(line, filename);
 }

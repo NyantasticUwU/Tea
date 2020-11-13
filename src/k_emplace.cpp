@@ -1,5 +1,4 @@
 #include "k_emplace.hpp"
-#include "TeaString.hpp"
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
@@ -7,7 +6,7 @@ static int sg_foundIndex;
 static int sg_i;
 static bool sg_isInString;
 static std::string sg_teaEmplaceString;
-static std::string sg_teaStringName;
+static std::string sg_teaVarName;
 
 // Emplaces string into statement
 static void emplaceString(std::string &prestatement, const TeaString &ts)
@@ -32,22 +31,35 @@ static void emplaceString(std::string &prestatement, const TeaString &ts)
             sg_teaEmplaceString.push_back(c);
     }
     if (sg_isInString)
-        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 2, sg_teaEmplaceString);
+        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, sg_teaEmplaceString);
     else
-        prestatement.replace(sg_foundIndex, sg_teaStringName.size() + 4, '"' + sg_teaEmplaceString + '"');
+        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 4, '"' + sg_teaEmplaceString + '"');
 }
 
 // Emplaces variables into statement
-void kEmplace(std::string &prestatement, teaString_t &teaStrings)
+void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts)
 {
     for (const TeaString &ts : teaStrings)
     {
-        sg_teaStringName = ts.getname();
+        sg_teaVarName = ts.getname();
         while (true)
         {
-            sg_foundIndex = prestatement.find('{' + sg_teaStringName + '}');
+            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
             if (sg_foundIndex != prestatement.npos)
                 emplaceString(prestatement, ts);
+            else
+                break;
+        }
+    }
+    for (const TeaInt &ti : teaInts)
+    {
+        sg_teaVarName = ti.getname();
+        sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
+        while (true)
+        {
+            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
+            if (sg_foundIndex != prestatement.npos)
+                prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, std::to_string(ti.getvalue()));
             else
                 break;
         }

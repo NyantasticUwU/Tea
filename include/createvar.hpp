@@ -3,7 +3,6 @@
 #include <string>
 
 // Creates var
-void createvar(const std::string &statement, const int &line, const char *&filename, const int &kwlen,
-               std::string &varname, int &secondSpaceIndex);
+void createvar(const std::string &statement, const int &line, const char *&filename, const int &kwlen);
 
 #endif
