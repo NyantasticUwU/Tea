@@ -127,7 +127,7 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
         }
         // string + float
         else
-            ;
+            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
     }
     else
         teaSyntaxError(line, filename, "Invalid left operand for operator+.");
