@@ -33,7 +33,7 @@ static void emplaceString(std::string &prestatement, const TeaString &ts)
     if (sg_isInString)
         prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, sg_teaEmplaceString);
     else
-        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 4, '"' + sg_teaEmplaceString + '"');
+        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2, '"' + sg_teaEmplaceString + '"');
 }
 
 // Emplaces variables into statement

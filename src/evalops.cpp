@@ -1,8 +1,10 @@
 #include "error.hpp"
 #include "evalops.hpp"
+#include <algorithm>
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
+static constexpr char scg_validNumerics[14]{"0123456789.xX"};
 static int sg_i;
 static bool sg_isInString;
 static int sg_leftStringStartIndex; // Used if left operand is a tea string (index of start of tea string)
@@ -61,14 +63,52 @@ static void getRightOperand(const std::string &statement, std::string &rightOper
         rightOperand.push_back(statement[sg_i]);
     }
 }
+// Gets right operand
+static void getRightOperand(const std::string &statement, int &rightOperand)
+{
+    sg_statementSize = statement.size();
+    std::string intstr;
+    for (sg_i = sg_operatorIndex + 2; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (std::none_of(std::begin(scg_validNumerics),
+                         std::end(scg_validNumerics),
+                         [&](const char &c) noexcept -> const bool {
+                             return c == statement[sg_i];
+                         }))
+            break;
+        intstr.push_back(statement[sg_i]);
+    }
+    rightOperand = std::stoi(intstr, nullptr, 0);
+}
+
+// Checks if right operand is int or float
+// Returns true if int false if float
+static bool isROIntOrFloat(const std::string &statement)
+{
+    sg_statementSize = statement.size();
+    for (sg_i = sg_operatorIndex + 2; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (std::none_of(std::begin(scg_validNumerics),
+                         std::end(scg_validNumerics),
+                         [&](const char &c) noexcept -> const bool {
+                             return c == statement[sg_i];
+                         }))
+            break;
+        if (statement[sg_i] == '.')
+            return false;
+    }
+    return true;
+}
 
 // Evaluates operator+
 static void evalopplus(std::string &statement, const int &line, const char *&filename)
 {
+    // string + _
     if (statement[sg_operatorIndex - 2] == '"')
     {
         std::string leftOperand;
         getLeftOperand(statement, leftOperand);
+        // string + string
         if (statement[sg_operatorIndex + 2] == '"')
         {
             std::string rightOperand;
@@ -76,8 +116,18 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
             statement.replace(sg_leftStringStartIndex + 1, leftOperand.size() + rightOperand.size() + 5,
                               leftOperand + rightOperand);
         }
+        // string + int
+        else if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftStringStartIndex + 1,
+                              leftOperand.size() + std::to_string(rightOperand).size() + 4,
+                              leftOperand + std::to_string(rightOperand) + '"');
+        }
+        // string + float
         else
-            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
+            ;
     }
     else
         teaSyntaxError(line, filename, "Invalid left operand for operator+.");
