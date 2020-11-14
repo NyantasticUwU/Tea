@@ -80,6 +80,23 @@ static void getRightOperand(const std::string &statement, int &rightOperand)
     }
     rightOperand = std::stoi(intstr, nullptr, 0);
 }
+// Gets right operand
+static void getRightOperand(const std::string &statement, float &rightOperand)
+{
+    sg_statementSize = statement.size();
+    std::string floatstr;
+    for (sg_i = sg_operatorIndex + 2; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (std::none_of(std::begin(scg_validNumerics),
+                         std::end(scg_validNumerics),
+                         [&](const char &c) noexcept -> const bool {
+                             return c == statement[sg_i];
+                         }))
+            break;
+        floatstr.push_back(statement[sg_i]);
+    }
+    rightOperand = std::stof(floatstr);
+}
 
 // Checks if right operand is int or float
 // Returns true if int false if float
@@ -127,7 +144,12 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
         }
         // string + float
         else
-            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftStringStartIndex + 1, leftOperand.size() + sg_i - sg_operatorIndex + 2,
+                              leftOperand + std::to_string(rightOperand) + '"');
+        }
     }
     else
         teaSyntaxError(line, filename, "Invalid left operand for operator+.");
