@@ -30,7 +30,7 @@ static int searchOperator(const std::string &statement, const std::string &op)
             ++sg_i;
             continue;
         }
-        if (!sg_isInString && statement.substr(std::abs(sg_i - 1), op.size() + 2) == ' ' + op + ' ')
+        if (!sg_isInString && statement.substr((sg_i > 0 ? sg_i - 1 : 0), op.size() + 2) == ' ' + op + ' ')
             return sg_i;
     }
     return statement.npos;
