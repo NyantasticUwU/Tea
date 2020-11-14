@@ -1,4 +1,5 @@
 #include "error.hpp"
+#include "evalops.hpp"
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
 #include "k_float.hpp"
@@ -26,6 +27,7 @@ void runTea(std::vector<std::string> &teafile, const char *&filename)
         // Emplace keyword called
         else if (!prestatement.find("emplace "))
             kEmplace(prestatement, teaStrings, teaInts, teaFloats);
+        prestatement = evalOps(prestatement, line, filename);
         const std::string &statement{prestatement};
 
         // Delete keyword called
