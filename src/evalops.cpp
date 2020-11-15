@@ -5,7 +5,7 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static constexpr char scg_op1[3]{"+-"};
-static constexpr char scg_validNumerics[14]{"0123456789.xX"};
+static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
 static bool sg_isInString;
 static int sg_leftOperatorStartIndex; // Indicates start of left operand
@@ -313,6 +313,23 @@ static void evalopminus(std::string &statement)
     }
 }
 
+// Checks if sign is minus or negative
+static bool checkSign(const char &c)
+{
+    if (c == '-')
+    {
+        const char &cc{*(&c + 1)};
+        return std::any_of(std::begin(scg_validNumerics),
+                           std::end(scg_validNumerics),
+                           [&](const char &ccc) noexcept -> const bool {
+                               return cc == ccc;
+                           })
+                   ? false
+                   : true;
+    }
+    return true;
+}
+
 // Searches for operators by group
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
@@ -321,7 +338,7 @@ static std::string searchOperatorsByGroup(const std::string &statement)
     {
         for (const char &c : scg_op1)
         {
-            if (c == strc)
+            if (c == strc && checkSign(strc))
                 return std::string{c};
         }
     }
