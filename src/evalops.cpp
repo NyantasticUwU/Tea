@@ -4,12 +4,14 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
+static constexpr char scg_op1[2]{"+"};
 static constexpr char scg_validNumerics[14]{"0123456789.xX"};
 static int sg_i;
 static bool sg_isInString;
 static int sg_leftOperatorStartIndex; // Indicates start of left operand
 static int sg_operatorIndex;
 static int sg_statementSize;
+static std::string teaoperator;
 
 // Searches for operator
 static int searchOperator(const std::string &statement, const std::string &op)
@@ -256,18 +258,36 @@ static void evalopplus(std::string &statement)
     }
 }
 
+// Searches for operators by group
+static std::string searchOperatorsByGroup(const std::string &statement)
+{
+    // Op 1
+    for (const char &strc : statement)
+    {
+        for (const char &c : scg_op1)
+        {
+            if (c == strc)
+                return std::string{c};
+        }
+    }
+    return "";
+}
+
 // Evaluates and operators in a given string
 // Returns modified string with value(s) in-place
 std::string evalOps(std::string statement)
 {
-    // Operator+
     while (true)
     {
-        sg_operatorIndex = searchOperator(statement, "+");
-        if (sg_operatorIndex != statement.npos)
+        teaoperator = searchOperatorsByGroup(statement);
+        // Operator+
+        if (teaoperator == "+")
+        {
+            sg_operatorIndex = searchOperator(statement, "+");
             evalopplus(statement);
-        else
-            break;
+            continue;
+        }
+        break;
     }
     return statement;
 }
