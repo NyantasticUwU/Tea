@@ -7,7 +7,7 @@
 static constexpr char scg_validNumerics[14]{"0123456789.xX"};
 static int sg_i;
 static bool sg_isInString;
-static int sg_leftStringStartIndex; // Used if left operand is a tea string (index of start of tea string)
+static int sg_leftOperatorStartIndex; // Indicates start of left operand
 static int sg_operatorIndex;
 static int sg_statementSize;
 
@@ -24,7 +24,7 @@ static int searchOperator(const std::string &statement, const std::string &op)
         {
             sg_isInString = sg_isInString ? false : true;
             if (sg_isInString)
-                sg_leftStringStartIndex = sg_i;
+                sg_leftOperatorStartIndex = sg_i;
             continue;
         }
         if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
@@ -41,8 +41,16 @@ static int searchOperator(const std::string &statement, const std::string &op)
 // Gets left operand
 static void getLeftOperand(const std::string &statement, std::string &leftOperand)
 {
-    for (sg_i = sg_leftStringStartIndex + 1; sg_i < sg_operatorIndex - 2; ++sg_i)
+    for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 2; ++sg_i)
         leftOperand.push_back(statement[sg_i]);
+}
+// Gets left operand
+static void getLeftOperand(const std::string &statement, int &leftOperand)
+{
+    std::string intstr;
+    for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
+        intstr.push_back(statement[sg_i]);
+    leftOperand = std::stoi(intstr);
 }
 
 // Gets right operand
@@ -116,6 +124,25 @@ static bool isROIntOrFloat(const std::string &statement)
     }
     return true;
 }
+// Checks if left operand is int or float
+// Returns true if int false if float
+static bool isLOIntOrFloat(const std::string &statement)
+{
+    bool isInt{true};
+    for (sg_i = sg_operatorIndex - 2; sg_i >= 0; --sg_i)
+    {
+        if (std::none_of(std::begin(scg_validNumerics),
+                         std::end(scg_validNumerics),
+                         [&](const char &c) noexcept -> const bool {
+                             return c == statement[sg_i];
+                         }))
+            break;
+        if (statement[sg_i] == '.')
+            isInt = false;
+    }
+    sg_leftOperatorStartIndex = sg_i;
+    return isInt;
+}
 
 // Evaluates operator+
 static void evalopplus(std::string &statement, const int &line, const char *&filename)
@@ -130,7 +157,7 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
         {
             std::string rightOperand;
             getRightOperand(statement, rightOperand);
-            statement.replace(sg_leftStringStartIndex + 1, leftOperand.size() + rightOperand.size() + 5,
+            statement.replace(sg_leftOperatorStartIndex + 1, leftOperand.size() + rightOperand.size() + 5,
                               leftOperand + rightOperand);
         }
         // string + int
@@ -138,7 +165,7 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
         {
             int rightOperand;
             getRightOperand(statement, rightOperand);
-            statement.replace(sg_leftStringStartIndex + 1,
+            statement.replace(sg_leftOperatorStartIndex + 1,
                               leftOperand.size() + std::to_string(rightOperand).size() + 4,
                               leftOperand + std::to_string(rightOperand) + '"');
         }
@@ -147,9 +174,26 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
         {
             float rightOperand;
             getRightOperand(statement, rightOperand);
-            statement.replace(sg_leftStringStartIndex + 1, leftOperand.size() + sg_i - sg_operatorIndex + 2,
+            statement.replace(sg_leftOperatorStartIndex + 1, leftOperand.size() + sg_i - sg_operatorIndex + 2,
                               leftOperand + std::to_string(rightOperand) + '"');
         }
+    }
+    // int + _
+    else if (isLOIntOrFloat(statement))
+    {
+        int leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // int + string
+        if (statement[sg_operatorIndex + 2] == '"')
+        {
+            std::string rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + rightOperand.size() + 5,
+                              '"' + std::to_string(leftOperand) + rightOperand + '"');
+        }
+        else
+            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
     }
     else
         teaSyntaxError(line, filename, "Invalid left operand for operator+.");
