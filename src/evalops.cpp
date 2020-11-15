@@ -192,6 +192,15 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
                               std::to_string(leftOperand).size() + rightOperand.size() + 5,
                               '"' + std::to_string(leftOperand) + rightOperand + '"');
         }
+        // int + int
+        else if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand + rightOperand));
+        }
         else
             teaSyntaxError(line, filename, "Invalid right operand for operator+.");
     }
