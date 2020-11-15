@@ -202,7 +202,13 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
                               std::to_string(leftOperand + rightOperand));
         }
         else
-            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 2,
+                              std::to_string(leftOperand + rightOperand));
+        }
     }
     else
         teaSyntaxError(line, filename, "Invalid left operand for operator+.");
