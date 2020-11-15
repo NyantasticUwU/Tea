@@ -335,13 +335,28 @@ static bool checkSign(const char &c)
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
     // Op 1
+    sg_isInString = false;
     sg_i = 0;
     for (const char &strc : statement)
     {
-        for (const std::string &c : scg_op1)
+        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            if (c == statement.substr(sg_i, c.size()) && checkSign(strc))
-                return std::string{c};
+            sg_isInString = sg_isInString ? false : true;
+            ++sg_i;
+            continue;
+        }
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        {
+            sg_i += 2;
+            continue;
+        }
+        if (!sg_isInString)
+        {
+            for (const std::string &c : scg_op1)
+            {
+                if (c == statement.substr(sg_i, c.size()) && checkSign(strc))
+                    return std::string{c};
+            }
         }
         ++sg_i;
     }
