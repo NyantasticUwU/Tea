@@ -4,6 +4,6 @@
 
 // Evaluates and operators in a given string
 // Returns modified string with value(s) in-place
-std::string evalOps(std::string statement, const int &line, const char *&filename);
+std::string evalOps(std::string statement);
 
 #endif

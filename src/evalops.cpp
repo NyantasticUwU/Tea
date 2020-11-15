@@ -153,7 +153,7 @@ static bool isLOIntOrFloat(const std::string &statement)
 }
 
 // Evaluates operator+
-static void evalopplus(std::string &statement, const int &line, const char *&filename)
+static void evalopplus(std::string &statement)
 {
     // string + _
     if (statement[sg_operatorIndex - 2] == '"')
@@ -239,24 +239,33 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
             int rightOperand;
             getRightOperand(statement, rightOperand);
             statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 3,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 3,
                               std::to_string(leftOperand + rightOperand));
         }
+        // float + float
         else
-            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex + 2,
+                              std::to_string(leftOperand + rightOperand));
+        }
     }
 }
 
 // Evaluates and operators in a given string
 // Returns modified string with value(s) in-place
-std::string evalOps(std::string statement, const int &line, const char *&filename)
+std::string evalOps(std::string statement)
 {
     // Operator+
     while (true)
     {
         sg_operatorIndex = searchOperator(statement, "+");
         if (sg_operatorIndex != statement.npos)
-            evalopplus(statement, line, filename);
+            evalopplus(statement);
         else
             break;
     }

@@ -27,7 +27,7 @@ void runTea(std::vector<std::string> &teafile, const char *&filename)
         // Emplace keyword called
         else if (!prestatement.find("emplace "))
             kEmplace(prestatement, teaStrings, teaInts, teaFloats);
-        prestatement = evalOps(prestatement, line, filename);
+        prestatement = evalOps(prestatement);
         const std::string &statement{prestatement};
 
         // Delete keyword called
