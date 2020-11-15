@@ -215,7 +215,7 @@ static void evalopplus(std::string &statement)
             float rightOperand;
             getRightOperand(statement, rightOperand);
             statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 2,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
                               std::to_string(leftOperand + rightOperand));
         }
     }
@@ -230,7 +230,7 @@ static void evalopplus(std::string &statement)
             std::string rightOperand;
             getRightOperand(statement, rightOperand);
             statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex + rightOperand.size() + 5,
+                              sg_operatorIndex - sg_leftOperatorStartIndex + rightOperand.size() + 3,
                               '"' + std::to_string(leftOperand) + rightOperand + '"');
         }
         // float + int
@@ -240,7 +240,7 @@ static void evalopplus(std::string &statement)
             getRightOperand(statement, rightOperand);
             statement.replace(sg_leftOperatorStartIndex + 1,
                               sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  std::to_string(rightOperand).size() + 3,
+                                  std::to_string(rightOperand).size() + 1,
                               std::to_string(leftOperand + rightOperand));
         }
         // float + float
@@ -250,7 +250,7 @@ static void evalopplus(std::string &statement)
             getRightOperand(statement, rightOperand);
             statement.replace(sg_leftOperatorStartIndex + 1,
                               sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  sg_i - sg_operatorIndex + 2,
+                                  sg_i - sg_operatorIndex - 1,
                               std::to_string(leftOperand + rightOperand));
         }
     }
