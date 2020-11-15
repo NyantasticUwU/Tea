@@ -4,7 +4,7 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static constexpr char scg_op1[2]{"+"};
+static constexpr char scg_op1[3]{"+-"};
 static constexpr char scg_validNumerics[14]{"0123456789.xX"};
 static int sg_i;
 static bool sg_isInString;
@@ -258,6 +258,61 @@ static void evalopplus(std::string &statement)
     }
 }
 
+// Evaluates operator-
+static void evalopminus(std::string &statement)
+{
+    // int - _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // int - int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand - rightOperand));
+        }
+        // int - float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(leftOperand - rightOperand));
+        }
+    }
+    // float - _
+    else
+    {
+        float leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // float - int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(leftOperand - rightOperand));
+        }
+        // float - float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(leftOperand - rightOperand));
+        }
+    }
+}
+
 // Searches for operators by group
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
@@ -285,6 +340,13 @@ std::string evalOps(std::string statement)
         {
             sg_operatorIndex = searchOperator(statement, "+");
             evalopplus(statement);
+            continue;
+        }
+        // Operator-
+        else if (teaoperator == "-")
+        {
+            sg_operatorIndex = searchOperator(statement, "-");
+            evalopminus(statement);
             continue;
         }
         break;
