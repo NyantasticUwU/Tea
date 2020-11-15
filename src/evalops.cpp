@@ -52,6 +52,14 @@ static void getLeftOperand(const std::string &statement, int &leftOperand)
         intstr.push_back(statement[sg_i]);
     leftOperand = std::stoi(intstr);
 }
+// Gets left operand
+static void getLeftOperand(const std::string &statement, float &leftOperand)
+{
+    std::string floatstr;
+    for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
+        floatstr.push_back(statement[sg_i]);
+    leftOperand = std::stof(floatstr);
+}
 
 // Gets right operand
 static void getRightOperand(const std::string &statement, std::string &rightOperand)
@@ -201,6 +209,7 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
                               std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
                               std::to_string(leftOperand + rightOperand));
         }
+        // int + float
         else
         {
             float rightOperand;
@@ -210,8 +219,23 @@ static void evalopplus(std::string &statement, const int &line, const char *&fil
                               std::to_string(leftOperand + rightOperand));
         }
     }
+    // float + _
     else
-        teaSyntaxError(line, filename, "Invalid left operand for operator+.");
+    {
+        float leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // float + string
+        if (statement[sg_operatorIndex + 2] == '"')
+        {
+            std::string rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex + rightOperand.size() + 5,
+                              '"' + std::to_string(leftOperand) + rightOperand + '"');
+        }
+        else
+            teaSyntaxError(line, filename, "Invalid right operand for operator+.");
+    }
 }
 
 // Evaluates and operators in a given string
