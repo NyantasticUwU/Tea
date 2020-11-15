@@ -1,10 +1,11 @@
 #include "error.hpp"
 #include "evalops.hpp"
 #include <algorithm>
+#include <vector>
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static constexpr char scg_op1[3]{"+-"};
+static const std::vector<std::string> scg_op1{"+", "-"};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
 static bool sg_isInString;
@@ -334,13 +335,15 @@ static bool checkSign(const char &c)
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
     // Op 1
+    sg_i = 0;
     for (const char &strc : statement)
     {
-        for (const char &c : scg_op1)
+        for (const std::string &c : scg_op1)
         {
-            if (c == strc && checkSign(strc))
+            if (c == statement.substr(sg_i, c.size()) && checkSign(strc))
                 return std::string{c};
         }
+        ++sg_i;
     }
     return "";
 }
