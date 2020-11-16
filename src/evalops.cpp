@@ -5,7 +5,8 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static const std::vector<std::string> scg_op1{"+", "-"};
+static const std::vector<std::vector<std::string>> scg_ops{
+    {"+", "-"}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
 static bool sg_isInString;
@@ -334,31 +335,32 @@ static bool checkSign(const char &c)
 // Searches for operators by group
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
-    // Op 1
-    sg_isInString = false;
-    sg_i = 0;
-    for (const char &strc : statement)
+    sg_statementSize = statement.size();
+    for (const std::vector<std::string> &opg : scg_ops)
     {
-        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        sg_isInString = false;
+        for (sg_i = 0; sg_i < sg_statementSize; ++sg_i)
         {
-            sg_isInString = sg_isInString ? false : true;
-            ++sg_i;
-            continue;
-        }
-        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
-        {
-            sg_i += 2;
-            continue;
-        }
-        if (!sg_isInString)
-        {
-            for (const std::string &c : scg_op1)
+            const char &sc{statement[sg_i]};
+            if (sc == '"') // *(sc - 1) will not be a backslash
             {
-                if (c == statement.substr(sg_i, c.size()) && checkSign(strc))
-                    return std::string{c};
+                sg_isInString = sg_isInString ? false : true;
+                continue;
+            }
+            if (sc == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+            {
+                ++sg_i;
+                continue;
+            }
+            if (!sg_isInString)
+            {
+                for (const std::string &c : opg)
+                {
+                    if (c == statement.substr(sg_i, c.size()) && checkSign(sc))
+                        return std::string{c};
+                }
             }
         }
-        ++sg_i;
     }
     return "";
 }
@@ -370,8 +372,11 @@ std::string evalOps(std::string statement)
     while (true)
     {
         teaoperator = searchOperatorsByGroup(statement);
+        // No operator found
+        if (teaoperator == "")
+            break;
         // Operator+
-        if (teaoperator == "+")
+        else if (teaoperator == "+")
         {
             sg_operatorIndex = searchOperator(statement, "+");
             evalopplus(statement);
@@ -384,7 +389,6 @@ std::string evalOps(std::string statement)
             evalopminus(statement);
             continue;
         }
-        break;
     }
     return statement;
 }
