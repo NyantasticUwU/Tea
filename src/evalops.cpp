@@ -6,6 +6,7 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static const std::vector<std::vector<std::string>> scg_ops{
+    {"*", "/", "%"},
     {"+", "-"}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
@@ -315,6 +316,140 @@ static void evalopminus(std::string &statement)
     }
 }
 
+// Evaluates operator*
+static void evalopasterisk(std::string &statement)
+{
+    // int * _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // int * int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand * rightOperand));
+        }
+        // int * float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+    }
+    // float * _
+    else
+    {
+        float leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // float * int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+        // float * float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+    }
+}
+
+// Evaluates operator/
+static void evalopfwslash(std::string &statement)
+{
+    // int / _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // int / int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand / rightOperand));
+        }
+        // int / float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+    }
+    // float / _
+    else
+    {
+        float leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // float / int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+        // float / float
+        else
+        {
+            float rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+    }
+}
+
+// Evaluates operator%
+static void evalopmod(std::string &statement, const int &line, const char *&filename)
+{
+    // int % _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand;
+        getLeftOperand(statement, leftOperand);
+        // int % int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand;
+            getRightOperand(statement, rightOperand);
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand % rightOperand));
+        }
+        else
+            teaSyntaxError(line, filename, "Invalid right operand for operator%.");
+    }
+    else
+        teaSyntaxError(line, filename, "Invalid left operand for operator%.");
+}
+
 // Checks if sign is minus or negative
 static bool checkSign(const char &c)
 {
@@ -367,7 +502,7 @@ static std::string searchOperatorsByGroup(const std::string &statement)
 
 // Evaluates and operators in a given string
 // Returns modified string with value(s) in-place
-std::string evalOps(std::string statement)
+std::string evalOps(std::string statement, const int &line, const char *&filename)
 {
     while (true)
     {
@@ -375,6 +510,27 @@ std::string evalOps(std::string statement)
         // No operator found
         if (teaoperator == "")
             break;
+        // Operator*
+        else if (teaoperator == "*")
+        {
+            sg_operatorIndex = searchOperator(statement, "*");
+            evalopasterisk(statement);
+            continue;
+        }
+        // Operator/
+        else if (teaoperator == "/")
+        {
+            sg_operatorIndex = searchOperator(statement, "/");
+            evalopfwslash(statement);
+            continue;
+        }
+        // Operator%
+        else if (teaoperator == "%")
+        {
+            sg_operatorIndex = searchOperator(statement, "%");
+            evalopmod(statement, line, filename);
+            continue;
+        }
         // Operator+
         else if (teaoperator == "+")
         {
