@@ -1,12 +1,14 @@
 #include "error.hpp"
 #include "evalops.hpp"
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static const std::vector<std::vector<std::string>> scg_ops{
     {"("},
+    {" ^ "},
     {" * ", " / ", " % "},
     {" + ", " - "}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
@@ -43,7 +45,7 @@ static int searchOperator(const std::string &statement, const std::string &op, c
 }
 
 // Gets left operand
-static std::string getLeftOperand(const std::string &statement, const std::string&)
+static std::string getLeftOperand(const std::string &statement, const std::string &)
 {
     std::string leftOperand;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 2; ++sg_i)
@@ -51,7 +53,7 @@ static std::string getLeftOperand(const std::string &statement, const std::strin
     return leftOperand;
 }
 // Gets left operand
-static int getLeftOperand(const std::string &statement, const int&)
+static int getLeftOperand(const std::string &statement, const int &)
 {
     std::string intstr;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
@@ -59,7 +61,7 @@ static int getLeftOperand(const std::string &statement, const int&)
     return std::stoi(intstr);
 }
 // Gets left operand
-static float getLeftOperand(const std::string &statement, const float&)
+static float getLeftOperand(const std::string &statement, const float &)
 {
     std::string floatstr;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
@@ -68,7 +70,7 @@ static float getLeftOperand(const std::string &statement, const float&)
 }
 
 // Gets right operand
-static std::string getRightOperand(const std::string &statement, const std::string&)
+static std::string getRightOperand(const std::string &statement, const std::string &)
 {
     std::string rightOperand;
     sg_statementSize = statement.size();
@@ -88,7 +90,7 @@ static std::string getRightOperand(const std::string &statement, const std::stri
     return rightOperand;
 }
 // Gets right operand
-static int getRightOperand(const std::string &statement, const int&)
+static int getRightOperand(const std::string &statement, const int &)
 {
     sg_statementSize = statement.size();
     std::string intstr;
@@ -105,7 +107,7 @@ static int getRightOperand(const std::string &statement, const int&)
     return std::stoi(intstr, nullptr, 0);
 }
 // Gets right operand
-static float getRightOperand(const std::string &statement, const float&)
+static float getRightOperand(const std::string &statement, const float &)
 {
     sg_statementSize = statement.size();
     std::string floatstr;
@@ -464,6 +466,55 @@ static void evalopbrace(std::string &statement, const int &line, const char *&fi
     statement.replace(oi, i, evalOps(evalstatement, line, filename));
 }
 
+// Evaluates operator^
+static void evalopex(std::string &statement)
+{
+    // int ^ _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand{getLeftOperand(statement, 0)};
+        // int ^ int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(static_cast<int>(std::pow(leftOperand, rightOperand))));
+        }
+        // int ^ float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
+        }
+    }
+    // float ^ _
+    else
+    {
+        float leftOperand{getLeftOperand(statement, 0.0f)};
+        // float ^ int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
+        }
+        // float ^ float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
+        }
+    }
+}
+
 // Checks if sign is minus or negative
 static bool checkSign(const char &c)
 {
@@ -529,6 +580,13 @@ std::string evalOps(std::string statement, const int &line, const char *&filenam
         {
             sg_operatorIndex = searchOperator(statement, "(", false);
             evalopbrace(statement, line, filename);
+            continue;
+        }
+        // Operator^
+        else if (teaoperator == " ^ ")
+        {
+            sg_operatorIndex = searchOperator(statement, " ^ ", true);
+            evalopex(statement);
             continue;
         }
         // Operator*
