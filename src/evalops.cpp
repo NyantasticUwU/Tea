@@ -6,8 +6,9 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static const std::vector<std::vector<std::string>> scg_ops{
-    {"*", "/", "%"},
-    {"+", "-"}};
+    {"("},
+    {" * ", " / ", " % "},
+    {" + ", " - "}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
 static bool sg_isInString;
@@ -17,7 +18,7 @@ static int sg_statementSize;
 static std::string teaoperator;
 
 // Searches for operator
-static int searchOperator(const std::string &statement, const std::string &op)
+static int searchOperator(const std::string &statement, const std::string &op, const bool &isSpaceBefore)
 {
     sg_isInString = false;
     sg_statementSize = statement.size();
@@ -35,7 +36,7 @@ static int searchOperator(const std::string &statement, const std::string &op)
             ++sg_i;
             continue;
         }
-        if (!sg_isInString && statement.substr((sg_i > 0 ? sg_i - 1 : 0), op.size() + 2) == ' ' + op + ' ')
+        if (!sg_isInString && statement.substr(sg_i > 0 && isSpaceBefore ? sg_i - 1 : sg_i, op.size()) == op)
             return sg_i;
     }
     return statement.npos;
@@ -420,6 +421,49 @@ static void evalopmod(std::string &statement, const int &line, const char *&file
         teaSyntaxError(line, filename, "Invalid left operand for operator%.");
 }
 
+// Evaluates operator()
+static void evalopbrace(std::string &statement, const int &line, const char *&filename)
+{
+    sg_isInString = false;
+    sg_statementSize = statement.size();
+    int opar{0};
+    std::string evalstatement;
+    for (sg_i = sg_operatorIndex + 1; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (statement[sg_i] == '(' && !sg_isInString)
+        {
+            ++opar;
+            evalstatement.push_back('(');
+            continue;
+        }
+        if (statement[sg_i] == ')' && !sg_isInString)
+        {
+            if (!opar--)
+                break;
+            evalstatement.push_back(')');
+            continue;
+        }
+        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        {
+            sg_isInString = sg_isInString ? false : true;
+            evalstatement.push_back('"');
+            continue;
+        }
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        {
+            evalstatement.push_back(statement[sg_i]);
+            evalstatement.push_back(statement[++sg_i]);
+            continue;
+        }
+        evalstatement.push_back(statement[sg_i]);
+    }
+    if (!opar)
+        teaSyntaxError(line, filename, "Operator() is never closed.");
+    const int oi{sg_operatorIndex};
+    const int i{sg_i - sg_operatorIndex + 1};
+    statement.replace(oi, i, evalOps(evalstatement, line, filename));
+}
+
 // Checks if sign is minus or negative
 static bool checkSign(const char &c)
 {
@@ -480,38 +524,45 @@ std::string evalOps(std::string statement, const int &line, const char *&filenam
         // No operator found
         if (teaoperator == "")
             break;
-        // Operator*
-        else if (teaoperator == "*")
+        // Operator()
+        else if (teaoperator == "(")
         {
-            sg_operatorIndex = searchOperator(statement, "*");
+            sg_operatorIndex = searchOperator(statement, "(", false);
+            evalopbrace(statement, line, filename);
+            continue;
+        }
+        // Operator*
+        else if (teaoperator == " * ")
+        {
+            sg_operatorIndex = searchOperator(statement, " * ", true);
             evalopasterisk(statement);
             continue;
         }
         // Operator/
-        else if (teaoperator == "/")
+        else if (teaoperator == " / ")
         {
-            sg_operatorIndex = searchOperator(statement, "/");
+            sg_operatorIndex = searchOperator(statement, " / ", true);
             evalopfwslash(statement);
             continue;
         }
         // Operator%
-        else if (teaoperator == "%")
+        else if (teaoperator == " % ")
         {
-            sg_operatorIndex = searchOperator(statement, "%");
+            sg_operatorIndex = searchOperator(statement, " % ", true);
             evalopmod(statement, line, filename);
             continue;
         }
         // Operator+
-        else if (teaoperator == "+")
+        else if (teaoperator == " + ")
         {
-            sg_operatorIndex = searchOperator(statement, "+");
+            sg_operatorIndex = searchOperator(statement, " + ", true);
             evalopplus(statement);
             continue;
         }
         // Operator-
-        else if (teaoperator == "-")
+        else if (teaoperator == " - ")
         {
-            sg_operatorIndex = searchOperator(statement, "-");
+            sg_operatorIndex = searchOperator(statement, " - ", true);
             evalopminus(statement);
             continue;
         }
