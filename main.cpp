@@ -4,7 +4,7 @@
 #include "runtea.hpp"
 
 // Defining globals
-std::vector<std::string> cg_keywords{
+std::vector<std::string> g_teakeywords{
     "delete",
     "emplace",
     "float",

@@ -18,7 +18,7 @@ int g_secondSpaceIndex;
 std::string g_varname;
 
 // Declaring globals
-extern std::vector<std::string> cg_keywords;
+extern std::vector<std::string> g_teakeywords;
 
 // Checks for amount of spaces
 static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
@@ -63,7 +63,7 @@ static void getVarName(const std::string &statement, const int &kwlen)
 // Makes sure variable name is valid
 static void validateVarName(const int &line, const char *&filename)
 {
-    if (std::any_of(cg_keywords.begin(), cg_keywords.end(),
+    if (std::any_of(g_teakeywords.begin(), g_teakeywords.end(),
                     [&](const std::string &str) noexcept -> const bool {
                         return str == g_varname;
                     }))

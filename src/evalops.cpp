@@ -17,7 +17,7 @@ static bool sg_isInString;
 static int sg_leftOperatorStartIndex; // Indicates start of left operand
 static int sg_operatorIndex;
 static int sg_statementSize;
-static std::string teaoperator;
+static std::string sg_teaoperator;
 
 // Searches for operator
 static int searchOperator(const std::string &statement, const std::string &op, const bool &isSpaceBefore)
@@ -463,7 +463,8 @@ static void evalopbrace(std::string &statement, const int &line, const char *&fi
         teaSyntaxError(line, filename, "Operator() is never closed.");
     const int oi{sg_operatorIndex};
     const int i{sg_i - sg_operatorIndex + 1};
-    statement.replace(oi, i, evalOps(evalstatement, line, filename));
+    evalOps(evalstatement, line, filename);
+    statement.replace(oi, i, evalstatement);
 }
 
 // Evaluates operator^
@@ -557,7 +558,7 @@ static std::string searchOperatorsByGroup(const std::string &statement)
                 for (const std::string &c : opg)
                 {
                     if (c == statement.substr(sg_i, c.size()) && checkSign(sc))
-                        return std::string{c};
+                        return c;
                 }
             }
         }
@@ -567,63 +568,62 @@ static std::string searchOperatorsByGroup(const std::string &statement)
 
 // Evaluates and operators in a given string
 // Returns modified string with value(s) in-place
-std::string evalOps(std::string statement, const int &line, const char *&filename)
+void evalOps(std::string &statement, const int &line, const char *&filename)
 {
     while (true)
     {
-        teaoperator = searchOperatorsByGroup(statement);
+        sg_teaoperator = searchOperatorsByGroup(statement);
         // No operator found
-        if (teaoperator == "")
+        if (sg_teaoperator == "")
             break;
         // Operator()
-        else if (teaoperator == "(")
+        else if (sg_teaoperator == "(")
         {
             sg_operatorIndex = searchOperator(statement, "(", false);
             evalopbrace(statement, line, filename);
             continue;
         }
         // Operator^
-        else if (teaoperator == " ^ ")
+        else if (sg_teaoperator == " ^ ")
         {
             sg_operatorIndex = searchOperator(statement, " ^ ", true);
             evalopex(statement);
             continue;
         }
         // Operator*
-        else if (teaoperator == " * ")
+        else if (sg_teaoperator == " * ")
         {
             sg_operatorIndex = searchOperator(statement, " * ", true);
             evalopasterisk(statement);
             continue;
         }
         // Operator/
-        else if (teaoperator == " / ")
+        else if (sg_teaoperator == " / ")
         {
             sg_operatorIndex = searchOperator(statement, " / ", true);
             evalopfwslash(statement);
             continue;
         }
         // Operator%
-        else if (teaoperator == " % ")
+        else if (sg_teaoperator == " % ")
         {
             sg_operatorIndex = searchOperator(statement, " % ", true);
             evalopmod(statement, line, filename);
             continue;
         }
         // Operator+
-        else if (teaoperator == " + ")
+        else if (sg_teaoperator == " + ")
         {
             sg_operatorIndex = searchOperator(statement, " + ", true);
             evalopplus(statement);
             continue;
         }
         // Operator-
-        else if (teaoperator == " - ")
+        else if (sg_teaoperator == " - ")
         {
             sg_operatorIndex = searchOperator(statement, " - ", true);
             evalopminus(statement);
             continue;
         }
     }
-    return statement;
 }
