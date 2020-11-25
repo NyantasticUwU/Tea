@@ -9,6 +9,8 @@ TeaFloat::~TeaFloat() {}
 const std::string &TeaFloat::getname() const noexcept { return m_name; }
 // Gets value
 const float &TeaFloat::getvalue() const noexcept { return m_value; }
+// Gets type
+const char *TeaFloat::gettype() const noexcept { return m_type; }
 
 // Sets name
 TeaFloat &TeaFloat::setname(const std::string &newname)

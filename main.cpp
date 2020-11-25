@@ -17,7 +17,7 @@ std::vector<std::string> g_teakeywords{
 int main(const int argc, const char **argv)
 {
     const char *&filename{getMainFileName(argc, argv)};
-    checkMainFile(filename);
+    checkFile(filename);
     std::vector<std::string> mainfile;
     parseFile(filename, mainfile);
     runTea(mainfile, filename);

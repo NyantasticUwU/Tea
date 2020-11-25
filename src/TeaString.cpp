@@ -9,6 +9,8 @@ TeaString::~TeaString() {}
 const std::string &TeaString::getname() const noexcept { return m_name; }
 // Gets value
 const std::string &TeaString::getvalue() const noexcept { return m_value; }
+// Sets type
+const char *TeaString::gettype() const noexcept { return m_type; }
 
 // Sets name
 TeaString &TeaString::setname(const std::string &newname)

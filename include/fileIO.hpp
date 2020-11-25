@@ -2,6 +2,6 @@
 #define TEA_FILE_IO_HPP_INCLUDED
 
 // Makes sure the .tea file actually exists
-void checkMainFile(const char *&filename);
+void checkFile(const char *&filename);
 
 #endif

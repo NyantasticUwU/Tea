@@ -521,11 +521,10 @@ static bool checkSign(const char &c)
 {
     if (c == '-')
     {
-        const char &cc{*(&c + 1)};
         return std::any_of(std::begin(scg_validNumerics),
                            std::end(scg_validNumerics),
                            [&](const char &ccc) noexcept -> const bool {
-                               return cc == ccc;
+                               return *(&c + 1) == ccc;
                            })
                    ? false
                    : true;

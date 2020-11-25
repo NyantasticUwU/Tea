@@ -8,6 +8,7 @@ class TeaString final
 {
     std::string m_name;
     std::string m_value;
+    const char *m_type{"string"};
 
 public:
     // Default constructor
@@ -19,6 +20,8 @@ public:
     const std::string &getname() const noexcept;
     // Gets value
     const std::string &getvalue() const noexcept;
+    // Gets type
+    const char *gettype() const noexcept;
 
     // Sets name
     TeaString &setname(const std::string &newname);

@@ -8,6 +8,7 @@ class TeaFloat final
 {
     std::string m_name;
     float m_value;
+    const char *m_type{"float"};
 
 public:
     // Default constructor
@@ -19,6 +20,8 @@ public:
     const std::string &getname() const noexcept;
     // Gets value
     const float &getvalue() const noexcept;
+    // Gets type
+    const char *gettype() const noexcept;
 
     // Sets name
     TeaFloat &setname(const std::string &name);
