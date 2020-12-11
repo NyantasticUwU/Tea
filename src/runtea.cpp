@@ -3,6 +3,7 @@
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
 #include "k_float.hpp"
+#include "k_import.hpp"
 #include "k_include.hpp"
 #include "k_int.hpp"
 #include "k_string.hpp"
@@ -10,12 +11,19 @@
 #include "runtea.hpp"
 
 // Runs tea string vector
-void runTea(std::vector<std::string> &teafile, const char *&filename)
+void runTea(std::vector<std::string> &teafile, const char *&filename, const teaFloat_t *pteaFloats,
+            const teaInt_t *pteaInts, const teaString_t *pteaStrings)
 {
     // Defining tea value vectors
     teaFloat_t teaFloats;
+    if (pteaFloats)
+        teaFloats = *pteaFloats;
     teaInt_t teaInts;
+    if (pteaInts)
+        teaInts = *pteaInts;
     teaString_t teaStrings;
+    if (pteaStrings)
+        teaStrings = *pteaStrings;
     // Looping through tea file lines
     int line{0};
     for (std::string &prestatement : teafile)
@@ -40,6 +48,12 @@ void runTea(std::vector<std::string> &teafile, const char *&filename)
         else if (!statement.find("float "))
         {
             kFloat(statement, line, filename, teaFloats);
+            continue;
+        }
+        // Import keyword called
+        else if (!statement.find("import "))
+        {
+            kImport(statement, line, filename, teaFloats, teaInts, teaStrings);
             continue;
         }
         // Include keyword called

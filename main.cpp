@@ -8,6 +8,7 @@ std::vector<std::string> g_teakeywords{
     "delete",
     "emplace",
     "float",
+    "import",
     "include",
     "int",
     "string",

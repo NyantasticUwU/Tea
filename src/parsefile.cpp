@@ -16,10 +16,7 @@ void parseFile(const char *&filename, std::vector<std::string> &file)
     }
     // Reading data from file into the file string vector (line by line)
     std::string line;
-    while (f)
-    {
-        std::getline(f, line);
+    while (std::getline(f, line))
         file.push_back(line);
-    }
     f.close();
 }
