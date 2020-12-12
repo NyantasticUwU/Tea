@@ -21,6 +21,9 @@ int main(const int argc, const char **argv)
     checkFile(filename);
     std::vector<std::string> mainfile;
     parseFile(filename, mainfile);
-    runTea(mainfile, filename);
+    teaInt_t teaInts{TeaInt{"argc", argc}};
+    teaString_t teaStrings;
+    fillTeaStringVec(argc, argv, teaStrings);
+    runTea(mainfile, filename, nullptr, &teaInts, &teaStrings);
     return 0;
 }
