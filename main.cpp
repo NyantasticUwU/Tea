@@ -1,5 +1,6 @@
 #include "cmd.hpp"
 #include "fileIO.hpp"
+#include "init.hpp"
 #include "parsefile.hpp"
 #include "runtea.hpp"
 
@@ -17,6 +18,7 @@ std::vector<std::string> g_teakeywords{
 // Main entry point of program
 int main(const int argc, const char **argv)
 {
+    init();
     const char *&filename{getMainFileName(argc, argv)};
     checkFile(filename);
     std::vector<std::string> mainfile;
