@@ -14,5 +14,5 @@ void kImport(const std::string &statement, const int &line, const char *&filenam
     checkFile(newfilename);
     std::vector<std::string> newfile;
     parseFile(newfilename, newfile);
-    runTea(newfile, newfilename, &teaFloats, &teaInts, &teaStrings);
+    runTea(newfile, newfilename, &teaStrings, &teaInts, &teaFloats);
 }

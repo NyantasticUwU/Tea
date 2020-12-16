@@ -11,8 +11,8 @@
 #include "runtea.hpp"
 
 // Runs tea string vector
-void runTea(std::vector<std::string> &teafile, const char *&filename, const teaFloat_t *const &pteaFloats,
-            const teaInt_t *const &pteaInts, const teaString_t *const &pteaStrings)
+void runTea(std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
+            const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats)
 {
     // Defining tea value vectors
     teaFloat_t teaFloats;
