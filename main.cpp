@@ -24,6 +24,6 @@ int main(const int argc, const char **argv)
     teaInt_t teaInts{TeaInt{"argc", argc}};
     teaString_t teaStrings;
     fillTeaStringVec(argc, argv, teaStrings);
-    runTea(mainfile, filename, &teaStrings, &teaInts, nullptr);
+    runTea(mainfile, filename, &teaStrings, &teaInts);
     return 0;
 }

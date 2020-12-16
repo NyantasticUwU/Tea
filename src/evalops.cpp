@@ -162,6 +162,219 @@ static bool isLOIntOrFloat(const std::string &statement)
     return isInt;
 }
 
+// Evaluates operator()
+static void evalopbrace(std::string &statement, const int &line, const char *&filename)
+{
+    sg_isInString = false;
+    sg_statementSize = statement.size();
+    int opar{0};
+    std::string evalstatement;
+    for (sg_i = sg_operatorIndex + 1; sg_i < sg_statementSize; ++sg_i)
+    {
+        if (statement[sg_i] == '(' && !sg_isInString)
+        {
+            ++opar;
+            evalstatement.push_back('(');
+            continue;
+        }
+        if (statement[sg_i] == ')' && !sg_isInString)
+        {
+            if (!opar--)
+                break;
+            evalstatement.push_back(')');
+            continue;
+        }
+        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        {
+            sg_isInString = sg_isInString ? false : true;
+            evalstatement.push_back('"');
+            continue;
+        }
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        {
+            evalstatement.push_back(statement[sg_i]);
+            evalstatement.push_back(statement[++sg_i]);
+            continue;
+        }
+        evalstatement.push_back(statement[sg_i]);
+    }
+    if (!opar)
+        teaSyntaxError(line, filename, "Operator() is never closed.");
+    const int oi{sg_operatorIndex};
+    const int i{sg_i - sg_operatorIndex + 1};
+    evalOps(evalstatement, line, filename);
+    statement.replace(oi, i, evalstatement);
+}
+
+// Evaluates operator^
+static void evalopex(std::string &statement)
+{
+    // int ^ _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand{getLeftOperand(statement, 0)};
+        // int ^ int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(static_cast<int>(std::pow(leftOperand, rightOperand))));
+        }
+        // int ^ float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
+        }
+    }
+    // float ^ _
+    else
+    {
+        float leftOperand{getLeftOperand(statement, 0.0f)};
+        // float ^ int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
+        }
+        // float ^ float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(std::pow(leftOperand, rightOperand)));
+        }
+    }
+}
+
+// Evaluates operator*
+static void evalopasterisk(std::string &statement)
+{
+    // int * _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand{getLeftOperand(statement, 0)};
+        // int * int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand * rightOperand));
+        }
+        // int * float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+    }
+    // float * _
+    else
+    {
+        float leftOperand{getLeftOperand(statement, 0.0f)};
+        // float * int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+        // float * float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(leftOperand * rightOperand));
+        }
+    }
+}
+
+// Evaluates operator/
+static void evalopfwslash(std::string &statement)
+{
+    // int / _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand{getLeftOperand(statement, 0)};
+        // int / int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand / rightOperand));
+        }
+        // int / float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+    }
+    // float / _
+    else
+    {
+        float leftOperand{getLeftOperand(statement, 0.0f)};
+        // float / int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  std::to_string(rightOperand).size() + 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+        // float / float
+        else
+        {
+            float rightOperand{getRightOperand(statement, 0.0f)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              sg_operatorIndex - sg_leftOperatorStartIndex +
+                                  sg_i - sg_operatorIndex - 1,
+                              std::to_string(leftOperand / rightOperand));
+        }
+    }
+}
+
+// Evaluates operator%
+static void evalopmod(std::string &statement, const int &line, const char *&filename)
+{
+    // int % _
+    if (isLOIntOrFloat(statement))
+    {
+        int leftOperand{getLeftOperand(statement, 0)};
+        // int % int
+        if (isROIntOrFloat(statement))
+        {
+            int rightOperand{getRightOperand(statement, 0)};
+            statement.replace(sg_leftOperatorStartIndex + 1,
+                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
+                              std::to_string(leftOperand % rightOperand));
+        }
+        else
+            teaSyntaxError(line, filename, "Invalid right operand for operator%.");
+    }
+    else
+        teaSyntaxError(line, filename, "Invalid left operand for operator%.");
+}
+
 // Evaluates operator+
 static void evalopplus(std::string &statement)
 {
@@ -303,232 +516,16 @@ static void evalopminus(std::string &statement)
     }
 }
 
-// Evaluates operator*
-static void evalopasterisk(std::string &statement)
-{
-    // int * _
-    if (isLOIntOrFloat(statement))
-    {
-        int leftOperand{getLeftOperand(statement, 0)};
-        // int * int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
-                              std::to_string(leftOperand * rightOperand));
-        }
-        // int * float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
-                              std::to_string(leftOperand * rightOperand));
-        }
-    }
-    // float * _
-    else
-    {
-        float leftOperand{getLeftOperand(statement, 0.0f)};
-        // float * int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  std::to_string(rightOperand).size() + 1,
-                              std::to_string(leftOperand * rightOperand));
-        }
-        // float * float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  sg_i - sg_operatorIndex - 1,
-                              std::to_string(leftOperand * rightOperand));
-        }
-    }
-}
-
-// Evaluates operator/
-static void evalopfwslash(std::string &statement)
-{
-    // int / _
-    if (isLOIntOrFloat(statement))
-    {
-        int leftOperand{getLeftOperand(statement, 0)};
-        // int / int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
-                              std::to_string(leftOperand / rightOperand));
-        }
-        // int / float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
-                              std::to_string(leftOperand / rightOperand));
-        }
-    }
-    // float / _
-    else
-    {
-        float leftOperand{getLeftOperand(statement, 0.0f)};
-        // float / int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  std::to_string(rightOperand).size() + 1,
-                              std::to_string(leftOperand / rightOperand));
-        }
-        // float / float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  sg_i - sg_operatorIndex - 1,
-                              std::to_string(leftOperand / rightOperand));
-        }
-    }
-}
-
-// Evaluates operator%
-static void evalopmod(std::string &statement, const int &line, const char *&filename)
-{
-    // int % _
-    if (isLOIntOrFloat(statement))
-    {
-        int leftOperand{getLeftOperand(statement, 0)};
-        // int % int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
-                              std::to_string(leftOperand % rightOperand));
-        }
-        else
-            teaSyntaxError(line, filename, "Invalid right operand for operator%.");
-    }
-    else
-        teaSyntaxError(line, filename, "Invalid left operand for operator%.");
-}
-
-// Evaluates operator()
-static void evalopbrace(std::string &statement, const int &line, const char *&filename)
-{
-    sg_isInString = false;
-    sg_statementSize = statement.size();
-    int opar{0};
-    std::string evalstatement;
-    for (sg_i = sg_operatorIndex + 1; sg_i < sg_statementSize; ++sg_i)
-    {
-        if (statement[sg_i] == '(' && !sg_isInString)
-        {
-            ++opar;
-            evalstatement.push_back('(');
-            continue;
-        }
-        if (statement[sg_i] == ')' && !sg_isInString)
-        {
-            if (!opar--)
-                break;
-            evalstatement.push_back(')');
-            continue;
-        }
-        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
-        {
-            sg_isInString = sg_isInString ? false : true;
-            evalstatement.push_back('"');
-            continue;
-        }
-        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
-        {
-            evalstatement.push_back(statement[sg_i]);
-            evalstatement.push_back(statement[++sg_i]);
-            continue;
-        }
-        evalstatement.push_back(statement[sg_i]);
-    }
-    if (!opar)
-        teaSyntaxError(line, filename, "Operator() is never closed.");
-    const int oi{sg_operatorIndex};
-    const int i{sg_i - sg_operatorIndex + 1};
-    evalOps(evalstatement, line, filename);
-    statement.replace(oi, i, evalstatement);
-}
-
-// Evaluates operator^
-static void evalopex(std::string &statement)
-{
-    // int ^ _
-    if (isLOIntOrFloat(statement))
-    {
-        int leftOperand{getLeftOperand(statement, 0)};
-        // int ^ int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
-                              std::to_string(static_cast<int>(std::pow(leftOperand, rightOperand))));
-        }
-        // int ^ float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
-                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
-        }
-    }
-    // float ^ _
-    else
-    {
-        float leftOperand{getLeftOperand(statement, 0.0f)};
-        // float ^ int
-        if (isROIntOrFloat(statement))
-        {
-            int rightOperand{getRightOperand(statement, 0)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  std::to_string(rightOperand).size() + 1,
-                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
-        }
-        // float ^ float
-        else
-        {
-            float rightOperand{getRightOperand(statement, 0.0f)};
-            statement.replace(sg_leftOperatorStartIndex + 1,
-                              sg_operatorIndex - sg_leftOperatorStartIndex +
-                                  sg_i - sg_operatorIndex - 1,
-                              std::to_string(static_cast<float>(std::pow(leftOperand, rightOperand))));
-        }
-    }
-}
-
 // Checks if sign is minus or negative
 static bool checkSign(const char &c)
 {
     if (c == '-')
-    {
-        return std::any_of(std::begin(scg_validNumerics),
-                           std::end(scg_validNumerics),
+        return std::any_of(std::begin(scg_validNumerics), std::end(scg_validNumerics),
                            [&](const char &ccc) noexcept -> const bool {
                                return *(&c + 1) == ccc;
                            })
                    ? false
                    : true;
-    }
     return true;
 }
 
