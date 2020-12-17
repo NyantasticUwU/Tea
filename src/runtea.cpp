@@ -25,9 +25,10 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
     if (pteaStrings)
         teaStrings = *pteaStrings;
     // Looping through tea file lines
-    int line{0};
-    for (std::string &prestatement : teafile)
+    const int teafileSize{static_cast<int>(teafile.size())};
+    for (int line{0}; line < teafileSize; /* line is incremented elsewhere */)
     {
+        std::string &prestatement{teafile[line]};
         ++line;
         // Comment encountered
         if (!prestatement.find('#'))
