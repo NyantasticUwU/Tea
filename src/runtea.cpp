@@ -54,7 +54,7 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
         // Import keyword called
         else if (!statement.find("import "))
         {
-            kImport(statement, line, filename, teaFloats, teaInts, teaStrings);
+            kImport(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
         // Include keyword called
