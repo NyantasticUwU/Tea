@@ -1,3 +1,4 @@
+#include "constants.hpp"
 #include "createvar.hpp"
 #include "error.hpp"
 #include <algorithm>
@@ -18,7 +19,7 @@ int g_secondSpaceIndex;
 std::string g_varname;
 
 // Declaring globals
-extern std::vector<std::string> g_teakeywords;
+extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 
 // Checks for amount of spaces
 static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
@@ -63,8 +64,8 @@ static void getVarName(const std::string &statement, const int &kwlen)
 // Makes sure variable name is valid
 static void validateVarName(const int &line, const char *&filename)
 {
-    if (std::any_of(g_teakeywords.begin(), g_teakeywords.end(),
-                    [&](const std::string &str) noexcept -> const bool {
+    if (std::any_of(g_teakeywords, g_teakeywords + TEA_NUMBER_OF_KEYWORDS,
+                    [&](const char *&str) noexcept -> const bool {
                         return str == g_varname;
                     }))
         teaSyntaxError(line, filename, "Variable name cannot be a keyword.");

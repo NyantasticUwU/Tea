@@ -1,11 +1,12 @@
 #include "cmd.hpp"
+#include "constants.hpp"
 #include "fileIO.hpp"
 #include "init.hpp"
 #include "parsefile.hpp"
 #include "runtea.hpp"
 
 // Defining globals
-std::vector<std::string> g_teakeywords{
+const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "delete",
     "emplace",
     "float",
