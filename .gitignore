@@ -1,5 +1,12 @@
 .msvc
+.vs
 .vscode
 main.tea
 Tea.ilk
+Tea.iobj
+Tea.ipdb
 Tea.pdb
+Tea.sln
+Tea.vcxproj
+Tea.vcxproj.filters
+Tea.vcxproj.user
