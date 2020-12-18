@@ -16,7 +16,7 @@ static const bool startsWithKeyword(const std::string &statement, const char *te
     static std::size_t s_i;
     static std::size_t s_statementSize;
     s_statementSize = statement.size();
-    for (s_i = 0; s_i < s_statementSize; ++s_i)
+    for (s_i = 0U; s_i < s_statementSize; ++s_i)
     {
         if (teaKeyword[s_i] == '\0')
             return true;
