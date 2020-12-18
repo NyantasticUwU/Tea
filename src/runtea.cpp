@@ -10,6 +10,22 @@
 #include "k_system.hpp"
 #include "runtea.hpp"
 
+// Checks if statement starts with the given keyword
+static const bool startsWithKeyword(const std::string &statement, const char *teaKeyword) noexcept
+{
+    static std::size_t s_i;
+    static std::size_t s_statementSize;
+    s_statementSize = statement.size();
+    for (s_i = 0; s_i < s_statementSize; ++s_i)
+    {
+        if (teaKeyword[s_i] == '\0')
+            return true;
+        if (teaKeyword[s_i] != statement[s_i])
+            return false;
+    }
+    return false;
+}
+
 // Runs tea string vector
 void runTea(std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
             const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats)
@@ -31,52 +47,52 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
         std::string &prestatement{teafile[line]};
         ++line;
         // Comment encountered
-        if (!prestatement.find('#'))
+        if (prestatement[0] == '#')
             continue;
         // Emplace keyword called
-        else if (!prestatement.find("emplace "))
+        else if (startsWithKeyword(prestatement, "emplace "))
             kEmplace(prestatement, teaStrings, teaInts, teaFloats);
         evalOps(prestatement, line, filename);
         const std::string &statement{prestatement};
 
         // Delete keyword called
-        if (!statement.find("delete "))
+        if (startsWithKeyword(statement, "delete "))
         {
             kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
         // Float keyword called
-        else if (!statement.find("float "))
+        else if (startsWithKeyword(statement, "float "))
         {
             kFloat(statement, line, filename, teaFloats);
             continue;
         }
         // Import keyword called
-        else if (!statement.find("import "))
+        else if (startsWithKeyword(statement, "import "))
         {
             kImport(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
         // Include keyword called
-        else if (!statement.find("include "))
+        else if (startsWithKeyword(statement, "include "))
         {
             kInclude(statement, line, filename);
             continue;
         }
         // Int keyword called
-        else if (!statement.find("int "))
+        else if (startsWithKeyword(statement, "int "))
         {
             kInt(statement, line, filename, teaInts);
             continue;
         }
         // String keyword called
-        else if (!statement.find("string "))
+        else if (startsWithKeyword(statement, "string "))
         {
             kString(statement, line, filename, teaStrings);
             continue;
         }
         // System keyword called
-        else if (!statement.find("system "))
+        else if (startsWithKeyword(statement, "system "))
         {
             kSystem(statement, line, filename);
             continue;
