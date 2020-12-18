@@ -31,38 +31,38 @@ void kDelete(const std::string &statement, const int &line, const char *&filenam
         teaSyntaxError(line, filename);
     sg_statementSize = statement.size();
     getType(statement);
-    if (sg_type == "float")
+    if (sg_type == "string")
     {
-        teaFloat_t::iterator nameIndex{
-            std::find_if(teaFloats.begin(), teaFloats.end(),
-                         [&](const TeaFloat &tf) -> const bool {
-                             return tf.getname() == statement.substr(sg_i, sg_statementSize);
-                         })};
-        if (nameIndex == teaFloats.end())
+        static teaString_t::iterator nameIndex;
+        nameIndex = std::find_if(teaStrings.begin(), teaStrings.end(),
+                                 [&](const TeaString &ts) -> const bool {
+                                     return ts.getname() == statement.substr(sg_i, sg_statementSize);
+                                 });
+        if (nameIndex == teaStrings.end())
             teaSyntaxError(line, filename, "Variable name not found.");
-        teaFloats.erase(nameIndex);
+        teaStrings.erase(nameIndex);
     }
     else if (sg_type == "int")
     {
-        teaInt_t::iterator nameIndex{
-            std::find_if(teaInts.begin(), teaInts.end(),
-                         [&](const TeaInt &ti) -> const bool {
-                             return ti.getname() == statement.substr(sg_i, sg_statementSize);
-                         })};
+        static teaInt_t::iterator nameIndex;
+        nameIndex = std::find_if(teaInts.begin(), teaInts.end(),
+                                 [&](const TeaInt &ti) -> const bool {
+                                     return ti.getname() == statement.substr(sg_i, sg_statementSize);
+                                 });
         if (nameIndex == teaInts.end())
             teaSyntaxError(line, filename, "Variable name not found.");
         teaInts.erase(nameIndex);
     }
-    else if (sg_type == "string")
+    else if (sg_type == "float")
     {
-        teaString_t::iterator nameIndex{
-            std::find_if(teaStrings.begin(), teaStrings.end(),
-                         [&](const TeaString &ts) -> const bool {
-                             return ts.getname() == statement.substr(sg_i, sg_statementSize);
-                         })};
-        if (nameIndex == teaStrings.end())
+        static teaFloat_t::iterator nameIndex;
+        nameIndex = std::find_if(teaFloats.begin(), teaFloats.end(),
+                                 [&](const TeaFloat &tf) -> const bool {
+                                     return tf.getname() == statement.substr(sg_i, sg_statementSize);
+                                 });
+        if (nameIndex == teaFloats.end())
             teaSyntaxError(line, filename, "Variable name not found.");
-        teaStrings.erase(nameIndex);
+        teaFloats.erase(nameIndex);
     }
     else
         teaSyntaxError(line, filename, "Invalid type specifier.");

@@ -6,17 +6,19 @@
 void parseFile(const char *&filename, std::vector<std::string> &file)
 {
     // Creating and opening input file stream
-    std::ifstream f{filename};
-    if (!f)
+    static std::ifstream s_f;
+    s_f.open(filename);
+    if (!s_f)
     {
-        f.close();
+        s_f.close();
         teaError("ERROR: The given file was unable to be opened.\n"
                  "Exiting with code 110 (ERROR_OPEN_FAILED).",
                  110); // Windows' ERROR_OPEN_FAILED (110)
     }
     // Reading data from file into the file string vector (line by line)
-    std::string line;
-    while (std::getline(f, line))
-        file.push_back(line);
-    f.close();
+    static std::string s_line;
+    while (std::getline(s_f, s_line))
+        file.push_back(s_line);
+    s_line.clear();
+    s_f.close();
 }

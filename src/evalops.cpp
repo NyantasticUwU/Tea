@@ -147,7 +147,8 @@ static bool isROIntOrFloat(const std::string &statement, const int &opsize)
 // Returns true if int false if float
 static bool isLOIntOrFloat(const std::string &statement)
 {
-    bool isInt{true};
+    static bool isInt;
+    isInt = true;
     for (sg_i = sg_operatorIndex - 2; sg_i >= 0; --sg_i)
     {
         if (std::none_of(std::begin(scg_validNumerics),
