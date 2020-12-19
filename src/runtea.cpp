@@ -12,7 +12,7 @@
 #include "runtea.hpp"
 
 // Checks if statement starts with the given keyword
-static const bool startsWithKeyword(const std::string &statement, const char *teaKeyword) noexcept
+const bool startsWithKeyword(const std::string &statement, const char *teaKeyword) noexcept
 {
     static std::size_t s_i;
     static std::size_t s_statementSize;
@@ -69,6 +69,15 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         {
             kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
+        }
+        // Elif keyword called
+        else if (startsWithKeyword(statement, "elif"))
+        {
+            while (line < teafileSize)
+            {
+                if (teafile[line++] == "end")
+                    return;
+            }
         }
         // End keyword called
         else if (statement == "end")

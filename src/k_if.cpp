@@ -34,8 +34,20 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
     {
         while (line < teafileSize)
         {
-            if (teafile[line++] == "end")
+            const std::string &nextline{teafile[line]};
+            if (nextline == "end")
+            {
+                ++line;
                 return;
+            }
+            if (startsWithKeyword(nextline, "elif"))
+            {
+                ++line;
+                kIf(teafile, teafileSize, nextline.substr(2, nextline.size()), line, filename, teaStrings, teaInts,
+                    teaFloats);
+                return;
+            }
+            ++line;
         }
         teaSyntaxError(line, filename, "If statement never ended (closed).");
     }

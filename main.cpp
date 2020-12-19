@@ -8,6 +8,7 @@
 // Defining globals
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "delete",
+    "elif",
     "emplace",
     "end",
     "float",
