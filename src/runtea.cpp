@@ -3,6 +3,7 @@
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
 #include "k_float.hpp"
+#include "k_if.hpp"
 #include "k_import.hpp"
 #include "k_include.hpp"
 #include "k_int.hpp"
@@ -40,9 +41,17 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
     teaString_t teaStrings;
     if (pteaStrings)
         teaStrings = *pteaStrings;
+    int line{0};
+    loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
+}
+
+// Runs tea statement
+void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char *&filename,
+                       teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
+{
     // Looping through tea file lines
     const int teafileSize{static_cast<int>(teafile.size())};
-    for (int line{0}; line < teafileSize; /* line is incremented elsewhere */)
+    while (line < teafileSize)
     {
         std::string &prestatement{teafile[line]};
         ++line;
@@ -61,10 +70,19 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
             kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
+        // End keyword called
+        else if (statement == "end")
+            return;
         // Float keyword called
         else if (startsWithKeyword(statement, "float "))
         {
             kFloat(statement, line, filename, teaFloats);
+            continue;
+        }
+        // If keyword called
+        else if (startsWithKeyword(statement, "if "))
+        {
+            kIf(teafile, teafileSize, statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
         // Import keyword called

@@ -9,7 +9,9 @@
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "delete",
     "emplace",
+    "end",
     "float",
+    "if",
     "import",
     "include",
     "int",
