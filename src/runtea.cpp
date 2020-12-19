@@ -79,6 +79,15 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
                     return;
             }
         }
+        // Else keyword called
+        else if (statement == "else")
+        {
+            while (line < teafileSize)
+            {
+                if (teafile[line++] == "end")
+                    return;
+            }
+        }
         // End keyword called
         else if (statement == "end")
             return;

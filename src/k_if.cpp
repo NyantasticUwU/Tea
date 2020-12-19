@@ -47,6 +47,12 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
                     teaFloats);
                 return;
             }
+            if (nextline == "else")
+            {
+                ++line;
+                loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
+                return;
+            }
             ++line;
         }
         teaSyntaxError(line, filename, "If statement never ended (closed).");
