@@ -1,4 +1,5 @@
 #include "error.hpp"
+#include "k_emplace.hpp"
 #include "k_if.hpp"
 #include "runtea.hpp"
 
@@ -34,7 +35,9 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
     {
         while (line < teafileSize)
         {
-            const std::string &nextline{teafile[line]};
+            std::string &nextline{teafile[line]};
+            if (startsWithKeyword(nextline, "emplace "))
+                kEmplace(nextline, teaStrings, teaInts, teaFloats);
             if (nextline == "end")
             {
                 ++line;

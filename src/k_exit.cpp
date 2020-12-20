@@ -7,7 +7,7 @@ void kExit(const std::string &statement, const int &line, const char *&filename)
     std::exit([&]() -> const int {
         const std::size_t statementSize{statement.size()};
         std::string returnString;
-        for (std::size_t i{5}; i < statementSize; ++i)
+        for (std::size_t i{5U}; i < statementSize; ++i)
         {
             if (statement[i] == ' ')
                 teaSyntaxError(line, filename, "Invalid exit code.");

@@ -1,6 +1,8 @@
 #include "error.hpp"
 #include "evalops.hpp"
 #include "k_delete.hpp"
+#include "k_elif.hpp"
+#include "k_else.hpp"
 #include "k_emplace.hpp"
 #include "k_exit.hpp"
 #include "k_float.hpp"
@@ -74,20 +76,14 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         // Elif keyword called
         else if (startsWithKeyword(statement, "elif"))
         {
-            while (line < teafileSize)
-            {
-                if (teafile[line++] == "end")
-                    return;
-            }
+            if (kElif(line, teafile, teafileSize))
+                return;
         }
         // Else keyword called
         else if (statement == "else")
         {
-            while (line < teafileSize)
-            {
-                if (teafile[line++] == "end")
-                    return;
-            }
+            if (kElse(line, teafile, teafileSize))
+                return;
         }
         // End keyword called
         else if (statement == "end")
