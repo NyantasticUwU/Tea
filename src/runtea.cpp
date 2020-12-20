@@ -2,6 +2,7 @@
 #include "evalops.hpp"
 #include "k_delete.hpp"
 #include "k_emplace.hpp"
+#include "k_exit.hpp"
 #include "k_float.hpp"
 #include "k_if.hpp"
 #include "k_import.hpp"
@@ -91,6 +92,12 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         // End keyword called
         else if (statement == "end")
             return;
+        // Exit keyword called
+        else if (startsWithKeyword(statement, "exit "))
+        {
+            kExit(statement, line, filename);
+            continue;
+        }
         // Float keyword called
         else if (startsWithKeyword(statement, "float "))
         {
