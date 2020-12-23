@@ -29,10 +29,12 @@ static const bool isTrue(const std::string &statement, const int &line, const ch
 void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
          const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
+    static int s_nif;
     if (isTrue(statement, line, filename))
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
     else
     {
+        s_nif = 0;
         while (line < teafileSize)
         {
             std::string &nextline{teafile[line]};
@@ -41,16 +43,25 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
             if (nextline == "end")
             {
                 ++line;
-                return;
+                if (!s_nif--)
+                    return;
+                else
+                    continue;
             }
-            if (startsWithKeyword(nextline, "elif"))
+            if (startsWithKeyword(nextline, "if "))
+            {
+                ++line;
+                ++s_nif;
+                continue;
+            }
+            if (startsWithKeyword(nextline, "elif") && !s_nif)
             {
                 ++line;
                 kIf(teafile, teafileSize, nextline.substr(2, nextline.size()), line, filename, teaStrings, teaInts,
                     teaFloats);
                 return;
             }
-            if (nextline == "else")
+            if (nextline == "else" && !s_nif)
             {
                 ++line;
                 loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
