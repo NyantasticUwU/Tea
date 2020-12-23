@@ -1,26 +1,24 @@
 #include "error.hpp"
+#include "evalops.hpp"
 #include "k_emplace.hpp"
 #include "k_if.hpp"
 #include "runtea.hpp"
 
-// Defining static globals (hence the sg_ prefix)
-// These are defined here for performance reasons
-static int sg_i;
-static int sg_statementSize;
-
 // Checks if tea if statement evaluates to true
 static const bool isTrue(const std::string &statement, const int &line, const char *&filename)
 {
+    static int s_i;
+    static int s_statementSize;
     static std::string s_evaluation;
     s_evaluation.clear();
-    sg_statementSize = statement.size();
-    if (sg_statementSize < 4)
+    s_statementSize = statement.size();
+    if (s_statementSize < 4)
         teaSyntaxError(line, filename);
-    for (sg_i = 3; sg_i < sg_statementSize; ++sg_i)
+    for (s_i = 3; s_i < s_statementSize; ++s_i)
     {
-        if (statement[sg_i] == ' ')
+        if (statement[s_i] == ' ')
             teaSyntaxError(line, filename);
-        s_evaluation.push_back(statement[sg_i]);
+        s_evaluation.push_back(statement[s_i]);
     }
     return std::stoi(s_evaluation);
 }
@@ -40,6 +38,7 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
             std::string &nextline{teafile[line]};
             if (startsWithKeyword(nextline, "emplace "))
                 kEmplace(nextline, teaStrings, teaInts, teaFloats);
+            evalOps(nextline, line, filename);
             if (nextline == "end")
             {
                 ++line;
