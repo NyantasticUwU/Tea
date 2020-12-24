@@ -19,7 +19,8 @@ const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "include",
     "int",
     "string",
-    "system"};
+    "system",
+    "while"};
 
 // Main entry point of program
 int main(const int argc, const char **argv)

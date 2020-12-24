@@ -5,16 +5,16 @@
 #include "runtea.hpp"
 
 // Checks if tea if statement evaluates to true
-static const bool isTrue(const std::string &statement, const int &line, const char *&filename)
+const bool isIfTrue(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
     static int s_i;
     static int s_statementSize;
     static std::string s_evaluation;
     s_evaluation.clear();
     s_statementSize = statement.size();
-    if (s_statementSize < 4)
+    if (s_statementSize < kwlen + 2)
         teaSyntaxError(line, filename);
-    for (s_i = 3; s_i < s_statementSize; ++s_i)
+    for (s_i = kwlen + 1; s_i < s_statementSize; ++s_i)
     {
         if (statement[s_i] == ' ')
             teaSyntaxError(line, filename);
@@ -28,7 +28,7 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
          const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
     static int s_nif;
-    if (isTrue(statement, line, filename))
+    if (isIfTrue(statement, line, filename, 2))
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
     else
     {
@@ -47,7 +47,8 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
                 else
                     continue;
             }
-            if (startsWithKeyword(nextline, "if "))
+            if (startsWithKeyword(nextline, "if ") || startsWithKeyword(nextline, "while ") ||
+                startsWithKeyword(nextline, "emplace if ") || startsWithKeyword(nextline, "emplace while "))
             {
                 ++line;
                 ++s_nif;

@@ -12,6 +12,7 @@
 #include "k_int.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
+#include "k_while.hpp"
 #include "runtea.hpp"
 
 // Checks if statement starts with the given keyword
@@ -54,9 +55,10 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
 {
     // Looping through tea file lines
     const int teafileSize{static_cast<int>(teafile.size())};
+    std::string prestatement;
     while (line < teafileSize)
     {
-        std::string &prestatement{teafile[line]};
+        prestatement = teafile[line];
         ++line;
         // Comment encountered
         if (prestatement[0] == '#')
@@ -134,6 +136,13 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         else if (startsWithKeyword(statement, "system "))
         {
             kSystem(statement, line, filename);
+            continue;
+        }
+        // While keyword called
+        else if (startsWithKeyword(statement, "while "))
+        {
+            kWhile(teafile, teafileSize, statement, teafile[line - 1], line, filename, teaStrings, teaInts,
+                   teaFloats);
             continue;
         }
         // Invalid statement
