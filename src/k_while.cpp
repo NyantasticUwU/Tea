@@ -5,6 +5,17 @@
 #include "k_while.hpp"
 #include "runtea.hpp"
 
+// Creates a mutable string from the unchanged statement
+static void createMutableString(std::string &mutableUnchangedStatement, const std::string &unchangedStatement,
+                                const int &line, const char *&filename, const teaString_t &teaStrings,
+                                const teaInt_t &teaInts, const teaFloat_t &teaFloats)
+{
+    mutableUnchangedStatement = unchangedStatement;
+    if (startsWithKeyword(mutableUnchangedStatement, "emplace "))
+        kEmplace(mutableUnchangedStatement, teaStrings, teaInts, teaFloats);
+    evalOps(mutableUnchangedStatement, line, filename);
+}
+
 // Called when while keyword is called in tea
 void kWhile(std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement,
             const std::string unchangedStatement, int &line, const char *&filename, teaString_t &teaStrings,
@@ -12,18 +23,15 @@ void kWhile(std::vector<std::string> &teafile, const int &teafileSize, const std
 {
     static int s_nif;
     const int whileLine{line};
-    std::string mutableUnchangedStatement{unchangedStatement};
-    if (startsWithKeyword(mutableUnchangedStatement, "emplace "))
-        kEmplace(mutableUnchangedStatement, teaStrings, teaInts, teaFloats);
-    evalOps(mutableUnchangedStatement, line, filename);
+    std::string mutableUnchangedStatement;
+    createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
+                        teaFloats);
     while (isIfTrue(mutableUnchangedStatement, line, filename, 5))
     {
         line = whileLine;
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
-        mutableUnchangedStatement = unchangedStatement;
-        if (startsWithKeyword(mutableUnchangedStatement, "emplace "))
-            kEmplace(mutableUnchangedStatement, teaStrings, teaInts, teaFloats);
-        evalOps(mutableUnchangedStatement, line, filename);
+        createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
+                            teaFloats);
     }
     s_nif = 0;
     line = whileLine;
@@ -34,14 +42,12 @@ void kWhile(std::vector<std::string> &teafile, const int &teafileSize, const std
             ++line;
             if (!s_nif--)
                 return;
-            else
-                continue;
+            continue;
         }
-        if (startsWithKeyword(teafile[line], "if ") || startsWithKeyword(teafile[line], "while ") ||
-            startsWithKeyword(teafile[line], "emplace if ") || startsWithKeyword(teafile[line], "emplace while "))
+        if (isEnteringBlock(teafile[line]))
         {
-            ++s_nif;
             ++line;
+            ++s_nif;
             continue;
         }
         ++line;

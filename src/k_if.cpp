@@ -23,6 +23,13 @@ const bool isIfTrue(const std::string &statement, const int &line, const char *&
     return std::stoi(s_evaluation);
 }
 
+// Checks if statement enters a new block
+const bool isEnteringBlock(const std::string &statement) noexcept
+{
+    return startsWithKeyword(statement, "if ") || startsWithKeyword(statement, "while ") ||
+           startsWithKeyword(statement, "emplace if ") || startsWithKeyword(statement, "emplace while ");
+}
+
 // Called when if keyword is called in tea
 void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
          const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
@@ -44,11 +51,9 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
                 ++line;
                 if (!s_nif--)
                     return;
-                else
-                    continue;
+                continue;
             }
-            if (startsWithKeyword(nextline, "if ") || startsWithKeyword(nextline, "while ") ||
-                startsWithKeyword(nextline, "emplace if ") || startsWithKeyword(nextline, "emplace while "))
+            if (isEnteringBlock(nextline))
             {
                 ++line;
                 ++s_nif;
