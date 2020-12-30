@@ -1,3 +1,4 @@
+#include "constants.hpp"
 #include "error.hpp"
 #include "evalops.hpp"
 #include <algorithm>
@@ -6,7 +7,7 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static const std::vector<std::vector<std::string>> scg_ops{
+static const std::vector<std::string> scg_ops[TEA_NUMBER_OF_OPERATOR_GROUPS]{
     {"("},
     {" ^ "},
     {" * ", " / ", " % "},
