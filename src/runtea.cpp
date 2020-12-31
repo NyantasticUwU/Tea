@@ -1,5 +1,6 @@
 #include "error.hpp"
 #include "evalops.hpp"
+#include "k_assign.hpp"
 #include "k_delete.hpp"
 #include "k_elif.hpp"
 #include "k_else.hpp"
@@ -69,8 +70,14 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         evalOps(prestatement, line, filename);
         const std::string &statement{prestatement};
 
+        // Assign keyword called
+        if (startsWithKeyword(statement, "assign "))
+        {
+            kAssign(statement, line, filename, teaStrings, teaInts, teaFloats);
+            continue;
+        }
         // Delete keyword called
-        if (startsWithKeyword(statement, "delete "))
+        else if (startsWithKeyword(statement, "delete "))
         {
             kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;

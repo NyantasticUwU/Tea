@@ -7,6 +7,7 @@
 
 // Defining globals
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
+    "assign",
     "delete",
     "elif",
     "else",
