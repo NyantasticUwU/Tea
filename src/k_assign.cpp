@@ -50,10 +50,19 @@ static void getVar(const std::string &statement, const int &line, const char *&f
 // Varifies new string variable
 static void verifyStringVar(const int &line, const char *&filename)
 {
-    if (sg_var[0] != '"' || sg_var[sg_var.size() - 1] != '"')
+    static std::size_t s_varSize;
+    s_varSize = sg_var.size();
+    if (s_varSize < 2 || sg_var[0] != '"' || sg_var[s_varSize - 1] != '"')
         teaSyntaxError(line, filename, "Invalid string.");
     sg_var.erase(0, 1);
     sg_var.pop_back();
+}
+
+// Verifies numeric variable
+static void verifyNumericVar(const int &line, const char *&filename)
+{
+    if (sg_var.find(' ') != sg_var.npos)
+        teaSyntaxError(line, filename, "Invalid numeric type.");
 }
 
 // Changes string variable
@@ -78,6 +87,7 @@ static void changeIntVariable(teaInt_t &teaInts, const int &line, const char *&f
     {
         if (teaInt.getname() == sg_varname)
         {
+            verifyNumericVar(line, filename);
             teaInt.setvalue(std::stoi(sg_var));
             return;
         }
@@ -92,6 +102,7 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
     {
         if (teaFloat.getname() == sg_varname)
         {
+            verifyNumericVar(line, filename);
             teaFloat.setvalue(std::stof(sg_var));
             return;
         }
