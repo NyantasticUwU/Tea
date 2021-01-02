@@ -4,15 +4,15 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static int sg_i;
-static int sg_statementSize;
+static std::size_t sg_i;
+static std::size_t sg_statementSize;
 static std::string sg_type;
 
 // Gets variable type
 static void getType(const std::string &statement)
 {
     sg_type.clear();
-    for (sg_i = 7; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = 7U; sg_i < sg_statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
         {

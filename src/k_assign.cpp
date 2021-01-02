@@ -4,8 +4,8 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static std::string sg_assignmentType;
-static int sg_i;
-static int sg_statementSize;
+static std::size_t sg_i;
+static std::size_t sg_statementSize;
 static std::string sg_var;
 static std::string sg_varname;
 
@@ -13,7 +13,7 @@ static std::string sg_varname;
 static void getAssignmentType(const std::string &statement, const int &line, const char *&filename)
 {
     sg_assignmentType.clear();
-    for (sg_i = 7; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = 7U; sg_i < sg_statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
             break;
@@ -52,9 +52,9 @@ static void verifyStringVar(const int &line, const char *&filename)
 {
     static std::size_t s_varSize;
     s_varSize = sg_var.size();
-    if (s_varSize < 2 || sg_var[0] != '"' || sg_var[s_varSize - 1] != '"')
+    if (s_varSize < 2U || sg_var[0U] != '"' || sg_var[s_varSize - 1U] != '"')
         teaSyntaxError(line, filename, "Invalid string.");
-    sg_var.erase(0, 1);
+    sg_var.erase(0U, 1U);
     sg_var.pop_back();
 }
 

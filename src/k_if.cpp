@@ -62,7 +62,7 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
             if (startsWithKeyword(nextline, "elif") && !s_nif)
             {
                 ++line;
-                kIf(teafile, teafileSize, nextline.substr(2, nextline.size()), line, filename, teaStrings, teaInts,
+                kIf(teafile, teafileSize, nextline.substr(2U, nextline.size()), line, filename, teaStrings, teaInts,
                     teaFloats);
                 return;
             }

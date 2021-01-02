@@ -7,11 +7,8 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static constexpr char scg_validChars[64]{"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"};
-static int sg_i;
-static bool sg_isInString;
-static int sg_spaceCount;
-static int sg_statementSize;
-static int sg_varnameSize;
+static std::size_t sg_i;
+static std::size_t sg_statementSize;
 
 // Defining non-static globals
 // These are used by outside files
@@ -24,28 +21,30 @@ extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 // Checks for amount of spaces
 static void checkSpaces(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
-    sg_isInString = false;
-    sg_spaceCount = 0;
+    static bool s_isInString;
+    static int s_spaceCount;
+    s_isInString = false;
+    s_spaceCount = 0;
     for (sg_i = kwlen; sg_i < sg_statementSize; ++sg_i)
     {
         if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            sg_isInString = sg_isInString ? false : true;
+            s_isInString = s_isInString ? false : true;
             continue;
         }
-        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1U] == '\\' || statement[sg_i + 1U] == '"'))
         {
             ++sg_i;
             continue;
         }
-        if (statement[sg_i] == ' ' && !sg_isInString) // Valid space
+        if (statement[sg_i] == ' ' && !s_isInString) // Valid space
         {
-            ++sg_spaceCount;
-            if (sg_spaceCount == 2)
+            ++s_spaceCount;
+            if (s_spaceCount == 2)
                 g_secondSpaceIndex = sg_i;
         }
     }
-    if (sg_spaceCount != 2)
+    if (s_spaceCount != 2)
         teaSyntaxError(line, filename);
 }
 
@@ -64,6 +63,7 @@ static void getVarName(const std::string &statement, const int &kwlen)
 // Makes sure variable name is valid
 static void validateVarName(const int &line, const char *&filename)
 {
+    static std::size_t s_varnameSize;
     if (std::any_of(g_teakeywords, g_teakeywords + TEA_NUMBER_OF_KEYWORDS,
                     [&](const char *&str) noexcept -> const bool {
                         return str == g_varname;
@@ -71,11 +71,11 @@ static void validateVarName(const int &line, const char *&filename)
         teaSyntaxError(line, filename, "Variable name cannot be a keyword.");
     if (std::none_of(std::begin(scg_validChars) + 10, std::end(scg_validChars),
                      [&](const char &c) noexcept -> const bool {
-                         return c == g_varname[0];
+                         return c == g_varname[0U];
                      }))
         teaSyntaxError(line, filename, "Invalid variable name.");
-    sg_varnameSize = g_varname.size();
-    for (sg_i = 1; sg_i < sg_varnameSize; ++sg_i)
+    s_varnameSize = g_varname.size();
+    for (sg_i = 1U; sg_i < s_varnameSize; ++sg_i)
     {
         if (std::none_of(std::begin(scg_validChars), std::end(scg_validChars),
                          [&](const char &c) noexcept -> const bool {

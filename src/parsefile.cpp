@@ -5,8 +5,9 @@
 // Parses given file (c-str) into a string vector containing each line in the file
 void parseFile(const char *&filename, std::vector<std::string> &file)
 {
-    // Creating and opening input file stream
     static std::ifstream s_f;
+    static std::string s_line;
+    // Creating and opening input file stream
     s_f.open(filename);
     if (!s_f)
     {
@@ -16,7 +17,6 @@ void parseFile(const char *&filename, std::vector<std::string> &file)
                  110); // Windows' ERROR_OPEN_FAILED (110)
     }
     // Reading data from file into the file string vector (line by line)
-    static std::string s_line;
     while (std::getline(s_f, s_line))
         file.push_back(s_line);
     s_line.clear();

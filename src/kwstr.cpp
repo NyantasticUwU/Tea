@@ -4,29 +4,29 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static std::string sg_content;
-static int sg_i;
-static int sg_quoteCount;
-static int sg_statementSize;
+static std::size_t sg_i;
+static std::size_t sg_statementSize;
 
 // Checks if the string literal is closed
 static void checkStringLiteral(const std::string &statement, const int &line, const char *&filename,
                                const int &kwlen)
 {
-    sg_quoteCount = 0;
+    static int s_quoteCount;
+    s_quoteCount = 0;
     for (sg_i = kwlen + 1; sg_i < sg_statementSize; ++sg_i)
     {
         if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            ++sg_quoteCount;
+            ++s_quoteCount;
             continue;
         }
-        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        if (statement[sg_i] == '\\' && (statement[sg_i + 1U] == '\\' || statement[sg_i + 1U] == '"'))
         {
             ++sg_i;
             continue;
         }
     }
-    if (sg_quoteCount != 2)
+    if (s_quoteCount != 2)
         teaSyntaxError(line, filename, "String literal must be closed off.");
 }
 
@@ -38,17 +38,17 @@ static void getContent(const std::string &statement, const int &line, const char
     {
         if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            if (sg_i + 1 != sg_statementSize) // If statement has trailing characters
+            if (sg_i + 1U != sg_statementSize) // If statement has trailing characters
                 teaSyntaxError(line, filename, "No characters are allowed after string literal.");
             break;
         }
-        if (statement[sg_i] == '\\' && statement[sg_i + 1] == '\\')
+        if (statement[sg_i] == '\\' && statement[sg_i + 1U] == '\\')
         {
             sg_content.push_back('\\');
             ++sg_i;
             continue;
         }
-        if (statement[sg_i] == '\\' && statement[sg_i + 1] == '"')
+        if (statement[sg_i] == '\\' && statement[sg_i + 1U] == '"')
         {
             sg_content.push_back('"');
             ++sg_i;
@@ -62,7 +62,7 @@ static void getContent(const std::string &statement, const int &line, const char
 std::string &getStringLiteral(const std::string &statement, const int &line, const char *&filename,
                               const int &kwlen)
 {
-    if (statement.size() < 9)
+    if (statement.size() < 9U)
         teaSyntaxError(line, filename);
     if (statement[kwlen + 1] != '"')
         teaSyntaxError(line, filename, "String literal required here.");

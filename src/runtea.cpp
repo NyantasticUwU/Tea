@@ -62,7 +62,7 @@ void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char 
         prestatement = teafile[line];
         ++line;
         // Comment encountered
-        if (prestatement[0] == '#')
+        if (prestatement[0U] == '#')
             continue;
         // Emplace keyword called
         else if (startsWithKeyword(prestatement, "emplace "))
