@@ -1,81 +1,96 @@
 #include "k_emplace.hpp"
 
-// Defining static globals (hence the sg_ prefix)
-// These are defined here for performance reasons
-static int sg_foundIndex;
-static int sg_i;
-static std::string sg_teaVarName;
-
-// Emplaces string into statement
-static void emplaceString(std::string &prestatement, const TeaString &ts)
+// Resets all static variables to their default values
+static void resetVariables(bool &isInBrace, bool &isInString, std::size_t &braceClosePos,
+                           std::size_t &braceOpenPos, std::size_t &i, std::string &varname) noexcept
 {
-    static bool s_isInString;
-    static std::string s_teaEmplaceString;
-    s_isInString = false;
-    for (sg_i = 8; sg_i < sg_foundIndex; ++sg_i)
+    isInBrace = false;
+    isInString = false;
+    braceClosePos = 0U;
+    braceOpenPos = 0U;
+    i = 0U;
+    varname.clear();
+}
+
+// Emplaces variable into statement
+static void emplaceVar(std::string &prestatement, std::size_t &statementSize, const std::string &varname,
+                       const std::size_t &braceOpenPos, const std::size_t &braceClosePos, const bool &isInString,
+                       const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats)
+{
+    for (const TeaString &ts : teaStrings)
     {
-        if (prestatement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        if (ts.getname() == varname)
         {
-            s_isInString = s_isInString ? false : true;
-            continue;
+            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
+                                 isInString ? ts.getvalue() : '"' + ts.getvalue() + '"');
+            statementSize = prestatement.size();
+            return;
         }
-        if (prestatement[sg_i] == '\\' && (prestatement[sg_i + 1] == '\\' || prestatement[sg_i + 1] == '"'))
-            ++sg_i;
     }
-    s_teaEmplaceString.clear();
-    for (const char &c : ts.getvalue())
+    for (const TeaInt &ti : teaInts)
     {
-        if (c == '\\')
-            s_teaEmplaceString.append("\\\\");
-        else
-            s_teaEmplaceString.push_back(c);
+        if (ti.getname() == varname)
+        {
+            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
+                                 std::to_string(ti.getvalue()));
+            statementSize = prestatement.size();
+            return;
+        }
     }
-    if (s_isInString)
-        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2U, s_teaEmplaceString);
-    else
-        prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2U, '"' + s_teaEmplaceString + '"');
+    for (const TeaFloat &tf : teaFloats)
+    {
+        if (tf.getname() == varname)
+        {
+            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
+                                 std::to_string(tf.getvalue()));
+            statementSize = prestatement.size();
+            return;
+        }
+    }
 }
 
 // Emplaces variables into statement
 void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts,
               const teaFloat_t &teaFloats)
 {
-    for (const TeaString &ts : teaStrings)
+    static bool s_isInBrace, s_isInString;
+    static std::size_t s_braceClosePos, s_braceOpenPos, s_i, s_statementSize;
+    static std::string s_varname;
+    resetVariables(s_isInBrace, s_isInString, s_braceClosePos, s_braceOpenPos, s_i, s_varname);
+    s_statementSize = prestatement.size();
+    for (; s_i < s_statementSize; ++s_i)
     {
-        sg_teaVarName = ts.getname();
-        while (true)
+        if (prestatement[s_i] == '"') // statement[s_i - 1] will not be a backslash
         {
-            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
-            if (sg_foundIndex != prestatement.npos)
-                emplaceString(prestatement, ts);
-            else
-                break;
+            s_isInString = s_isInString ? false : true;
+            continue;
         }
-    }
-    for (const TeaInt &ti : teaInts)
-    {
-        sg_teaVarName = ti.getname();
-        while (true)
+        if (prestatement[s_i] == '\\' && (prestatement[s_i + 1U] == '\\' || prestatement[s_i + 1U] == '"'))
         {
-            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
-            if (sg_foundIndex != prestatement.npos)
-                prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2U, std::to_string(ti.getvalue()));
-            else
-                break;
+            ++s_i;
+            continue;
         }
-    }
-    for (const TeaFloat &tf : teaFloats)
-    {
-        sg_teaVarName = tf.getname();
-        sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
-        while (true)
+        if (prestatement[s_i] == '{')
         {
-            sg_foundIndex = prestatement.find('{' + sg_teaVarName + '}');
-            if (sg_foundIndex != prestatement.npos)
-                prestatement.replace(sg_foundIndex, sg_teaVarName.size() + 2U, std::to_string(tf.getvalue()));
-            else
-                break;
+            s_isInBrace = true;
+            s_braceOpenPos = s_i;
+            continue;
         }
+        if (prestatement[s_i] == '}' && s_isInBrace)
+        {
+            s_braceClosePos = s_i;
+            if (s_isInBrace)
+            {
+                emplaceVar(prestatement, s_statementSize, s_varname, s_braceOpenPos, s_braceClosePos, s_isInString,
+                           teaStrings, teaInts, teaFloats);
+                s_i = s_braceOpenPos > 0U ? s_braceOpenPos - 1U : 0U;
+            }
+            s_isInBrace = false;
+            s_varname.clear();
+            continue;
+        }
+        if (s_isInBrace)
+            s_varname.push_back(prestatement[s_i]);
     }
     prestatement.erase(0U, 8U);
 }
