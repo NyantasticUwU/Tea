@@ -5,24 +5,19 @@
 // Strips line of blank space
 static void stripLine(std::string &line)
 {
-    static std::size_t s_i;
-    static std::size_t s_lineSize;
     // Stripping front of line
-    for (s_i = 0U; s_i < line.size(); ++s_i)
+    while (line.size() > 0U)
     {
-        if (!std::isblank(line[s_i]))
+        if (!std::isblank(line.front()))
             break;
         line.erase(0U, 1U);
-        --s_i; // If s_i underflows, the next iteration of the loop will fix it
     }
     // Stripping end of line
-    s_lineSize = line.size();
-    while (s_lineSize > 0U)
+    while (line.size() > 0U)
     {
-        if (!std::isblank(line[s_lineSize - 1U]))
+        if (!std::isblank(line.back()))
             break;
         line.pop_back();
-        s_lineSize = line.size();
     }
 }
 
