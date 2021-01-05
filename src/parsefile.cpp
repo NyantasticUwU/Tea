@@ -10,7 +10,7 @@ static void stripLine(std::string &line)
     {
         if (!std::isblank(line.front()))
             break;
-        line.erase(0U, 1U);
+        line.erase(line.cbegin());
     }
     // Stripping end of line
     while (line.size() > 0U)
