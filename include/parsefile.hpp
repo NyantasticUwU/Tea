@@ -4,6 +4,6 @@
 #include <vector>
 
 // Parses given file (c-str) into a string vector containing each line in the file
-void parseFile(const char *&filename, std::vector<std::string> &file);
+const std::vector<std::string> parseFile(const char *&filename);
 
 #endif

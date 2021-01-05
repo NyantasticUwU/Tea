@@ -32,9 +32,7 @@ int main(const int argc, const char **argv)
         init();
         const char *&filename{getMainFileName(argc, argv)};
         checkFile(filename);
-        std::vector<std::string> premainfile;
-        parseFile(filename, premainfile);
-        const std::vector<std::string> &mainfile{premainfile};
+        const std::vector<std::string> mainfile{parseFile(filename)};
         teaInt_t teaInts{TeaInt{"argc", argc}};
         teaString_t teaStrings;
         fillTeaStringVec(argc, argv, teaStrings);

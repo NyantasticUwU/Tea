@@ -12,8 +12,6 @@ void kImport(const std::string &statement, const int &line, const char *&filenam
     const std::string newfilenamestr{getStringLiteral(statement, line, filename, 6)};
     const char *newfilename{newfilenamestr.c_str()};
     checkFile(newfilename);
-    std::vector<std::string> prenewfile;
-    parseFile(newfilename, prenewfile);
-    const std::vector<std::string> &newfile{prenewfile};
+    const std::vector<std::string> newfile{parseFile(newfilename)};
     runTea(newfile, newfilename, &teaStrings, &teaInts, &teaFloats);
 }
