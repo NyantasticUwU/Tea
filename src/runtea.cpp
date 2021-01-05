@@ -33,7 +33,7 @@ const bool startsWithKeyword(const std::string &statement, const char *teaKeywor
 }
 
 // Runs tea string vector
-void runTea(std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
+void runTea(const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
             const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats)
 {
     // Defining tea value vectors
@@ -51,7 +51,7 @@ void runTea(std::vector<std::string> &teafile, const char *&filename, const teaS
 }
 
 // Runs tea statement
-void loopTeaStatements(std::vector<std::string> &teafile, int &line, const char *&filename,
+void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const char *&filename,
                        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
     // Looping through tea file lines

@@ -11,7 +11,8 @@ void kInclude(const std::string &statement, const int &line, const char *&filena
     const std::string newfilenamestr{getStringLiteral(statement, line, filename, 7)};
     const char *newfilename{newfilenamestr.c_str()};
     checkFile(newfilename);
-    std::vector<std::string> newfile;
-    parseFile(newfilename, newfile);
+    std::vector<std::string> prenewfile;
+    parseFile(newfilename, prenewfile);
+    const std::vector<std::string> &newfile{prenewfile};
     runTea(newfile, newfilename);
 }

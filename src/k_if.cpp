@@ -31,7 +31,7 @@ const bool isEnteringBlock(const std::string &statement) noexcept
 }
 
 // Called when if keyword is called in tea
-void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
+void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
          const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
     static int s_nif;
@@ -42,7 +42,7 @@ void kIf(std::vector<std::string> &teafile, const int &teafileSize, const std::s
         s_nif = 0;
         while (line < teafileSize)
         {
-            std::string &nextline{teafile[line]};
+            std::string nextline{teafile[line]};
             if (startsWithKeyword(nextline, "emplace "))
                 kEmplace(nextline, teaStrings, teaInts, teaFloats);
             evalOps(nextline, line, filename);
