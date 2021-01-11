@@ -28,5 +28,6 @@ friendly. :)
 
 
 ## Libraries used
+* [CLI11 1.9.1](https://github.com/CLIUtils/CLI11/)
 * [fmt 7.1.2](https://github.com/fmtlib/fmt/)
 * [spdlog 1.8.0](https://github.com/gabime/spdlog/)

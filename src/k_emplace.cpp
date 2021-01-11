@@ -1,17 +1,5 @@
 #include "k_emplace.hpp"
 
-// Resets all static variables to their default values
-static void resetVariables(bool &isInBrace, bool &isInString, std::size_t &braceClosePos,
-                           std::size_t &braceOpenPos, std::size_t &i, std::string &varname) noexcept
-{
-    isInBrace = false;
-    isInString = false;
-    braceClosePos = 0U;
-    braceOpenPos = 0U;
-    i = 0U;
-    varname.clear();
-}
-
 // Emplaces variable into statement
 static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
                        const std::string &varname, const std::size_t &braceOpenPos,
@@ -61,8 +49,11 @@ void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const te
     static bool s_isInBrace, s_isInString, s_isVarFound;
     static std::size_t s_braceClosePos, s_braceOpenPos, s_i, s_statementSize;
     static std::string s_varname;
-    resetVariables(s_isInBrace, s_isInString, s_braceClosePos, s_braceOpenPos, s_i, s_varname);
+    s_isInBrace = false;
+    s_isInString = false;
+    s_i = 0U;
     s_statementSize = prestatement.size();
+    s_varname.clear();
     for (; s_i < s_statementSize; ++s_i)
     {
         if (prestatement[s_i] == '"') // statement[s_i - 1] will not be a backslash
