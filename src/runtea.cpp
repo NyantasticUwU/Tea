@@ -100,7 +100,7 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
         // Exit keyword called
         else if (startsWithKeyword(statement, "exit "))
         {
-            kExit(statement, line, filename);
+            kExit(statement);
             continue;
         }
         // Float keyword called
