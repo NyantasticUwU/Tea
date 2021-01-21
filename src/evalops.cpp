@@ -781,7 +781,7 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
 }
 
 // Evaluates operator&&
-static void evalopand(std::string &statement, const int &line, const char *&filename)
+static void evalopand(std::string &statement)
 {
     // int && _
     if (isLOIntOrFloat(statement))
@@ -830,7 +830,7 @@ static void evalopand(std::string &statement, const int &line, const char *&file
 }
 
 // Evaluates operator||
-static void evalopor(std::string &statement, const int &line, const char *&filename)
+static void evalopor(std::string &statement)
 {
     // int || _
     if (isLOIntOrFloat(statement))
@@ -1023,14 +1023,14 @@ void evalOps(std::string &statement, const int &line, const char *&filename)
         else if (s_teaoperator == " && ")
         {
             sg_operatorIndex = searchOperator(statement, " && ", true);
-            evalopand(statement, line, filename);
+            evalopand(statement);
             continue;
         }
         // operator||
         else if (s_teaoperator == " || ")
         {
             sg_operatorIndex = searchOperator(statement, " || ", true);
-            evalopor(statement, line, filename);
+            evalopor(statement);
             continue;
         }
     }

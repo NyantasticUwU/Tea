@@ -9,6 +9,7 @@
 // Defining globals
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "assign",
+    "call",
     "delete",
     "elif",
     "else",
@@ -20,6 +21,7 @@ const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "import",
     "include",
     "int",
+    "snippet",
     "string",
     "system",
     "while"};

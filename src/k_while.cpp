@@ -17,9 +17,9 @@ static void createMutableString(std::string &mutableUnchangedStatement, const st
 }
 
 // Called when while keyword is called in tea
-void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement,
-            const std::string unchangedStatement, int &line, const char *&filename, teaString_t &teaStrings,
-            teaInt_t &teaInts, teaFloat_t &teaFloats)
+void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
+            int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+            teaSnippet_t &teaSnippets)
 {
     static int s_nif;
     const int whileLine{line};
@@ -29,7 +29,7 @@ void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, con
     while (isIfTrue(mutableUnchangedStatement, line, filename, 5))
     {
         line = whileLine;
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
         createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
                             teaFloats);
     }

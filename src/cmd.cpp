@@ -1,6 +1,5 @@
 #include "constants.hpp"
 #include "cmd.hpp"
-#include "error.hpp"
 #include <CLI/CLI.hpp>
 #include <iostream>
 
@@ -18,11 +17,11 @@ static const bool isTeaFile(const char *&arg)
 // Contains all flag/option handler functions
 namespace flags
 {
-    static void versionFlagCallback(const std::int64_t &c)
+    static void versionFlagCallback(const std::int64_t &)
     {
         std::cout << "Tea version: " << TEA_VERSION << '\n';
     }
-}
+} // namespace flags
 
 // Handles command line arguments
 static const int handleCMDArgs(const int &argc, const char **&argv)

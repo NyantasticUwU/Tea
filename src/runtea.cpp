@@ -1,12 +1,14 @@
 #include "error.hpp"
 #include "evalops.hpp"
 #include "k_assign.hpp"
+#include "k_call.hpp"
 #include "k_delete.hpp"
 #include "k_elif.hpp"
 #include "k_else.hpp"
 #include "k_emplace.hpp"
 #include "k_exit.hpp"
 #include "k_float.hpp"
+#include "k_snippet.hpp"
 #include "k_if.hpp"
 #include "k_import.hpp"
 #include "k_include.hpp"
@@ -34,7 +36,8 @@ const bool startsWithKeyword(const std::string &statement, const char *teaKeywor
 
 // Runs tea string vector
 void runTea(const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
-            const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats)
+            const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats,
+            const teaSnippet_t *const &pteaSnippets)
 {
     // Defining tea value vectors
     teaFloat_t teaFloats;
@@ -46,13 +49,17 @@ void runTea(const std::vector<std::string> &teafile, const char *&filename, cons
     teaString_t teaStrings;
     if (pteaStrings)
         teaStrings = *pteaStrings;
+    teaSnippet_t teaSnippets;
+    if (pteaSnippets)
+        teaSnippets = *pteaSnippets;
     int line{0};
-    loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats);
+    loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
 }
 
 // Runs tea statement
 void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const char *&filename,
-                       teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats)
+                       teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+                       teaSnippet_t &teaSnippets)
 {
     // Looping through tea file lines
     const int teafileSize{static_cast<int>(teafile.size())};
@@ -76,10 +83,16 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
             kAssign(statement, line, filename, teaStrings, teaInts, teaFloats);
             continue;
         }
+        // Call keyword called
+        else if (startsWithKeyword(statement, "call "))
+        {
+            kCall(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
+            continue;
+        }
         // Delete keyword called
         else if (startsWithKeyword(statement, "delete "))
         {
-            kDelete(statement, line, filename, teaStrings, teaInts, teaFloats);
+            kDelete(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
             continue;
         }
         // Elif keyword called
@@ -109,10 +122,16 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
             kFloat(statement, line, filename, teaFloats);
             continue;
         }
+        // Snippet keyword called
+        else if (startsWithKeyword(statement, "snippet "))
+        {
+            kSnippet(teafile, statement, line, filename, teaSnippets);
+            continue;
+        }
         // If keyword called
         else if (startsWithKeyword(statement, "if "))
         {
-            kIf(teafile, teafileSize, statement, line, filename, teaStrings, teaInts, teaFloats);
+            kIf(teafile, teafileSize, statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
             continue;
         }
         // Import keyword called
@@ -148,8 +167,8 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
         // While keyword called
         else if (startsWithKeyword(statement, "while "))
         {
-            kWhile(teafile, teafileSize, statement, teafile[line - 1], line, filename, teaStrings, teaInts,
-                   teaFloats);
+            kWhile(teafile, teafileSize, teafile[line - 1], line, filename, teaStrings, teaInts, teaFloats,
+                   teaSnippets);
             continue;
         }
         // Invalid statement
