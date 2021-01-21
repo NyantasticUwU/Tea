@@ -46,47 +46,47 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
 void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts,
               const teaFloat_t &teaFloats)
 {
-    static bool s_isInBrace, s_isInString, s_isVarFound;
-    static std::size_t s_braceClosePos, s_braceOpenPos, s_i, s_statementSize;
+    static bool s_isVarFound;
+    static std::size_t s_braceClosePos, s_braceOpenPos;
     static std::string s_varname;
-    s_isInBrace = false;
-    s_isInString = false;
-    s_i = 0U;
-    s_statementSize = prestatement.size();
     s_varname.clear();
-    for (; s_i < s_statementSize; ++s_i)
+    bool &&isInBrace{false};
+    bool &&isInString{false};
+    std::size_t &&i{0U};
+    std::size_t &&statementSize{prestatement.size()};
+    for (; i < statementSize; ++i)
     {
-        if (prestatement[s_i] == '"') // statement[s_i - 1] will not be a backslash
+        if (prestatement[i] == '"') // statement[i - 1] will not be a backslash
         {
-            s_isInString = s_isInString ? false : true;
+            isInString = isInString ? false : true;
             continue;
         }
-        if (prestatement[s_i] == '\\' && (prestatement[s_i + 1U] == '\\' || prestatement[s_i + 1U] == '"'))
+        if (prestatement[i] == '\\' && (prestatement[i + 1U] == '\\' || prestatement[i + 1U] == '"'))
         {
-            ++s_i;
+            ++i;
             continue;
         }
-        if (prestatement[s_i] == '{')
+        if (prestatement[i] == '{')
         {
-            s_isInBrace = true;
-            s_braceOpenPos = s_i;
+            isInBrace = true;
+            s_braceOpenPos = i;
             continue;
         }
-        if (prestatement[s_i] == '}' && s_isInBrace)
+        if (prestatement[i] == '}' && isInBrace)
         {
-            s_braceClosePos = s_i;
-            if (s_isInBrace)
+            s_braceClosePos = i;
+            if (isInBrace)
             {
-                emplaceVar(prestatement, s_statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
-                           s_isInString, teaStrings, teaInts, teaFloats);
-                s_i = s_isVarFound ? (s_braceOpenPos > 0U ? s_braceOpenPos - 1U : 0U) : s_braceClosePos;
+                emplaceVar(prestatement, statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
+                           isInString, teaStrings, teaInts, teaFloats);
+                i = s_isVarFound ? (s_braceOpenPos > 0U ? s_braceOpenPos - 1U : 0U) : s_braceClosePos;
             }
-            s_isInBrace = false;
+            isInBrace = false;
             s_varname.clear();
             continue;
         }
-        if (s_isInBrace)
-            s_varname.push_back(prestatement[s_i]);
+        if (isInBrace)
+            s_varname.push_back(prestatement[i]);
     }
     prestatement.erase(0U, 8U);
 }

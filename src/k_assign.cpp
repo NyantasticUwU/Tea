@@ -5,15 +5,15 @@
 // These are defined here for performance reasons
 static std::string sg_assignmentType;
 static std::size_t sg_i;
-static std::size_t sg_statementSize;
 static std::string sg_var;
 static std::string sg_varname;
 
 // Gets assignment type
-static void getAssignmentType(const std::string &statement, const int &line, const char *&filename)
+static void getAssignmentType(const std::string &statement, const std::size_t &statementSize, const int &line,
+                              const char *&filename)
 {
     sg_assignmentType.clear();
-    for (sg_i = 7U; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = 7U; sg_i < statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
             break;
@@ -24,10 +24,11 @@ static void getAssignmentType(const std::string &statement, const int &line, con
 }
 
 // Gets var name
-static void getVarname(const std::string &statement, const int &line, const char *&filename)
+static void getVarname(const std::string &statement, const std::size_t &statementSize, const int &line,
+                       const char *&filename)
 {
     sg_varname.clear();
-    for (++sg_i; sg_i < sg_statementSize; ++sg_i)
+    for (++sg_i; sg_i < statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
             break;
@@ -38,10 +39,11 @@ static void getVarname(const std::string &statement, const int &line, const char
 }
 
 // Gets var
-static void getVar(const std::string &statement, const int &line, const char *&filename)
+static void getVar(const std::string &statement, const std::size_t &statementSize, const int &line,
+                   const char *&filename)
 {
     sg_var.clear();
-    for (++sg_i; sg_i < sg_statementSize; ++sg_i)
+    for (++sg_i; sg_i < statementSize; ++sg_i)
         sg_var.push_back(statement[sg_i]);
     if (sg_var == "")
         teaSyntaxError(line, filename, "New variable not given.");
@@ -50,9 +52,8 @@ static void getVar(const std::string &statement, const int &line, const char *&f
 // Varifies new string variable
 static void verifyStringVar(const int &line, const char *&filename)
 {
-    static std::size_t s_varSize;
-    s_varSize = sg_var.size();
-    if (s_varSize < 2U || sg_var[0U] != '"' || sg_var[s_varSize - 1U] != '"')
+    const std::size_t &&varSize{sg_var.size()};
+    if (varSize < 2U || sg_var[0U] != '"' || sg_var[varSize - 1U] != '"')
         teaSyntaxError(line, filename, "Invalid string.");
     sg_var.erase(0U, 1U);
     sg_var.pop_back();
@@ -114,10 +115,10 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
 void kAssign(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
              teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
-    sg_statementSize = statement.size();
-    getAssignmentType(statement, line, filename);
-    getVarname(statement, line, filename);
-    getVar(statement, line, filename);
+    const std::size_t &&statementSize{statement.size()};
+    getAssignmentType(statement, statementSize, line, filename);
+    getVarname(statement, statementSize, line, filename);
+    getVar(statement, statementSize, line, filename);
     if (sg_assignmentType == "string")
         changeStringVariable(teaStrings, line, filename);
     else if (sg_assignmentType == "int")

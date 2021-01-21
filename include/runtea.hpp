@@ -6,7 +6,7 @@
 #include "TeaString.hpp"
 
 // Checks if statement starts with the given keyword
-const bool startsWithKeyword(const std::string &statement, const char *teaKeyword) noexcept;
+const bool startsWithKeyword(const std::string &statement, const char *const &teaKeyword) noexcept;
 
 // Runs tea string vector
 void runTea(const std::vector<std::string> &teafile, const char *&filename,

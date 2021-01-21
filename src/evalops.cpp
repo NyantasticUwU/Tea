@@ -16,32 +16,30 @@ static const std::vector<std::string> scg_ops[TEA_NUMBER_OF_OPERATOR_GROUPS]{
     {" && ", " || "}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static int sg_i;
-static bool sg_isInString;
 static int sg_leftOperatorStartIndex; // Indicates start of left operand
 static int sg_operatorIndex;
-static int sg_statementSize;
 
 // Searches for operator
 static int searchOperator(const std::string &statement, const std::string &op, const bool &isSpaceBefore)
 {
-    sg_isInString = false;
-    sg_statementSize = statement.size();
-    for (sg_i = 0; sg_i < sg_statementSize; ++sg_i)
+    bool &&isInString{false};
+    const std::size_t &&statementSize{statement.size()};
+    for (std::size_t &&i{0U}; i < statementSize; ++i)
     {
-        if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
+        if (statement[i] == '"') // statement[i - 1] will not be a backslash
         {
-            sg_isInString = sg_isInString ? false : true;
-            if (sg_isInString)
-                sg_leftOperatorStartIndex = sg_i;
+            isInString = isInString ? false : true;
+            if (isInString)
+                sg_leftOperatorStartIndex = i;
             continue;
         }
-        if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+        if (statement[i] == '\\' && (statement[i + 1U] == '\\' || statement[i + 1U] == '"'))
         {
-            ++sg_i;
+            ++i;
             continue;
         }
-        if (!sg_isInString && statement.substr(sg_i > 0 && isSpaceBefore ? sg_i - 1 : sg_i, op.size()) == op)
-            return sg_i;
+        if (!isInString && statement.substr(i > 0U && isSpaceBefore ? i - 1U : i, op.size()) == op)
+            return i;
     }
     return statement.npos;
 }
@@ -75,8 +73,8 @@ static float getLeftOperand(const std::string &statement, const float &)
 static std::string getRightOperand(const std::string &statement, const int &opsize, const std::string &)
 {
     std::string rightOperand;
-    sg_statementSize = statement.size();
-    for (sg_i = sg_operatorIndex + opsize + 2; sg_i < sg_statementSize; ++sg_i)
+    const int &&statementSize{static_cast<int>(statement.size())};
+    for (sg_i = sg_operatorIndex + opsize + 2; sg_i < statementSize; ++sg_i)
     {
         if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
             break;
@@ -94,9 +92,9 @@ static std::string getRightOperand(const std::string &statement, const int &opsi
 // Gets right operand
 static int getRightOperand(const std::string &statement, const int &opsize, const int &)
 {
-    sg_statementSize = statement.size();
+    int &&statementSize{static_cast<int>(statement.size())};
     std::string intstr;
-    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
     {
         if (std::none_of(std::begin(scg_validNumerics),
                          std::end(scg_validNumerics),
@@ -111,9 +109,9 @@ static int getRightOperand(const std::string &statement, const int &opsize, cons
 // Gets right operand
 static float getRightOperand(const std::string &statement, const int &opsize, const float &)
 {
-    sg_statementSize = statement.size();
+    int &&statementSize{static_cast<int>(statement.size())};
     std::string floatstr;
-    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
     {
         if (std::none_of(std::begin(scg_validNumerics),
                          std::end(scg_validNumerics),
@@ -130,8 +128,8 @@ static float getRightOperand(const std::string &statement, const int &opsize, co
 // Returns true if int false if float
 static bool isROIntOrFloat(const std::string &statement, const int &opsize)
 {
-    sg_statementSize = statement.size();
-    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < sg_statementSize; ++sg_i)
+    int &&statementSize{static_cast<int>(statement.size())};
+    for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
     {
         if (std::none_of(std::begin(scg_validNumerics),
                          std::end(scg_validNumerics),
@@ -168,19 +166,19 @@ static bool isLOIntOrFloat(const std::string &statement)
 // Evaluates operator()
 static void evalopbrace(std::string &statement, const int &line, const char *&filename)
 {
-    sg_isInString = false;
-    sg_statementSize = statement.size();
+    bool &&isInString{false};
+    int &&statementSize{static_cast<int>(statement.size())};
     int opar{0};
     std::string evalstatement;
-    for (sg_i = sg_operatorIndex + 1; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = sg_operatorIndex + 1; sg_i < statementSize; ++sg_i)
     {
-        if (statement[sg_i] == '(' && !sg_isInString)
+        if (statement[sg_i] == '(' && !isInString)
         {
             ++opar;
             evalstatement.push_back('(');
             continue;
         }
-        if (statement[sg_i] == ')' && !sg_isInString)
+        if (statement[sg_i] == ')' && !isInString)
         {
             if (!opar--)
                 break;
@@ -189,7 +187,7 @@ static void evalopbrace(std::string &statement, const int &line, const char *&fi
         }
         if (statement[sg_i] == '"') // statement[sg_i - 1] will not be a backslash
         {
-            sg_isInString = sg_isInString ? false : true;
+            isInString = isInString ? false : true;
             evalstatement.push_back('"');
             continue;
         }
@@ -894,28 +892,28 @@ static bool checkSign(const char &c)
 // Searches for operators by group
 static std::string searchOperatorsByGroup(const std::string &statement)
 {
-    sg_statementSize = statement.size();
+    const std::size_t &&statementSize{statement.size()};
     for (const std::vector<std::string> &opg : scg_ops)
     {
-        sg_isInString = false;
-        for (sg_i = 0; sg_i < sg_statementSize; ++sg_i)
+        bool &&isInString{false};
+        for (std::size_t &&i{0U}; i < statementSize; ++i)
         {
-            const char &sc{statement[sg_i]};
+            const char &sc{statement[i]};
             if (sc == '"') // *(sc - 1) will not be a backslash
             {
-                sg_isInString = sg_isInString ? false : true;
+                isInString = isInString ? false : true;
                 continue;
             }
-            if (sc == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
+            if (sc == '\\' && (statement[i + 1U] == '\\' || statement[i + 1U] == '"'))
             {
-                ++sg_i;
+                ++i;
                 continue;
             }
-            if (!sg_isInString)
+            if (!isInString)
             {
                 for (const std::string &c : opg)
                 {
-                    if (c == statement.substr(sg_i, c.size()) && checkSign(sc))
+                    if (c == statement.substr(i, c.size()) && checkSign(sc))
                         return c;
                 }
             }
@@ -928,106 +926,105 @@ static std::string searchOperatorsByGroup(const std::string &statement)
 // Returns modified string with value(s) in-place
 void evalOps(std::string &statement, const int &line, const char *&filename)
 {
-    static std::string s_teaoperator;
     while (true)
     {
-        s_teaoperator = searchOperatorsByGroup(statement);
+        const std::string &&teaoperator{searchOperatorsByGroup(statement)};
         // No operator found
-        if (s_teaoperator == "")
+        if (teaoperator == "")
             break;
         // Operator()
-        else if (s_teaoperator == "(")
+        else if (teaoperator == "(")
         {
             sg_operatorIndex = searchOperator(statement, "(", false);
             evalopbrace(statement, line, filename);
             continue;
         }
         // Operator^
-        else if (s_teaoperator == " ^ ")
+        else if (teaoperator == " ^ ")
         {
             sg_operatorIndex = searchOperator(statement, " ^ ", true);
             evalopex(statement);
             continue;
         }
         // Operator*
-        else if (s_teaoperator == " * ")
+        else if (teaoperator == " * ")
         {
             sg_operatorIndex = searchOperator(statement, " * ", true);
             evalopasterisk(statement);
             continue;
         }
         // Operator/
-        else if (s_teaoperator == " / ")
+        else if (teaoperator == " / ")
         {
             sg_operatorIndex = searchOperator(statement, " / ", true);
             evalopfwslash(statement);
             continue;
         }
         // Operator%
-        else if (s_teaoperator == " % ")
+        else if (teaoperator == " % ")
         {
             sg_operatorIndex = searchOperator(statement, " % ", true);
             evalopmod(statement, line, filename);
             continue;
         }
         // Operator+
-        else if (s_teaoperator == " + ")
+        else if (teaoperator == " + ")
         {
             sg_operatorIndex = searchOperator(statement, " + ", true);
             evalopplus(statement);
             continue;
         }
         // Operator-
-        else if (s_teaoperator == " - ")
+        else if (teaoperator == " - ")
         {
             sg_operatorIndex = searchOperator(statement, " - ", true);
             evalopminus(statement);
             continue;
         }
         // operator==
-        else if (s_teaoperator == " == ")
+        else if (teaoperator == " == ")
         {
             sg_operatorIndex = searchOperator(statement, " == ", true);
             evalopequal(statement, line, filename);
             continue;
         }
         // operator!=
-        else if (s_teaoperator == " != ")
+        else if (teaoperator == " != ")
         {
             sg_operatorIndex = searchOperator(statement, " != ", true);
             evalopnotequal(statement, line, filename);
             continue;
         }
         // operator<
-        else if (s_teaoperator == " < ")
+        else if (teaoperator == " < ")
         {
             sg_operatorIndex = searchOperator(statement, " < ", true);
             evalopless(statement, line, filename);
             continue;
         }
         // operator>
-        else if (s_teaoperator == " > ")
+        else if (teaoperator == " > ")
         {
             sg_operatorIndex = searchOperator(statement, " > ", true);
             evalopgreater(statement, line, filename);
             continue;
         }
         // operator<=
-        else if (s_teaoperator == " <= ")
+        else if (teaoperator == " <= ")
         {
             sg_operatorIndex = searchOperator(statement, " <= ", true);
             evaloplessequal(statement, line, filename);
             continue;
         }
         // operator&&
-        else if (s_teaoperator == " && ")
+        else if (teaoperator == " && ")
         {
             sg_operatorIndex = searchOperator(statement, " && ", true);
             evalopand(statement);
             continue;
         }
         // operator||
-        else if (s_teaoperator == " || ")
+        else if (teaoperator == " || ")
         {
             sg_operatorIndex = searchOperator(statement, " || ", true);
             evalopor(statement);
