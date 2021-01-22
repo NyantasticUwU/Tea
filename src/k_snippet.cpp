@@ -12,33 +12,31 @@ void kSnippet(const std::vector<std::string> &teafile, const std::string &statem
 {
 	static std::string s_name;
 	static teaSnippetBody_t s_body;
-	static bool s_isEndFound;
-	static int s_blockCount;
-	static int s_teafileSize;
+	s_body.clear();
 	// Getting return type
 	createvar(statement + ' ', line, filename, 7);
 	s_name = g_varname;
 	// Getting body
-	s_isEndFound = false;
-	s_blockCount = 0;
-	s_teafileSize = teafile.size();
-	while (line < s_teafileSize)
+	bool &&isEndFound{false};
+	int &&blockCount{0};
+	int &&teafileSize{static_cast<int>(teafile.size())};
+	while (line < teafileSize)
 	{
 		if (teafile[line] == "end")
 		{
-			if (!s_blockCount--)
+			if (!blockCount--)
 			{
-				s_isEndFound = true;
+				isEndFound = true;
 				break;
 			}
 		}
 		if (isEnteringBlock(teafile[line]))
-			++s_blockCount;
+			++blockCount;
 		s_body.push_back(teafile[line]);
 		++line;
 	}
 	// Checking if end keyword is found
-	if (!s_isEndFound)
+	if (!isEndFound)
 		teaSyntaxError(line, filename, "Snippet body never ended (closed).");
 	// Time to head out
 	++line;

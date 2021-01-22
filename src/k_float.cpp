@@ -10,10 +10,9 @@ extern std::string g_varname;
 void kFloat(const std::string &statement, const int &line, const char *&filename, teaFloat_t &teaFloats)
 {
     static std::size_t s_offPos;
-    static std::string s_substr;
     createvar(statement, line, filename, 5);
-    s_substr = statement.substr(g_secondSpaceIndex + 1, statement.size());
-    teaFloats.push_back(TeaFloat{g_varname, std::stof(s_substr, &s_offPos)});
-    if (s_offPos != s_substr.size())
+    const std::string &&substr{statement.substr(g_secondSpaceIndex + 1, statement.size())};
+    teaFloats.push_back(TeaFloat{g_varname, std::stof(substr, &s_offPos)});
+    if (s_offPos != substr.size())
         teaSyntaxError(line, filename, "Invalid float literal.");
 }

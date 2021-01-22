@@ -9,8 +9,8 @@ void kInclude(const std::string &statement, const int &line, const char *&filena
 {
     // newfilenamestr is needed as newfilename would otherwise be a dangling pointer
     const std::string newfilenamestr{getStringLiteral(statement, line, filename, 7)};
-    const char *newfilename{newfilenamestr.c_str()};
+    const char *&&newfilename{newfilenamestr.c_str()};
     checkFile(newfilename);
-    const std::vector<std::string> newfile{parseFile(newfilename)};
+    const std::vector<std::string> &&newfile{parseFile(newfilename)};
     runTea(newfile, newfilename);
 }

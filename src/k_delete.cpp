@@ -5,14 +5,13 @@
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
 static std::size_t sg_i;
-static std::size_t sg_statementSize;
 static std::string sg_type;
 
 // Gets variable type
-static void getType(const std::string &statement)
+static void getType(const std::string &statement, const std::size_t &statementSize)
 {
     sg_type.clear();
-    for (sg_i = 7U; sg_i < sg_statementSize; ++sg_i)
+    for (sg_i = 7U; sg_i < statementSize; ++sg_i)
     {
         if (statement[sg_i] == ' ')
         {
@@ -29,14 +28,14 @@ void kDelete(const std::string &statement, const int &line, const char *&filenam
 {
     if (std::count(statement.begin(), statement.end(), ' ') != 2)
         teaSyntaxError(line, filename);
-    sg_statementSize = statement.size();
-    getType(statement);
+    const std::size_t &&statementSize{statement.size()};
+    getType(statement, statementSize);
     if (sg_type == "string")
     {
         static teaString_t::iterator s_nameIndex;
         s_nameIndex = std::find_if(teaStrings.begin(), teaStrings.end(),
                                    [&](const TeaString &ts) -> const bool {
-                                       return ts.getname() == statement.substr(sg_i, sg_statementSize);
+                                       return ts.getname() == statement.substr(sg_i, statementSize);
                                    });
         if (s_nameIndex == teaStrings.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -47,7 +46,7 @@ void kDelete(const std::string &statement, const int &line, const char *&filenam
         static teaInt_t::iterator s_nameIndex;
         s_nameIndex = std::find_if(teaInts.begin(), teaInts.end(),
                                    [&](const TeaInt &ti) -> const bool {
-                                       return ti.getname() == statement.substr(sg_i, sg_statementSize);
+                                       return ti.getname() == statement.substr(sg_i, statementSize);
                                    });
         if (s_nameIndex == teaInts.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -58,7 +57,7 @@ void kDelete(const std::string &statement, const int &line, const char *&filenam
         static teaFloat_t::iterator s_nameIndex;
         s_nameIndex = std::find_if(teaFloats.begin(), teaFloats.end(),
                                    [&](const TeaFloat &tf) -> const bool {
-                                       return tf.getname() == statement.substr(sg_i, sg_statementSize);
+                                       return tf.getname() == statement.substr(sg_i, statementSize);
                                    });
         if (s_nameIndex == teaFloats.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -69,7 +68,7 @@ void kDelete(const std::string &statement, const int &line, const char *&filenam
         static teaSnippet_t::iterator s_nameIndex;
         s_nameIndex = std::find_if(teaSnippets.begin(), teaSnippets.end(),
                                    [&](const TeaSnippet &ts) -> const bool {
-                                       return ts.getname() == statement.substr(sg_i, sg_statementSize);
+                                       return ts.getname() == statement.substr(sg_i, statementSize);
                                    });
         if (s_nameIndex == teaSnippets.end())
             teaSyntaxError(line, filename, "Snippet name not found.");

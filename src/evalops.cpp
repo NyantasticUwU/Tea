@@ -168,7 +168,7 @@ static void evalopbrace(std::string &statement, const int &line, const char *&fi
 {
     bool &&isInString{false};
     int &&statementSize{static_cast<int>(statement.size())};
-    int opar{0};
+    int &&opar{0};
     std::string evalstatement;
     for (sg_i = sg_operatorIndex + 1; sg_i < statementSize; ++sg_i)
     {
@@ -202,7 +202,7 @@ static void evalopbrace(std::string &statement, const int &line, const char *&fi
     if (!opar)
         teaSyntaxError(line, filename, "Operator() is never closed.");
     const int oi{sg_operatorIndex};
-    const int i{sg_i - sg_operatorIndex + 1};
+    const int &&i{sg_i - sg_operatorIndex + 1};
     evalOps(evalstatement, line, filename);
     statement.replace(oi, i, evalstatement);
 }

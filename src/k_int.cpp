@@ -10,10 +10,9 @@ extern std::string g_varname;
 void kInt(const std::string &statement, const int &line, const char *&filename, teaInt_t &teaInts)
 {
     static std::size_t s_offPos;
-    static std::string s_substr;
     createvar(statement, line, filename, 3);
-    s_substr = statement.substr(g_secondSpaceIndex + 1, statement.size());
-    teaInts.push_back(TeaInt{g_varname, std::stoi(s_substr, &s_offPos, 0)});
-    if (s_offPos != s_substr.size())
+    const std::string &&substr{statement.substr(g_secondSpaceIndex + 1, statement.size())};
+    teaInts.push_back(TeaInt{g_varname, std::stoi(substr, &s_offPos, 0)});
+    if (s_offPos != substr.size())
         teaSyntaxError(line, filename, "Invalid integral number.");
 }

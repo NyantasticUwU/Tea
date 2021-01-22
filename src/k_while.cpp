@@ -21,7 +21,6 @@ void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, con
             int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
             teaSnippet_t &teaSnippets)
 {
-    static int s_nif;
     const int whileLine{line};
     std::string mutableUnchangedStatement;
     createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
@@ -33,21 +32,21 @@ void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, con
         createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
                             teaFloats);
     }
-    s_nif = 0;
     line = whileLine;
+    int &&nif{0};
     while (line < teafileSize)
     {
         if (teafile[line] == "end")
         {
             ++line;
-            if (!s_nif--)
+            if (!nif--)
                 return;
             continue;
         }
         if (isEnteringBlock(teafile[line]))
         {
             ++line;
-            ++s_nif;
+            ++nif;
             continue;
         }
         ++line;

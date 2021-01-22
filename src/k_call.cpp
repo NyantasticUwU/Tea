@@ -5,9 +5,7 @@
 // Extracts characters until the given character is encountered
 static void getCharacters(const std::string &statement, std::string &str, std::size_t &&pos, const char &endchar)
 {
-    static std::size_t s_statementSize;
-    s_statementSize = statement.size();
-    for (; pos < s_statementSize; ++pos)
+    for (const std::size_t &&statementSize{statement.size()}; pos < statementSize; ++pos)
     {
         if (statement[pos] == endchar)
             break;

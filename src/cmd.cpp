@@ -6,7 +6,7 @@
 // Checks if c-string ends with .tea
 static const bool isTeaFile(const char *&arg)
 {
-    for (std::size_t i{0U}; arg[i] != '\0'; ++i)
+    for (std::size_t &&i{0U}; arg[i] != '\0'; ++i)
     {
         if (arg[i] == '.' && arg[i + 1U] == 't' && arg[i + 2U] == 'e' && arg[i + 3U] == 'a' && arg[i + 4U] == '\0')
             return true;
@@ -47,6 +47,6 @@ const char *&getMainFileName(const int &argc, const char **&argv)
 // Fills tea string vector with cmd args
 void fillTeaStringVec(const int &argc, const char **&argv, teaString_t &teaStrings)
 {
-    for (int i{0}; i < argc; ++i)
+    for (int &&i{0}; i < argc; ++i)
         teaStrings.push_back(TeaString{"arg" + std::to_string(i), argv[i]});
 }

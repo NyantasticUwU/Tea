@@ -7,18 +7,16 @@
 // Checks if tea if statement evaluates to true
 const bool isIfTrue(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
-    static int s_i;
-    static int s_statementSize;
     static std::string s_evaluation;
     s_evaluation.clear();
-    s_statementSize = statement.size();
-    if (s_statementSize < kwlen + 2)
+    const std::size_t &&statementSize{statement.size()};
+    if (statementSize < static_cast<std::size_t>(kwlen + 2))
         teaSyntaxError(line, filename);
-    for (s_i = kwlen + 1; s_i < s_statementSize; ++s_i)
+    for (std::size_t &&i{static_cast<std::size_t>(kwlen + 1)}; i < statementSize; ++i)
     {
-        if (statement[s_i] == ' ')
+        if (statement[i] == ' ')
             teaSyntaxError(line, filename);
-        s_evaluation.push_back(statement[s_i]);
+        s_evaluation.push_back(statement[i]);
     }
     return std::stoi(s_evaluation);
 }
@@ -37,12 +35,11 @@ void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const 
          const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
          teaSnippet_t &teaSnippets)
 {
-    static int s_nif;
     if (isIfTrue(statement, line, filename, 2))
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
     else
     {
-        s_nif = 0;
+        int &&nif{0};
         while (line < teafileSize)
         {
             std::string nextline{teafile[line]};
@@ -52,24 +49,24 @@ void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const 
             if (nextline == "end")
             {
                 ++line;
-                if (!s_nif--)
+                if (!nif--)
                     return;
                 continue;
             }
             if (isEnteringBlock(nextline))
             {
                 ++line;
-                ++s_nif;
+                ++nif;
                 continue;
             }
-            if (startsWithKeyword(nextline, "elif") && !s_nif)
+            if (startsWithKeyword(nextline, "elif") && !nif)
             {
                 ++line;
                 kIf(teafile, teafileSize, nextline.substr(2U, nextline.size()), line, filename, teaStrings,
                     teaInts, teaFloats, teaSnippets);
                 return;
             }
-            if (nextline == "else" && !s_nif)
+            if (nextline == "else" && !nif)
             {
                 ++line;
                 loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
