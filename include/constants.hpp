@@ -4,7 +4,7 @@
 #define TEA_VERSION "0.0.0"
 
 // Tea keyword enumeration for indexing g_teakeywords (defined in main.cpp)
-enum TEA_KEYWORDS
+enum
 {
     TEA_KEYWORD_ASSIGN,
     TEA_KEYWORD_CALL,
@@ -24,6 +24,19 @@ enum TEA_KEYWORDS
     TEA_KEYWORD_SYSTEM,
     TEA_KEYWORD_WHILE,
     TEA_NUMBER_OF_KEYWORDS
+};
+
+// Tea standard snippet enumeration for indexing g_teastandardsnippets (defined in stdlib.cpp)
+enum
+{
+    TEA_SNIPPET_STD_INPUT,
+    TEA_SNIPPET_STD_IS_VARIABLE,
+    TEA_SNIPPET_STD_PRINT,
+    TEA_SNIPPET_STD_PRINT_LINE,
+    TEA_SNIPPET_STD_TO_FLOAT,
+    TEA_SNIPPET_STD_TO_INT,
+    TEA_SNIPPET_STD_TO_STRING,
+    TEA_NUMBER_OF_STANDARD_SNIPPETS
 };
 
 #endif

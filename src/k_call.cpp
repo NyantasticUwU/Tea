@@ -1,6 +1,7 @@
 #include "error.hpp"
 #include "k_call.hpp"
 #include "runtea.hpp"
+#include "stdlib.hpp"
 
 // Extracts characters until the given character is encountered
 static void getCharacters(const std::string &statement, std::string &str, std::size_t &&pos, const char &endchar)
@@ -14,8 +15,8 @@ static void getCharacters(const std::string &statement, std::string &str, std::s
 }
 
 // Called when the call keyword is called in tea
-void kCall(const std::string &statement, const int &line, const char *&filename, const teaString_t &teaStrings,
-           const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaSnippet_t &teaSnippets)
+void kCall(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
+           teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
 {
     static std::string s_callType;
     static std::string s_snippetName;
@@ -33,6 +34,8 @@ void kCall(const std::string &statement, const int &line, const char *&filename,
                 return;
             }
         }
+        if (handleStandardSnippet(s_snippetName, teaStrings, teaInts, teaFloats, teaSnippets))
+            return;
         teaSyntaxError(line, filename, "Snippet could not be found.");
     }
     teaSyntaxError(line, filename, "Invalid call type.");
