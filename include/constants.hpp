@@ -29,6 +29,12 @@ enum
 // Tea standard snippet enumeration for indexing g_teastandardsnippets (defined in stdlib.cpp)
 enum
 {
+    TEA_SNIPPET_FILE_APPEND,
+    TEA_SNIPPET_FILE_APPEND_LINE,
+    TEA_SNIPPET_FILE_READ,
+    TEA_SNIPPET_FILE_READ_LINE,
+    TEA_SNIPPET_STD_FILE_WRITE,
+    TEA_SNIPPET_STD_FILE_WRITE_LINE,
     TEA_SNIPPET_STD_INPUT,
     TEA_SNIPPET_STD_IS_VARIABLE,
     TEA_SNIPPET_STD_PRINT,

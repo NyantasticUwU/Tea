@@ -13,8 +13,8 @@ using standardsnippet_t = std::function<void(teaString_t &teaStrings, teaInt_t &
 // Represents a snippet within teas std lib
 struct TeaStandardSnippet
 {
-    std::string name;
-    standardsnippet_t snippet;
+    const char *name;
+    const standardsnippet_t snippet;
 };
 
 #endif
