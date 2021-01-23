@@ -2,6 +2,7 @@
 #include "error.hpp"
 #include "stdlib.hpp"
 #include "TeaStandardSnippet.hpp"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -20,7 +21,7 @@ static const T &getTeaVariable(const std::vector<T> &typevec, const std::string 
         if (t.getname() == varname)
             return t;
     }
-    teaError("Unable to find variable.", 13);
+    teaError("Unable to find " + varname + '.', 13);
     return typevec[typevec.size()]; // end
 }
 
@@ -39,7 +40,37 @@ static const bool isVar(const std::vector<T> &typevec, const std::string &varnam
 // Contains all std snippets
 namespace stdSnippet
 {
+    // Tea standard create directory snippet
+    // Takes string tsCreateDirectory
+    static void createDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    {
+        std::filesystem::create_directories(getTeaVariable(teaStrings, "tsCreateDirectory").getvalue());
+    }
+
+    // Tea standard create file snippet
+    // Takes string tsCreateFile
+    static void createFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    {
+        sg_of.open(getTeaVariable(teaStrings, "tsCreateFile").getvalue());
+        sg_of.close();
+    }
+
+    // Tea standard delete directory snippet
+    // Takes string tsDeleteDirectory
+    static void deleteDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    {
+        std::filesystem::remove_all(getTeaVariable(teaStrings, "tsDeleteDirectory").getvalue());
+    }
+
+    // Tea standard delete file snippet
+    // Takes string tsDeleteFile
+    static void deleteFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    {
+        std::filesystem::remove(getTeaVariable(teaStrings, "tsDeleteFile").getvalue());
+    }
+
     // Tea standard file append snippet
+    // Takes string tsFileAppendFile, string tsFileAppendOut
     static void fileAppend(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileAppendFile").getvalue(), std::ios_base::app);
@@ -48,6 +79,7 @@ namespace stdSnippet
     }
 
     // Tea standard file append line snippet
+    // Takes string tsFileAppendLineFile, string tsFileAppendLineOut
     static void fileAppendLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileAppendLineFile").getvalue(), std::ios_base::app);
@@ -56,6 +88,8 @@ namespace stdSnippet
     }
 
     // Tea standard file read snippet
+    // Takes string tsFileReadFile
+    // Outputs string fsFileReadString
     static void fileRead(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         sg_read.clear();
@@ -73,6 +107,8 @@ namespace stdSnippet
     }
 
     // Tea standard file read line snippet
+    // Takes int tsFileReadLineLine, string tsFileReadLineFile
+    // Outputs string fsFileReadLineString
     static void fileReadLine(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
     {
         const std::size_t &&lineToRead{
@@ -95,6 +131,7 @@ namespace stdSnippet
     }
 
     // Tea standard file write snippet
+    // Takes string tsFileWriteFile, string tsFileWriteOut
     static void fileWrite(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileWriteFile").getvalue());
@@ -103,6 +140,7 @@ namespace stdSnippet
     }
 
     // Tea standard file write line snippet
+    // Takes string tsFileWriteLineFile, string tsFileWriteLineOut
     static void fileWriteLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileWriteLineFile").getvalue());
@@ -111,6 +149,7 @@ namespace stdSnippet
     }
 
     // Tea standard input snippet
+    // Outputs string fsInput
     static void input(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         static std::string s_in;
@@ -119,6 +158,8 @@ namespace stdSnippet
     }
 
     // Tea standard is variable snippet
+    // Takes string tsVariableName
+    // Outputs int fsIsVariable
     static void isVariable(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
                            teaSnippet_t &teaSnippets)
     {
@@ -131,18 +172,22 @@ namespace stdSnippet
     }
 
     // Tea standard print snippet
+    // Takes string tsPrint
     static void print(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         std::cout << getTeaVariable(teaStrings, "tsPrint").getvalue();
     }
 
     // Tea standard print line snippet
+    // Takes string tsPrintLine
     static void printLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         std::cout << getTeaVariable(teaStrings, "tsPrintLine").getvalue() << '\n';
     }
 
     // Tea standard to float snippet
+    // Takes int | string tsToFloat
+    // Outputs float fsToFloat
     static void toFloat(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
     {
         if (isVar(teaInts, "tsToFloat"))
@@ -160,6 +205,8 @@ namespace stdSnippet
     }
 
     // Tea standard to int snippet
+    // Takes float | string tsToInt
+    // Outputs fsToInt
     static void toInt(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
     {
         if (isVar(teaFloats, "tsToInt"))
@@ -176,6 +223,8 @@ namespace stdSnippet
     }
 
     // Tea standard to string snippet
+    // Takes int | float tsToString
+    // Outputs string fsToString
     static void toString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
     {
         if (isVar(teaInts, "tsToString"))
@@ -195,6 +244,10 @@ namespace stdSnippet
 
 // Defining globals
 const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
+    {"stdCreateDirectory", stdSnippet::createDirectory},
+    {"stdCreateFile", stdSnippet::createFile},
+    {"stdDeleteDirectory", stdSnippet::deleteDirectory},
+    {"stdDeleteFile", stdSnippet::deleteFile},
     {"stdFileAppend", stdSnippet::fileAppend},
     {"stdFileAppendLine", stdSnippet::fileAppendLine},
     {"stdFileRead", stdSnippet::fileRead},
