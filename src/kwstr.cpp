@@ -1,5 +1,6 @@
 #include "error.hpp"
 #include "kwstr.hpp"
+#include "stringsupport.hpp"
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
@@ -28,32 +29,12 @@ static void checkStringLiteral(const std::string &statement, const std::size_t &
 }
 
 // Loops through each character in the string literal and adds it to the command string
-static void getContent(const std::string &statement, const std::size_t &statementSize, const int &line,
-                       const char *&filename, const int &kwlen)
+static void getContent(const std::string &statement, const std::size_t &statementSize, const int &kwlen)
 {
     sg_content.clear();
     for (std::size_t &&i{static_cast<std::size_t>(kwlen + 2)}; i < statementSize; ++i)
-    {
-        if (statement[i] == '"') // statement[i - 1] will not be a backslash
-        {
-            if (i + 1U != statementSize) // If statement has trailing characters
-                teaSyntaxError(line, filename, "No characters are allowed after string literal.");
-            break;
-        }
-        if (statement[i] == '\\' && statement[i + 1U] == '\\')
-        {
-            sg_content.push_back('\\');
-            ++i;
-            continue;
-        }
-        if (statement[i] == '\\' && statement[i + 1U] == '"')
-        {
-            sg_content.push_back('"');
-            ++i;
-            continue;
-        }
         sg_content.push_back(statement[i]);
-    }
+    formatTeaString(sg_content);
 }
 
 // Extracts chars inside string literal and puts it in command
@@ -66,6 +47,6 @@ std::string &getStringLiteral(const std::string &statement, const int &line, con
         teaSyntaxError(line, filename, "String literal required here.");
     const std::size_t &&statementSize{statement.size()};
     checkStringLiteral(statement, statementSize, line, filename, kwlen);
-    getContent(statement, statementSize, line, filename, kwlen);
+    getContent(statement, statementSize - 1U, kwlen);
     return sg_content;
 }

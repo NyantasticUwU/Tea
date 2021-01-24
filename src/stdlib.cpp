@@ -1,6 +1,7 @@
 #include "constants.hpp"
 #include "error.hpp"
 #include "stdlib.hpp"
+#include "stringsupport.hpp"
 #include "TeaStandardSnippet.hpp"
 #include <filesystem>
 #include <fstream>
@@ -95,14 +96,8 @@ namespace stdSnippet
         sg_read.clear();
         sg_if.open(getTeaVariable(teaStrings, "tsFileReadFile").getvalue());
         while (std::getline(sg_if, sg_line))
-            sg_read.append(sg_line);
+            sg_read.append(sg_line + '\n');
         sg_if.close();
-        const std::size_t &&readSize{sg_read.size()};
-        for (std::size_t &&i{0U}; i < readSize; ++i)
-        {
-            if (sg_read[i] == '"' || sg_read[i] == '\\')
-                sg_read.insert(i++, 1U, '\\');
-        }
         teaStrings.push_back({"fsFileReadString", sg_read});
     }
 
@@ -121,12 +116,6 @@ namespace stdSnippet
                 break;
         }
         sg_if.close();
-        const std::size_t &&lineSize{sg_line.size()};
-        for (i = 0U; i < lineSize; ++i)
-        {
-            if (sg_line[i] == '"' || sg_line[i] == '\\')
-                sg_line.insert(i++, 1U, '\\');
-        }
         teaStrings.push_back({"fsFileReadLineString", sg_line});
     }
 

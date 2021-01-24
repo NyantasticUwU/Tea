@@ -1,4 +1,5 @@
 #include "k_emplace.hpp"
+#include "stringsupport.hpp"
 
 // Emplaces variable into statement
 static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
@@ -10,8 +11,11 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
     {
         if (ts.getname() == varname)
         {
+            static std::string s_str;
+            s_str = ts.getvalue();
+            unformatTeaString(s_str);
             prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
-                                 isInString ? ts.getvalue() : '"' + ts.getvalue() + '"');
+                                 isInString ? s_str : '"' + s_str + '"');
             statementSize = prestatement.size();
             isVarFound = true;
             return;
