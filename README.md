@@ -13,12 +13,19 @@ Logo author: [Marquitta Spagnolo](https://pixy.org/author/Marquitta_Spagnolo/)
 ## Syntax
 ```py
 # Make a string of text
-string helloWorld "Hello, world!"
+# The standard library stdPrint snippet requires a string with the name tsPrint
+# The ts prefix stands for "to snippet"
+string tsPrint "Hello, world!\n"
 
-# Make a system call
-emplace system "echo {helloWorld}"
+# Print to stdout
+# As of now tea's standard library only consists of snippets
+# All standard library snippets start with the std prefix
+# Some snippets will return with new variables, prefixed with fs (from snippet)
+call snippet stdPrint
 
 # Exit with code 0 (arg count - arg count)
+# The emplace keyword is used to emplace variables
+# argc is a predefined variable that stands for arg count
 emplace exit {argc} - {argc}
 ```
 Tea has very strict syntax as of now. So strict to the point that even some forms of whitespace can cause your \
