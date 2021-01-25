@@ -174,6 +174,17 @@ namespace stdSnippet
         std::cout << getTeaVariable(teaStrings, "tsPrintLine").getvalue() << '\n';
     }
 
+    // Tea standard substring snippet
+    // Takes string tsSubString, int tsSubStringStart, int tsSubStringCount
+    // Outputs string fsSubStrings
+    static void subString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const int &start{getTeaVariable(teaInts, "tsSubStringStart").getvalue()};
+        const int &count{getTeaVariable(teaInts, "tsSubStringCount").getvalue()};
+        const std::string &ts{getTeaVariable(teaStrings, "tsSubString").getvalue()};
+        teaStrings.push_back({"fsSubString", ts.substr(start, count)});
+    }
+
     // Tea standard to float snippet
     // Takes int | string tsToFloat
     // Outputs float fsToFloat
@@ -247,6 +258,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdIsVariable", stdSnippet::isVariable},
     {"stdPrint", stdSnippet::print},
     {"stdPrintLine", stdSnippet::printLine},
+    {"stdSubString", stdSnippet::subString},
     {"stdToFloat", stdSnippet::toFloat},
     {"stdToInt", stdSnippet::toInt},
     {"stdToString", stdSnippet::toString}};
