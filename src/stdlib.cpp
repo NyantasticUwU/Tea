@@ -88,6 +88,31 @@ namespace stdSnippet
         sg_of.close();
     }
 
+    // Tea standard file get line count
+    // Takes string tsFileGetLineCountFile
+    // Outputs int fsFileLineCount
+    static void fileGetLineCount(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        static std::string s_;
+        sg_if.open(getTeaVariable(teaStrings, "tsFileGetLineCountFile").getvalue());
+        int &&lineCount{0};
+        while (std::getline(sg_if, s_))
+            ++lineCount;
+        sg_if.close();
+        if (s_ == "")
+            lineCount += 1;
+        teaInts.push_back({"fsFileLineCount", lineCount});
+    }
+
+    // Tea standard file get size snippet
+    // Takes string tsFileGetSizeFile
+    // Outputs int fsFileSize
+    static void fileGetSize(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const std::string &val{getTeaVariable(teaStrings, "tsFileGetSizeFile").getvalue()};
+        teaInts.push_back({"fsFileSize", static_cast<int>(std::filesystem::file_size(val))});
+    }
+
     // Tea standard file read snippet
     // Takes string tsFileReadFile
     // Outputs string fsFileReadString
@@ -250,6 +275,8 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdDeleteFile", stdSnippet::deleteFile},
     {"stdFileAppend", stdSnippet::fileAppend},
     {"stdFileAppendLine", stdSnippet::fileAppendLine},
+    {"stdFileGetLineCount", stdSnippet::fileGetLineCount},
+    {"stdFileGetSize", stdSnippet::fileGetSize},
     {"stdFileRead", stdSnippet::fileRead},
     {"stdFileReadLine", stdSnippet::fileReadLine},
     {"stdFileWrite", stdSnippet::fileWrite},
