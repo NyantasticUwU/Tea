@@ -31,7 +31,8 @@ void kCall(
         {
             if (ts.getname() == s_snippetName)
             {
-                runTea(ts.getbody(), filename, &teaStrings, &teaInts, &teaFloats, &teaSnippets);
+                int &&ln{0};
+                loopTeaStatements(ts.getbody(), ln, filename, teaStrings, teaInts, teaFloats, teaSnippets);
                 return;
             }
         }
