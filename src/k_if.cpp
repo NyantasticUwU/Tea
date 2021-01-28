@@ -25,15 +25,16 @@ const bool isIfTrue(const std::string &statement, const int &line, const char *&
 const bool isEnteringBlock(const std::string &statement) noexcept
 {
     return startsWithKeyword(statement, "if ") || startsWithKeyword(statement, "while ") ||
-           startsWithKeyword(statement, "snippet ") ||
-           startsWithKeyword(statement, "emplace if ") || startsWithKeyword(statement, "emplace while ") ||
-           startsWithKeyword(statement, "emplace snippet ");
+        startsWithKeyword(statement, "snippet ") ||
+        startsWithKeyword(statement, "emplace if ") || startsWithKeyword(statement, "emplace while ") ||
+        startsWithKeyword(statement, "emplace snippet ");
 }
 
 // Called when if keyword is called in tea
-void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
-         const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-         teaSnippet_t &teaSnippets)
+void kIf(
+    const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
+    const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+    teaSnippet_t &teaSnippets)
 {
     if (isIfTrue(statement, line, filename, 2))
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);

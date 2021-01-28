@@ -34,8 +34,8 @@ const std::vector<std::string> parseFile(const char *&filename)
     {
         s_f.close();
         teaError("ERROR: The given file was unable to be opened.\n"
-                 "Exiting with code 110 (ERROR_OPEN_FAILED).",
-                 110); // Windows' ERROR_OPEN_FAILED (110)
+            "Exiting with code 110 (ERROR_OPEN_FAILED).",
+            110); // Windows' ERROR_OPEN_FAILED (110)
     }
     // Reading data from file into the file string vector (line by line)
     while (std::getline(s_f, s_line))

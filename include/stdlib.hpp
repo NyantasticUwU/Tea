@@ -6,7 +6,8 @@
 #include "TeaString.hpp"
 
 // Handles snippet by given name
-const bool handleStandardSnippet(const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts,
-                                 teaFloat_t &teaFloats, teaSnippet_t &teaSnippets);
+const bool handleStandardSnippet(
+    const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+    teaSnippet_t &teaSnippets);
 
 #endif

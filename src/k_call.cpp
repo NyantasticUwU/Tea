@@ -15,8 +15,9 @@ static void getCharacters(const std::string &statement, std::string &str, std::s
 }
 
 // Called when the call keyword is called in tea
-void kCall(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-           teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
+void kCall(
+    const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
+    teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
 {
     static std::string s_callType;
     static std::string s_snippetName;

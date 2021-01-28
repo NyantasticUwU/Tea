@@ -38,9 +38,9 @@ const bool startsWithKeyword(const std::string &statement, const char *const &te
 }
 
 // Runs tea string vector
-void runTea(const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
-            const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats,
-            const teaSnippet_t *const &pteaSnippets)
+void runTea(
+    const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
+    const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats, const teaSnippet_t *const &pteaSnippets)
 {
     // Defining tea value vectors
     teaFloat_t teaFloats;
@@ -60,9 +60,9 @@ void runTea(const std::vector<std::string> &teafile, const char *&filename, cons
 }
 
 // Runs tea statement
-void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const char *&filename,
-                       teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-                       teaSnippet_t &teaSnippets)
+void loopTeaStatements(
+    const std::vector<std::string> &teafile, int &line, const char *&filename, teaString_t &teaStrings,
+    teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
 {
     // Looping through tea file lines
     const int &&teafileSize{static_cast<int>(teafile.size())};
@@ -170,8 +170,9 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
         // While keyword called
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_WHILE]))
         {
-            kWhile(teafile, teafileSize, teafile[line - 1], line, filename, teaStrings, teaInts, teaFloats,
-                   teaSnippets);
+            kWhile(
+                teafile, teafileSize, teafile[line - 1], line, filename, teaStrings, teaInts, teaFloats,
+                teaSnippets);
             continue;
         }
         // Invalid statement

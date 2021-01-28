@@ -2,10 +2,10 @@
 #include "stringsupport.hpp"
 
 // Emplaces variable into statement
-static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
-                       const std::string &varname, const std::size_t &braceOpenPos,
-                       const std::size_t &braceClosePos, const bool &isInString, const teaString_t &teaStrings,
-                       const teaInt_t &teaInts, const teaFloat_t &teaFloats)
+static void emplaceVar(
+    std::string &prestatement, std::size_t &statementSize, bool &isVarFound, const std::string &varname,
+    const std::size_t &braceOpenPos, const std::size_t &braceClosePos, const bool &isInString,
+    const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats)
 {
     for (const TeaString &ts : teaStrings)
     {
@@ -14,8 +14,10 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
             static std::string s_str;
             s_str = ts.getvalue();
             unformatTeaString(s_str);
-            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
-                                 isInString ? s_str : '"' + s_str + '"');
+            prestatement.replace(
+                prestatement.begin() + braceOpenPos,
+                prestatement.begin() + braceClosePos + 1U,
+                isInString ? s_str : '"' + s_str + '"');
             statementSize = prestatement.size();
             isVarFound = true;
             return;
@@ -25,8 +27,10 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
     {
         if (ti.getname() == varname)
         {
-            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
-                                 std::to_string(ti.getvalue()));
+            prestatement.replace(
+                prestatement.begin() + braceOpenPos,
+                prestatement.begin() + braceClosePos + 1U,
+                std::to_string(ti.getvalue()));
             statementSize = prestatement.size();
             isVarFound = true;
             return;
@@ -36,8 +40,10 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
     {
         if (tf.getname() == varname)
         {
-            prestatement.replace(prestatement.begin() + braceOpenPos, prestatement.begin() + braceClosePos + 1U,
-                                 std::to_string(tf.getvalue()));
+            prestatement.replace(
+                prestatement.begin() + braceOpenPos,
+                prestatement.begin() + braceClosePos + 1U,
+                std::to_string(tf.getvalue()));
             statementSize = prestatement.size();
             isVarFound = true;
             return;
@@ -47,8 +53,8 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
 }
 
 // Emplaces variables into statement
-void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts,
-              const teaFloat_t &teaFloats)
+void kEmplace(
+    std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats)
 {
     static bool s_isVarFound;
     static std::size_t s_braceClosePos, s_braceOpenPos;
@@ -81,8 +87,9 @@ void kEmplace(std::string &prestatement, const teaString_t &teaStrings, const te
             s_braceClosePos = i;
             if (isInBrace)
             {
-                emplaceVar(prestatement, statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
-                           isInString, teaStrings, teaInts, teaFloats);
+                emplaceVar(
+                    prestatement, statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
+                    isInString, teaStrings, teaInts, teaFloats);
                 i = s_isVarFound ? (s_braceOpenPos > 0U ? s_braceOpenPos - 1U : 0U) : s_braceClosePos;
             }
             isInBrace = false;

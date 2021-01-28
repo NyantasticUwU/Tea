@@ -174,8 +174,8 @@ namespace stdSnippet
     // Tea standard is variable snippet
     // Takes string tsVariableName
     // Outputs int fsIsVariable
-    static void isVariable(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-                           teaSnippet_t &teaSnippets)
+    static void isVariable(
+        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
     {
         const std::string &varname{getTeaVariable(teaStrings, "tsVariableName").getvalue()};
         if (isVar(teaStrings, varname) || isVar(teaInts, varname) ||
@@ -217,8 +217,8 @@ namespace stdSnippet
     {
         if (isVar(teaInts, "tsToFloat"))
         {
-            teaFloats.push_back({"fsToFloat",
-                                 static_cast<float>(getTeaVariable(teaInts, "tsToFloat").getvalue())});
+            teaFloats.push_back(
+                {"fsToFloat", static_cast<float>(getTeaVariable(teaInts, "tsToFloat").getvalue())});
             return;
         }
         if (isVar(teaStrings, "tsToFloat"))
@@ -259,8 +259,8 @@ namespace stdSnippet
         }
         if (isVar(teaFloats, "tsToString"))
         {
-            teaStrings.push_back({"fsToString",
-                                  std::to_string(getTeaVariable(teaFloats, "tsToString").getvalue())});
+            teaStrings.push_back(
+                {"fsToString", std::to_string(getTeaVariable(teaFloats, "tsToString").getvalue())});
             return;
         }
         teaError("Unable to convert variable to string.", 13);
@@ -291,8 +291,9 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdToString", stdSnippet::toString}};
 
 // Handles snippet by given name
-const bool handleStandardSnippet(const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts,
-                                 teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
+const bool handleStandardSnippet(
+    const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+    teaSnippet_t &teaSnippets)
 {
     for (const TeaStandardSnippet &tss : g_teastandardsnippets)
     {

@@ -5,7 +5,8 @@
 #include "TeaString.hpp"
 
 // Called when import keyword is called in tea
-void kImport(const std::string &statement, const int &line, const char *&filename, const teaString_t &teaStrings,
-             const teaInt_t &teaInts, const teaFloat_t &teaFloats);
+void kImport(
+    const std::string &statement, const int &line, const char *&filename, const teaString_t &teaStrings,
+    const teaInt_t &teaInts, const teaFloat_t &teaFloats);
 
 #endif

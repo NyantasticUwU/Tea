@@ -7,8 +7,9 @@
 extern std::string g_varname;
 
 // Called when the snippet keyword is called in tea
-void kSnippet(const std::vector<std::string> &teafile, const std::string &statement, int &line,
-			  const char *&filename, teaSnippet_t &teaSnippets)
+void kSnippet(
+	const std::vector<std::string> &teafile, const std::string &statement, int &line, const char *&filename,
+	teaSnippet_t &teaSnippets)
 {
 	static std::string s_name;
 	static teaSnippetBody_t s_body;

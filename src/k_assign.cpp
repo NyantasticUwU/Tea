@@ -9,8 +9,8 @@ static std::string sg_var;
 static std::string sg_varname;
 
 // Gets assignment type
-static void getAssignmentType(const std::string &statement, const std::size_t &statementSize, const int &line,
-                              const char *&filename)
+static void getAssignmentType(
+    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
 {
     sg_assignmentType.clear();
     for (sg_i = 7U; sg_i < statementSize; ++sg_i)
@@ -24,8 +24,8 @@ static void getAssignmentType(const std::string &statement, const std::size_t &s
 }
 
 // Gets var name
-static void getVarname(const std::string &statement, const std::size_t &statementSize, const int &line,
-                       const char *&filename)
+static void getVarname(
+    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
 {
     sg_varname.clear();
     for (++sg_i; sg_i < statementSize; ++sg_i)
@@ -39,8 +39,8 @@ static void getVarname(const std::string &statement, const std::size_t &statemen
 }
 
 // Gets var
-static void getVar(const std::string &statement, const std::size_t &statementSize, const int &line,
-                   const char *&filename)
+static void getVar(
+    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
 {
     sg_var.clear();
     for (++sg_i; sg_i < statementSize; ++sg_i)
@@ -112,8 +112,9 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
 }
 
 // Called when the assign keyword is called in tea
-void kAssign(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-             teaInt_t &teaInts, teaFloat_t &teaFloats)
+void kAssign(
+    const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
+    teaInt_t &teaInts, teaFloat_t &teaFloats)
 {
     const std::size_t &&statementSize{statement.size()};
     getAssignmentType(statement, statementSize, line, filename);

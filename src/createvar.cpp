@@ -17,8 +17,9 @@ std::string g_varname;
 extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 
 // Checks for amount of spaces
-static void checkSpaces(const std::string &statement, const std::size_t &statementSize, const int &line,
-                        const char *&filename, const int &kwlen)
+static void checkSpaces(
+    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename,
+    const int &kwlen)
 {
     bool &&isInString{false};
     int &&spaceCount{0};
@@ -60,23 +61,23 @@ static void getVarName(const std::string &statement, const std::size_t &statemen
 // Makes sure variable name is valid
 static void validateVarName(const int &line, const char *&filename)
 {
-    if (std::any_of(g_teakeywords, g_teakeywords + TEA_NUMBER_OF_KEYWORDS,
-                    [&](const char *&str) noexcept -> const bool {
-                        return str == g_varname;
-                    }))
+    if (std::any_of(
+        g_teakeywords,
+        g_teakeywords + TEA_NUMBER_OF_KEYWORDS,
+        [&](const char *&str) noexcept -> const bool { return str == g_varname; }))
         teaSyntaxError(line, filename, "Variable name cannot be a keyword.");
-    if (std::none_of(std::begin(scg_validChars) + 10, std::end(scg_validChars),
-                     [&](const char &c) noexcept -> const bool {
-                         return c == g_varname[0U];
-                     }))
+    if (std::none_of(
+        std::begin(scg_validChars) + 10,
+        std::end(scg_validChars),
+        [&](const char &c) noexcept -> const bool { return c == g_varname[0U]; }))
         teaSyntaxError(line, filename, "Invalid variable name.");
     const std::size_t &&varnameSize{g_varname.size()};
     for (std::size_t &&i{1U}; i < varnameSize; ++i)
     {
-        if (std::none_of(std::begin(scg_validChars), std::end(scg_validChars),
-                         [&](const char &c) noexcept -> const bool {
-                             return c == g_varname[i];
-                         }))
+        if (std::none_of(
+            std::begin(scg_validChars),
+            std::end(scg_validChars),
+            [&](const char &c) noexcept -> const bool { return c == g_varname[i]; }))
             teaSyntaxError(line, filename, "Invalid variable name.");
     }
 }
