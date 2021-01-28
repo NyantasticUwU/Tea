@@ -210,6 +210,13 @@ namespace stdSnippet
         teaStrings.push_back({"fsSubString", ts.substr(start, count)});
     }
 
+    // Tea standard time snippet
+    // Outputs int fsTime
+    static void time(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        teaInts.push_back({"fsTime", static_cast<int>(std::time(nullptr))});
+    }
+
     // Tea standard to float snippet
     // Takes int | string tsToFloat
     // Outputs float fsToFloat
@@ -286,6 +293,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdPrint", stdSnippet::print},
     {"stdPrintLine", stdSnippet::printLine},
     {"stdSubString", stdSnippet::subString},
+    {"stdTime", stdSnippet::time},
     {"stdToFloat", stdSnippet::toFloat},
     {"stdToInt", stdSnippet::toInt},
     {"stdToString", stdSnippet::toString}};
