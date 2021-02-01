@@ -6,8 +6,16 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <random>
+
+// Using declarations
+using int_dist_t = std::uniform_int_distribution<int>;
+using float_dist_t = std::uniform_real_distribution<float>;
 
 // Defining static globals
+static std::mt19937 sg_randgen{std::random_device{}()};
+static int_dist_t sg_intranddist;
+static float_dist_t sg_floatranddist;
 static std::string sg_line;
 static std::string sg_read;
 static std::ifstream sg_if;
@@ -199,6 +207,63 @@ namespace stdSnippet
         std::cout << getTeaVariable(teaStrings, "tsPrintLine").getvalue() << '\n';
     }
 
+    // Tea standard random float snippet
+    // Outputs fsRandomFloat
+    static void randomFloat(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    {
+        teaFloats.push_back({"fsRandomFloat", sg_floatranddist(sg_randgen)});
+    }
+
+    // Tea standard random int snippet
+    // Outputs int fsRandomInt
+    static void randomInt(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        teaInts.push_back({"fsRandomInt", sg_intranddist(sg_randgen)});
+    }
+
+    // Tea stnadard set random float max snippet
+    // Takes int tsRandomFloatMax
+    static void setRandomFloatMax(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    {
+        const float &&a{sg_floatranddist.a()};
+        const float &b{getTeaVariable(teaFloats, "tsRandomFloatMax").getvalue()};
+        sg_floatranddist.param(float_dist_t::param_type{a, b});
+    }
+
+    // Tea standard set random float min snippet
+    // Takes int tsRandomFloatMin
+    static void setRandomFloatMin(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    {
+        const float &a{getTeaVariable(teaFloats, "tsRandomFloatMin").getvalue()};
+        const float &&b{sg_floatranddist.b()};
+        sg_floatranddist.param(float_dist_t::param_type{a, b});
+    }
+
+    // Tea standard set random int max snippet
+    // Takes int tsRandomIntMax
+    static void setRandomIntMax(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const int &&a{sg_intranddist.a()};
+        const int &b{getTeaVariable(teaInts, "tsRandomIntMax").getvalue()};
+        sg_intranddist.param(int_dist_t::param_type{a, b});
+    }
+
+    // Tea standard set random int min snippet
+    // Takes int tsRandomIntMin
+    static void setRandomIntMin(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const int &a{getTeaVariable(teaInts, "tsRandomIntMin").getvalue()};
+        const int &&b{sg_intranddist.b()};
+        sg_intranddist.param(int_dist_t::param_type{a, b});
+    }
+
+    // Tea standard set random seed snippet
+    // Takes int tsSeed
+    static void setRandomSeed(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        sg_randgen.seed(getTeaVariable(teaInts, "tsSeed").getvalue());
+    }
+
     // Tea standard substring snippet
     // Takes string tsSubString, int tsSubStringStart, int tsSubStringCount
     // Outputs string fsSubStrings
@@ -292,6 +357,13 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdIsVariable", stdSnippet::isVariable},
     {"stdPrint", stdSnippet::print},
     {"stdPrintLine", stdSnippet::printLine},
+    {"stdRandomFloat", stdSnippet::randomFloat},
+    {"stdRandomInt", stdSnippet::randomInt},
+    {"stdSetRandomFloatMax", stdSnippet::setRandomFloatMax},
+    {"stdSetRandomFloatMin", stdSnippet::setRandomFloatMin},
+    {"stdSetRandomIntMax", stdSnippet::setRandomIntMax},
+    {"stdSetRandomIntMin", stdSnippet::setRandomIntMin},
+    {"stdSetRandomSeed", stdSnippet::setRandomSeed},
     {"stdSubString", stdSnippet::subString},
     {"stdTime", stdSnippet::time},
     {"stdToFloat", stdSnippet::toFloat},

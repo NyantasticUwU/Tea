@@ -43,7 +43,6 @@ const std::vector<std::string> parseFile(const char *&filename)
         stripLine(s_line);
         s_file.push_back(s_line);
     }
-    s_line.clear();
     s_f.close();
     return s_file;
 }

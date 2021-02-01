@@ -11,7 +11,7 @@ using standardsnippet_t = std::function<void(
     teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)>;
 
 // Represents a snippet within teas std lib
-struct TeaStandardSnippet
+struct TeaStandardSnippet final
 {
     const char *name;
     const standardsnippet_t snippet;
