@@ -1,5 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "constants.hpp"
 #include "error.hpp"
+#include "runtea.hpp"
 #include "stdlib.hpp"
 #include "stringsupport.hpp"
 #include "TeaStandardSnippet.hpp"
@@ -7,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <thread>
 
 // Using declarations
 using int_dist_t = std::uniform_int_distribution<int>;
@@ -17,7 +20,6 @@ static std::mt19937 sg_randgen{std::random_device{}()};
 static int_dist_t sg_intranddist;
 static float_dist_t sg_floatranddist;
 static std::string sg_line;
-static std::string sg_read;
 static std::ifstream sg_if;
 static std::ofstream sg_of;
 
@@ -38,12 +40,12 @@ static const T &getTeaVariable(const std::vector<T> &typevec, const std::string 
 template <typename T>
 static const bool isVar(const std::vector<T> &typevec, const std::string &varname)
 {
-    for (const T &t : typevec)
-    {
-        if (t.getname() == varname)
-            return true;
-    }
-    return false;
+    return std::any_of(
+        typevec.begin(),
+        typevec.end(),
+        [&](const T &t) -> const bool {
+            return t.getname() == varname;
+        });
 }
 
 // Contains all std snippets
@@ -76,6 +78,17 @@ namespace stdSnippet
     static void deleteFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
         std::filesystem::remove(getTeaVariable(teaStrings, "tsDeleteFile").getvalue());
+    }
+
+    // Tea standard execute snippet
+    // Takes string tsExecute
+    static void execute(
+        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
+    {
+        const std::vector<std::string> &&teafile{{getTeaVariable(teaStrings, "tsExecute").getvalue()}};
+        int &&line{0};
+        const char *&&filename{"stdExecute"};
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
     }
 
     // Tea standard file append snippet
@@ -126,12 +139,13 @@ namespace stdSnippet
     // Outputs string fsFileReadString
     static void fileRead(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
     {
-        sg_read.clear();
+        static std::string s_read;
+        s_read.clear();
         sg_if.open(getTeaVariable(teaStrings, "tsFileReadFile").getvalue());
         while (std::getline(sg_if, sg_line))
-            sg_read.append(sg_line + '\n');
+            s_read.append(sg_line + '\n');
         sg_if.close();
-        teaStrings.push_back({"fsFileReadString", sg_read});
+        teaStrings.push_back({"fsFileReadString", s_read});
     }
 
     // Tea standard file read line snippet
@@ -264,6 +278,23 @@ namespace stdSnippet
         sg_randgen.seed(getTeaVariable(teaInts, "tsSeed").getvalue());
     }
 
+    // Tea standard sleep snippet
+    // Takes int tsSleepTime
+    static void sleep(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const int &t{getTeaVariable(teaInts, "tsSleepTime").getvalue()};
+        std::this_thread::sleep_for(static_cast<std::chrono::milliseconds>(t));
+    }
+
+    // Tea standard string length snippet
+    // Takes string tsStringLength
+    // Outputs int fsStringLength
+    static void stringLength(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        const int &&fs{static_cast<int>(getTeaVariable(teaStrings, "tsStringLength").getvalue().size())};
+        teaInts.push_back({"fsStringLength", fs});
+    }
+
     // Tea standard substring snippet
     // Takes string tsSubString, int tsSubStringStart, int tsSubStringCount
     // Outputs string fsSubStrings
@@ -280,6 +311,21 @@ namespace stdSnippet
     static void time(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
     {
         teaInts.push_back({"fsTime", static_cast<int>(std::time(nullptr))});
+    }
+
+    // Tea standard time local snippet
+    // Outputs int fsSecond, int fsMinute, int fsHour, int fsDay, int fsMonth, int fsYear, int fsIsDaylightSaving
+    static void timeLocal(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    {
+        std::time_t &&t{std::time(nullptr)};
+        std::tm &time{*std::localtime(&t)};
+        teaInts.push_back({"fsSecond", time.tm_sec});
+        teaInts.push_back({"fsMinute", time.tm_min});
+        teaInts.push_back({"fsHour", time.tm_hour});
+        teaInts.push_back({"fsDay", time.tm_mday});
+        teaInts.push_back({"fsMonth", 1 + time.tm_mon});
+        teaInts.push_back({"fsYear", 1900 + time.tm_year});
+        teaInts.push_back({"fsIsDaylightSaving", time.tm_isdst});
     }
 
     // Tea standard to float snippet
@@ -345,6 +391,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdCreateFile", stdSnippet::createFile},
     {"stdDeleteDirectory", stdSnippet::deleteDirectory},
     {"stdDeleteFile", stdSnippet::deleteFile},
+    {"stdExecute", stdSnippet::execute},
     {"stdFileAppend", stdSnippet::fileAppend},
     {"stdFileAppendLine", stdSnippet::fileAppendLine},
     {"stdFileGetLineCount", stdSnippet::fileGetLineCount},
@@ -364,8 +411,11 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdSetRandomIntMax", stdSnippet::setRandomIntMax},
     {"stdSetRandomIntMin", stdSnippet::setRandomIntMin},
     {"stdSetRandomSeed", stdSnippet::setRandomSeed},
+    {"stdSleep", stdSnippet::sleep},
+    {"stdStringLength", stdSnippet::stringLength},
     {"stdSubString", stdSnippet::subString},
     {"stdTime", stdSnippet::time},
+    {"stdTimeLocal", stdSnippet::timeLocal},
     {"stdToFloat", stdSnippet::toFloat},
     {"stdToInt", stdSnippet::toInt},
     {"stdToString", stdSnippet::toString}};
