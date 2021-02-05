@@ -3,17 +3,18 @@
 #include "evalops.hpp"
 #include "k_assign.hpp"
 #include "k_call.hpp"
+#include "k_declare.hpp"
 #include "k_delete.hpp"
 #include "k_elif.hpp"
 #include "k_else.hpp"
 #include "k_emplace.hpp"
 #include "k_exit.hpp"
 #include "k_float.hpp"
-#include "k_snippet.hpp"
 #include "k_if.hpp"
 #include "k_import.hpp"
 #include "k_include.hpp"
 #include "k_int.hpp"
+#include "k_snippet.hpp"
 #include "k_string.hpp"
 #include "k_system.hpp"
 #include "k_while.hpp"
@@ -90,6 +91,12 @@ void loopTeaStatements(
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_CALL]))
         {
             kCall(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
+            continue;
+        }
+        // Declare keyword called
+        else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_DECLARE]))
+        {
+            kDeclare(statement, line, filename);
             continue;
         }
         // Delete keyword called

@@ -10,6 +10,7 @@
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "assign",
     "call",
+    "declare",
     "delete",
     "elif",
     "else",

@@ -33,7 +33,7 @@ static const T &getTeaVariable(const std::vector<T> &typevec, const std::string 
             return t;
     }
     teaError("Unable to find " + varname + '.', 13);
-    return typevec[typevec.size()]; // end
+    return *typevec.end();
 }
 
 // Checks if any vars are equal to tsVariableName
@@ -114,14 +114,13 @@ namespace stdSnippet
     // Outputs int fsFileLineCount
     static void fileGetLineCount(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
     {
-        static std::string s_;
         sg_if.open(getTeaVariable(teaStrings, "tsFileGetLineCountFile").getvalue());
         int &&lineCount{0};
-        while (std::getline(sg_if, s_))
+        while (std::getline(sg_if, sg_line))
             ++lineCount;
         sg_if.close();
-        if (s_ == "")
-            lineCount += 1;
+        if (!sg_line.size())
+            ++lineCount;
         teaInts.push_back({"fsFileLineCount", lineCount});
     }
 
