@@ -6,14 +6,14 @@
 static void stripLine(std::string &line)
 {
     // Stripping front of line
-    while (line.size() > 0U)
+    while (line.size())
     {
         if (!std::isblank(line.front()))
             break;
         line.erase(line.cbegin());
     }
     // Stripping end of line
-    while (line.size() > 0U)
+    while (line.size())
     {
         if (!std::isblank(line.back()))
             break;
@@ -22,12 +22,10 @@ static void stripLine(std::string &line)
 }
 
 // Parses given file (c-str) into a string vector containing each line in the file
-const std::vector<std::string> parseFile(const char *&filename)
+const std::vector<std::string> &parseFile(std::vector<std::string> &file, const char *&filename)
 {
     static std::ifstream s_f;
     static std::string s_line;
-    static std::vector<std::string> s_file;
-    s_file.clear();
     // Creating and opening input file stream
     s_f.open(filename);
     if (!s_f)
@@ -41,8 +39,8 @@ const std::vector<std::string> parseFile(const char *&filename)
     while (std::getline(s_f, s_line))
     {
         stripLine(s_line);
-        s_file.push_back(s_line);
+        file.push_back(s_line);
     }
     s_f.close();
-    return s_file;
+    return file;
 }
