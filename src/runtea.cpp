@@ -24,7 +24,7 @@
 extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 
 // Checks if statement starts with the given keyword
-const bool startsWithKeyword(const std::string &statement, const char *const &teaKeyword) noexcept
+inline const bool startsWithKeyword(const std::string &statement, const char *const &teaKeyword) noexcept
 {
     static std::size_t s_statementSize;
     s_statementSize = statement.size();
