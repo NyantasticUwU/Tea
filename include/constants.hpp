@@ -6,6 +6,7 @@
 // Tea keyword enumeration for indexing g_teakeywords (defined in main.cpp)
 enum
 {
+    TEA_KEYWORD_ARRAY,
     TEA_KEYWORD_ASSIGN,
     TEA_KEYWORD_CALL,
     TEA_KEYWORD_DECLARE,

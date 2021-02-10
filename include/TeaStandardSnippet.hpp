@@ -1,5 +1,6 @@
 #ifndef TEA_TEA_STANDARD_SNIPPET_HPP_INCLUDED
 #define TEA_TEA_STANDARD_SNIPPET_HPP_INCLUDED
+#include "TeaArray.hpp"
 #include "TeaFloat.hpp"
 #include "TeaInt.hpp"
 #include "TeaSnippet.hpp"
@@ -8,7 +9,8 @@
 
 // Using declarations
 using standardsnippet_t = std::function<void(
-    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)>;
+    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
+    teaArray_t &teaArrays)>;
 
 // Represents a snippet within teas std lib
 struct TeaStandardSnippet final

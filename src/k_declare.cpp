@@ -5,7 +5,7 @@
 // Makes sure declaration type is valid
 static void assertType(const std::string &type, const int &line, const char *&filename)
 {
-    if (type == "string" || type == "int" || type == "float" || type == "snippet")
+    if (type == "string" || type == "int" || type == "float" || type == "snippet" || type == "array")
         return;
     teaSyntaxError(line, filename, "Invalid declaration type.");
 }

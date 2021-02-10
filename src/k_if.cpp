@@ -34,10 +34,10 @@ const bool isEnteringBlock(const std::string &statement) noexcept
 void kIf(
     const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
     const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets)
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
 {
     if (isIfTrue(statement, line, filename, 2))
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
     else
     {
         int &&nif{0};
@@ -45,7 +45,7 @@ void kIf(
         {
             std::string nextline{teafile[line]};
             if (startsWithKeyword(nextline, "emplace "))
-                kEmplace(nextline, teaStrings, teaInts, teaFloats);
+                kEmplace(nextline, line, filename, teaStrings, teaInts, teaFloats, teaArrays);
             evalOps(nextline, line, filename);
             if (nextline == "end")
             {
@@ -64,13 +64,13 @@ void kIf(
             {
                 ++line;
                 kIf(teafile, teafileSize, nextline.substr(2U, nextline.size()), line, filename, teaStrings,
-                    teaInts, teaFloats, teaSnippets);
+                    teaInts, teaFloats, teaSnippets, teaArrays);
                 return;
             }
             if (nextline == "else" && !nif)
             {
                 ++line;
-                loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
+                loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
                 return;
             }
             ++line;

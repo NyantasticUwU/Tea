@@ -8,6 +8,7 @@
 
 // Defining globals
 const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
+    "array",
     "assign",
     "call",
     "declare",
@@ -38,9 +39,9 @@ int main(const int argc, const char **argv)
         std::vector<std::string> _mainfile;
         const std::vector<std::string> &mainfile{parseFile(_mainfile, filename)};
         teaInt_t &&teaInts{TeaInt{"argc", argc}};
-        teaString_t teaStrings;
-        fillTeaStringVec(argc, argv, teaStrings);
-        runTea(mainfile, filename, &teaStrings, &teaInts);
+        teaArray_t teaArrays;
+        fillTeaArgs(argc, argv, teaArrays);
+        runTea(mainfile, filename, nullptr, &teaInts, nullptr, nullptr, &teaArrays);
     }
     catch (...)
     {

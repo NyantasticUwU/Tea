@@ -1,5 +1,6 @@
 #include "constants.hpp"
 #include "cmd.hpp"
+#include "TeaString.hpp"
 #include <CLI/CLI.hpp>
 #include <iostream>
 
@@ -45,8 +46,11 @@ const char *&getMainFileName(const int &argc, const char **&argv)
 }
 
 // Fills tea string vector with cmd args
-void fillTeaStringVec(const int &argc, const char **&argv, teaString_t &teaStrings)
+void fillTeaArgs(const int &argc, const char **&argv, teaArray_t &teaArrays)
 {
+    std::vector<std::any> data;
+    data.reserve(static_cast<std::size_t>(argc));
     for (int &&i{0}; i < argc; ++i)
-        teaStrings.push_back(TeaString{"arg" + std::to_string(i), argv[i]});
+        data.push_back(std::make_any<TeaString>("", argv[i]));
+    teaArrays.push_back(TeaArray<std::any>{"args", "string", argc, data});
 }

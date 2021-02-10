@@ -1,5 +1,6 @@
 #ifndef TEA_K_IF_HPP_INCLUDED
 #define TEA_K_IF_HPP_INCLUDED
+#include "TeaArray.hpp"
 #include "TeaFloat.hpp"
 #include "TeaSnippet.hpp"
 #include "TeaInt.hpp"
@@ -15,6 +16,6 @@ const bool isEnteringBlock(const std::string &statement) noexcept;
 void kIf(
     const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
     const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets);
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays);
 
 #endif

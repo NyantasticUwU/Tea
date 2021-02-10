@@ -1,11 +1,56 @@
+#include "error.hpp"
 #include "k_emplace.hpp"
+#include "runtea.hpp"
 #include "stringsupport.hpp"
 
+// Extracting value from array in the form of a string
+static const std::string &getArrayValue(const TeaArray<std::any> &teaArray, const std::string &varname,
+    const std::size_t &nameEnd, const bool isInString, const int &line, const char *&filename)
+{
+    static std::size_t s_pos;
+    static std::string s_out;
+    const std::string &type{teaArray.gettype()};
+    const int &&indexPos{[&]() -> const int {
+            const std::size_t &&varnameSize{varname.size()};
+            if (varname[nameEnd] != '[')
+                teaSyntaxError(line, filename, "Opening brace never found.");
+            std::string iPosStr;
+            for (std::size_t &&i{nameEnd + 1U}; i < varnameSize; ++i)
+            {
+                if (varname[i] == ']')
+                {
+                    const int &&ret{std::stoi(iPosStr, &s_pos)};
+                    if (s_pos != iPosStr.size() || std::to_string(ret)[0U] != iPosStr[0U])
+                        teaSyntaxError(line, filename, "Invalid array subscript syntax.");
+                    return ret;
+                }
+                iPosStr.push_back(varname[i]);
+            }
+            teaSyntaxError(line, filename, "Closing brace never found.");
+            return std::stoi(iPosStr);
+        }()};
+    if (teaArray.getsize() <= indexPos || indexPos < 0)
+        teaSyntaxError(line, filename, "Array index out of range for " + teaArray.getname() + '.');
+    if (type == "string")
+    {
+        std::string preOut{std::any_cast<TeaString>(teaArray.getdata()[indexPos]).getvalue()};
+        unformatTeaString(preOut);
+        s_out = (isInString) ? (preOut) : ('"' + preOut + '"');
+    }
+    else if (type == "int")
+        s_out = std::to_string(std::any_cast<TeaInt>(teaArray.getdata()[indexPos]).getvalue());
+    else if (type == "float")
+        s_out = std::to_string(std::any_cast<TeaFloat>(teaArray.getdata()[indexPos]).getvalue());
+    else
+        teaSyntaxError(line, filename, "Array of invalid type.");
+    return s_out;
+}
+
 // Emplaces variable into statement
-static void emplaceVar(
-    std::string &prestatement, std::size_t &statementSize, bool &isVarFound, const std::string &varname,
-    const std::size_t &braceOpenPos, const std::size_t &braceClosePos, const bool &isInString,
-    const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats)
+static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
+    const std::string &varname, const std::size_t &braceOpenPos, const std::size_t &braceClosePos,
+    const bool &isInString, const int &line, const char *&filename, const teaString_t &teaStrings,
+    const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)
 {
     for (const TeaString &ts : teaStrings)
     {
@@ -49,12 +94,28 @@ static void emplaceVar(
             return;
         }
     }
+    for (const TeaArray<std::any> &ta : teaArrays)
+    {
+        if (startsWithKeyword(varname, ta.getname().c_str()))
+        {
+            if (prestatement[braceClosePos - 1U] != ']')
+                break;
+            prestatement.replace(
+                prestatement.begin() + braceOpenPos,
+                prestatement.begin() + braceClosePos + 1U,
+                getArrayValue(ta, varname, ta.getname().size(), isInString, line, filename)
+            );
+            statementSize = prestatement.size();
+            isVarFound = true;
+            return;
+        }
+    }
     isVarFound = false;
 }
 
 // Emplaces variables into statement
-void kEmplace(
-    std::string &prestatement, const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats)
+void kEmplace(std::string &prestatement, const int &line, const char *&filename, const teaString_t &teaStrings,
+    const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)
 {
     static bool s_isVarFound;
     static std::size_t s_braceClosePos, s_braceOpenPos;
@@ -80,6 +141,7 @@ void kEmplace(
         {
             isInBrace = true;
             s_braceOpenPos = i;
+            s_varname.clear();
             continue;
         }
         if (prestatement[i] == '}' && isInBrace)
@@ -87,10 +149,10 @@ void kEmplace(
             s_braceClosePos = i;
             if (isInBrace)
             {
-                emplaceVar(
-                    prestatement, statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
-                    isInString, teaStrings, teaInts, teaFloats);
-                i = s_isVarFound ? (s_braceOpenPos > 0U ? s_braceOpenPos - 1U : 0U) : s_braceClosePos;
+                emplaceVar(prestatement, statementSize, s_isVarFound, s_varname, s_braceOpenPos, s_braceClosePos,
+                    isInString, line, filename, teaStrings, teaInts, teaFloats, teaArrays);
+                i = s_isVarFound ? 0U : s_braceClosePos;
+                isInString = s_isVarFound ? false : isInString;
             }
             isInBrace = false;
             s_varname.clear();

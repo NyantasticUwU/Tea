@@ -8,6 +8,6 @@
 // Handles snippet by given name
 const bool handleStandardSnippet(
     const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets);
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays);
 
 #endif

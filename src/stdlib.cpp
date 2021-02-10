@@ -53,14 +53,14 @@ namespace stdSnippet
 {
     // Tea standard create directory snippet
     // Takes string tsCreateDirectory
-    static void createDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void createDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::filesystem::create_directories(getTeaVariable(teaStrings, "tsCreateDirectory").getvalue());
     }
 
     // Tea standard create file snippet
     // Takes string tsCreateFile
-    static void createFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void createFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsCreateFile").getvalue());
         sg_of.close();
@@ -68,32 +68,32 @@ namespace stdSnippet
 
     // Tea standard delete directory snippet
     // Takes string tsDeleteDirectory
-    static void deleteDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void deleteDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::filesystem::remove_all(getTeaVariable(teaStrings, "tsDeleteDirectory").getvalue());
     }
 
     // Tea standard delete file snippet
     // Takes string tsDeleteFile
-    static void deleteFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void deleteFile(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::filesystem::remove(getTeaVariable(teaStrings, "tsDeleteFile").getvalue());
     }
 
     // Tea standard execute snippet
     // Takes string tsExecute
-    static void execute(
-        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
+    static void execute(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+        teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
     {
         const std::vector<std::string> &&teafile{{getTeaVariable(teaStrings, "tsExecute").getvalue()}};
         int &&line{0};
         const char *&&filename{"stdExecute"};
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
     }
 
     // Tea standard file append snippet
     // Takes string tsFileAppendFile, string tsFileAppendOut
-    static void fileAppend(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void fileAppend(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileAppendFile").getvalue(), std::ios_base::app);
         sg_of << getTeaVariable(teaStrings, "tsFileAppendOut").getvalue();
@@ -102,7 +102,7 @@ namespace stdSnippet
 
     // Tea standard file append line snippet
     // Takes string tsFileAppendLineFile, string tsFileAppendLineOut
-    static void fileAppendLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void fileAppendLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileAppendLineFile").getvalue(), std::ios_base::app);
         sg_of << getTeaVariable(teaStrings, "tsFileAppendLineOut").getvalue() << '\n';
@@ -112,7 +112,8 @@ namespace stdSnippet
     // Tea standard file get line count
     // Takes string tsFileGetLineCountFile
     // Outputs int fsFileLineCount
-    static void fileGetLineCount(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void fileGetLineCount(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &)
     {
         sg_if.open(getTeaVariable(teaStrings, "tsFileGetLineCountFile").getvalue());
         int &&lineCount{0};
@@ -127,7 +128,7 @@ namespace stdSnippet
     // Tea standard file get size snippet
     // Takes string tsFileGetSizeFile
     // Outputs int fsFileSize
-    static void fileGetSize(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void fileGetSize(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         const std::string &val{getTeaVariable(teaStrings, "tsFileGetSizeFile").getvalue()};
         teaInts.push_back({"fsFileSize", static_cast<int>(std::filesystem::file_size(val))});
@@ -136,7 +137,7 @@ namespace stdSnippet
     // Tea standard file read snippet
     // Takes string tsFileReadFile
     // Outputs string fsFileReadString
-    static void fileRead(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void fileRead(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         static std::string s_read;
         s_read.clear();
@@ -150,7 +151,8 @@ namespace stdSnippet
     // Tea standard file read line snippet
     // Takes int tsFileReadLineLine, string tsFileReadLineFile
     // Outputs string fsFileReadLineString
-    static void fileReadLine(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void fileReadLine(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &)
     {
         const std::size_t &&lineToRead{
             static_cast<std::size_t>(getTeaVariable(teaInts, "tsFileReadLineLine").getvalue())};
@@ -167,7 +169,7 @@ namespace stdSnippet
 
     // Tea standard file write snippet
     // Takes string tsFileWriteFile, string tsFileWriteOut
-    static void fileWrite(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void fileWrite(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileWriteFile").getvalue());
         sg_of << getTeaVariable(teaStrings, "tsFileWriteOut").getvalue();
@@ -176,7 +178,7 @@ namespace stdSnippet
 
     // Tea standard file write line snippet
     // Takes string tsFileWriteLineFile, string tsFileWriteLineOut
-    static void fileWriteLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void fileWriteLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_of.open(getTeaVariable(teaStrings, "tsFileWriteLineFile").getvalue());
         sg_of << getTeaVariable(teaStrings, "tsFileWriteLineOut").getvalue() << '\n';
@@ -185,7 +187,7 @@ namespace stdSnippet
 
     // Tea standard input snippet
     // Outputs string fsInput
-    static void input(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void input(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         static std::string s_in;
         std::getline(std::cin, s_in);
@@ -196,11 +198,13 @@ namespace stdSnippet
     // Takes string tsVariableName
     // Outputs int fsIsVariable
     static void isVariable(
-        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets)
+        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
+        teaArray_t &teaArrays)
     {
         const std::string &varname{getTeaVariable(teaStrings, "tsVariableName").getvalue()};
         if (isVar(teaStrings, varname) || isVar(teaInts, varname) ||
-            isVar(teaFloats, varname) || isVar(teaSnippets, varname))
+            isVar(teaFloats, varname) || isVar(teaSnippets, varname) ||
+            isVar(teaArrays, varname))
             teaInts.push_back(TeaInt{"fsIsVariable", 1});
         else
             teaInts.push_back(TeaInt{"fsIsVariable", 0});
@@ -208,35 +212,35 @@ namespace stdSnippet
 
     // Tea standard print snippet
     // Takes string tsPrint
-    static void print(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void print(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::cout << getTeaVariable(teaStrings, "tsPrint").getvalue();
     }
 
     // Tea standard print line snippet
     // Takes string tsPrintLine
-    static void printLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &)
+    static void printLine(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::cout << getTeaVariable(teaStrings, "tsPrintLine").getvalue() << '\n';
     }
 
     // Tea standard random float snippet
     // Outputs fsRandomFloat
-    static void randomFloat(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void randomFloat(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
     {
         teaFloats.push_back({"fsRandomFloat", sg_floatranddist(sg_randgen)});
     }
 
     // Tea standard random int snippet
     // Outputs int fsRandomInt
-    static void randomInt(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void randomInt(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         teaInts.push_back({"fsRandomInt", sg_intranddist(sg_randgen)});
     }
 
     // Tea stnadard set random float max snippet
     // Takes int tsRandomFloatMax
-    static void setRandomFloatMax(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void setRandomFloatMax(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
     {
         const float &&a{sg_floatranddist.a()};
         const float &b{getTeaVariable(teaFloats, "tsRandomFloatMax").getvalue()};
@@ -245,7 +249,7 @@ namespace stdSnippet
 
     // Tea standard set random float min snippet
     // Takes int tsRandomFloatMin
-    static void setRandomFloatMin(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void setRandomFloatMin(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
     {
         const float &a{getTeaVariable(teaFloats, "tsRandomFloatMin").getvalue()};
         const float &&b{sg_floatranddist.b()};
@@ -254,7 +258,7 @@ namespace stdSnippet
 
     // Tea standard set random int max snippet
     // Takes int tsRandomIntMax
-    static void setRandomIntMax(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void setRandomIntMax(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         const int &&a{sg_intranddist.a()};
         const int &b{getTeaVariable(teaInts, "tsRandomIntMax").getvalue()};
@@ -263,7 +267,7 @@ namespace stdSnippet
 
     // Tea standard set random int min snippet
     // Takes int tsRandomIntMin
-    static void setRandomIntMin(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void setRandomIntMin(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         const int &a{getTeaVariable(teaInts, "tsRandomIntMin").getvalue()};
         const int &&b{sg_intranddist.b()};
@@ -272,14 +276,14 @@ namespace stdSnippet
 
     // Tea standard set random seed snippet
     // Takes int tsSeed
-    static void setRandomSeed(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void setRandomSeed(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         sg_randgen.seed(getTeaVariable(teaInts, "tsSeed").getvalue());
     }
 
     // Tea standard sleep snippet
     // Takes int tsSleepTime
-    static void sleep(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void sleep(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         const int &t{getTeaVariable(teaInts, "tsSleepTime").getvalue()};
         std::this_thread::sleep_for(static_cast<std::chrono::milliseconds>(t));
@@ -288,7 +292,8 @@ namespace stdSnippet
     // Tea standard string length snippet
     // Takes string tsStringLength
     // Outputs int fsStringLength
-    static void stringLength(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void stringLength(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &)
     {
         const int &&fs{static_cast<int>(getTeaVariable(teaStrings, "tsStringLength").getvalue().size())};
         teaInts.push_back({"fsStringLength", fs});
@@ -297,7 +302,7 @@ namespace stdSnippet
     // Tea standard substring snippet
     // Takes string tsSubString, int tsSubStringStart, int tsSubStringCount
     // Outputs string fsSubStrings
-    static void subString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void subString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         const int &start{getTeaVariable(teaInts, "tsSubStringStart").getvalue()};
         const int &count{getTeaVariable(teaInts, "tsSubStringCount").getvalue()};
@@ -307,14 +312,14 @@ namespace stdSnippet
 
     // Tea standard time snippet
     // Outputs int fsTime
-    static void time(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void time(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         teaInts.push_back({"fsTime", static_cast<int>(std::time(nullptr))});
     }
 
     // Tea standard time local snippet
     // Outputs int fsSecond, int fsMinute, int fsHour, int fsDay, int fsMonth, int fsYear, int fsIsDaylightSaving
-    static void timeLocal(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &)
+    static void timeLocal(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
         std::time_t &&t{std::time(nullptr)};
         std::tm &time{*std::localtime(&t)};
@@ -330,7 +335,8 @@ namespace stdSnippet
     // Tea standard to float snippet
     // Takes int | string tsToFloat
     // Outputs float fsToFloat
-    static void toFloat(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void toFloat(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &)
     {
         if (isVar(teaInts, "tsToFloat"))
         {
@@ -349,7 +355,8 @@ namespace stdSnippet
     // Tea standard to int snippet
     // Takes float | string tsToInt
     // Outputs fsToInt
-    static void toInt(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void toInt(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &)
     {
         if (isVar(teaFloats, "tsToInt"))
         {
@@ -367,7 +374,8 @@ namespace stdSnippet
     // Tea standard to string snippet
     // Takes int | float tsToString
     // Outputs string fsToString
-    static void toString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &)
+    static void toString(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &)
     {
         if (isVar(teaInts, "tsToString"))
         {
@@ -420,15 +428,14 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdToString", stdSnippet::toString}};
 
 // Handles snippet by given name
-const bool handleStandardSnippet(
-    const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets)
+const bool handleStandardSnippet(const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts,
+    teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
 {
     for (const TeaStandardSnippet &tss : g_teastandardsnippets)
     {
         if (tss.name == snippetName)
         {
-            tss.snippet(teaStrings, teaInts, teaFloats, teaSnippets);
+            tss.snippet(teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
             return true;
         }
     }
