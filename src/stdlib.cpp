@@ -51,6 +51,114 @@ static const bool isVar(const std::vector<T> &typevec, const std::string &varnam
 // Contains all std snippets
 namespace stdSnippet
 {
+    // Tea standard array append snippet
+    // Takes string tsArrayAppend, string|int|float tsArrayAppendValue
+    static void arrayAppend(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayAppend").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const std::string &arrayType{ta.gettype()};
+        std::any newElement;
+        if (arrayType == "string")
+            newElement = std::make_any<TeaString>(getTeaVariable(teaStrings, "tsArrayAppendValue"));
+        else if (arrayType == "int")
+            newElement = std::make_any<TeaInt>(getTeaVariable(teaInts, "tsArrayAppendValue"));
+        else if (arrayType == "float")
+            newElement = std::make_any<TeaFloat>(getTeaVariable(teaFloats, "tsArrayAppendValue"));
+        else
+            teaError("Invalid array type.", 13);
+        const_cast<std::vector<std::any> &>(ta.getdata()).push_back(newElement);
+        ++const_cast<int &>(ta.getsize());
+    }
+
+    // Tea standard array capacity
+    // Takes string tsArrayCapacity
+    // Outputs int fsArrayCapacity
+    static void arrayCapacity(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayCapacity").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        teaInts.push_back({"fsArrayCapacity", static_cast<int>(ta.getdata().capacity())});
+    }
+
+    // Tea standard array insert snippet
+    // Takes string tsArrayInsert, int tsArrayInsertIndex, string|int|float tsArrayInsertValue
+    static void arrayInsert(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayInsert").getvalue()};
+        const int &index{getTeaVariable(teaInts, "tsArrayInsertIndex").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const std::string &arrayType{ta.gettype()};
+        std::any newElement;
+        if (arrayType == "string")
+            newElement = std::make_any<TeaString>(getTeaVariable(teaStrings, "tsArrayInsertValue"));
+        else if (arrayType == "int")
+            newElement = std::make_any<TeaInt>(getTeaVariable(teaInts, "tsArrayInsertValue"));
+        else if (arrayType == "float")
+            newElement = std::make_any<TeaFloat>(getTeaVariable(teaFloats, "tsArrayInsertValue"));
+        else
+            teaError("Invalid array type.", 13);
+        const_cast<std::vector<std::any> &>(ta.getdata()).insert(ta.getdata().begin() + index, newElement);
+        ++const_cast<int &>(ta.getsize());
+    }
+
+    // Tea standard array remove snippet
+    // Takes string tsArrayRemove, int tsArrayRemoveIndex
+    static void arrayRemove(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayRemove").getvalue()};
+        const int &index{getTeaVariable(teaInts, "tsArrayRemoveIndex").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const_cast<std::vector<std::any> &>(ta.getdata()).erase(ta.getdata().begin() + index);
+        --const_cast<int &>(ta.getsize());
+    }
+
+    // Tea standard array reserve snippet
+    // Takes string tsArrayReserve, int tsArrayReserveSize
+    static void arrayReserve(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayReserve").getvalue()};
+        const int &size{getTeaVariable(teaInts, "tsArrayReserveSize").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const_cast<std::vector<std::any> &>(ta.getdata()).reserve(size);
+    }
+
+    // Tea standard array shrink snippet
+    // Takes string tsArrayShrink
+    static void arrayShrink(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayShrink").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const_cast<std::vector<std::any> &>(ta.getdata()).shrink_to_fit();
+    }
+
+    // Tea standard array size snippet
+    // Takes string tsArraySize
+    // Outputs int fsArraySize
+    static void arraySize(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArraySize").getvalue()};
+        const int &size{getTeaVariable(teaArrays, ts).getsize()};
+        teaInts.push_back({"fsArraySize", size});
+    }
+
+    // Tea standard array type snippet
+    // Takes string tsArrayType
+    // Outputs string fsArrayType
+    static void arrayType(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayType").getvalue()};
+        const std::string &fs{getTeaVariable(teaArrays, ts).gettype()};
+        teaStrings.push_back({"fsArrayType", fs});
+    }
+
     // Tea standard create directory snippet
     // Takes string tsCreateDirectory
     static void createDirectory(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
@@ -394,6 +502,14 @@ namespace stdSnippet
 
 // Defining globals
 const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
+    {"stdArrayAppend", stdSnippet::arrayAppend},
+    {"stdArrayCapacity", stdSnippet::arrayCapacity},
+    {"stdArrayInsert", stdSnippet::arrayInsert},
+    {"stdArrayRemove", stdSnippet::arrayRemove},
+    {"stdArrayReserve", stdSnippet::arrayReserve},
+    {"stdArrayShrink", stdSnippet::arrayShrink},
+    {"stdArraySize", stdSnippet::arraySize},
+    {"stdArrayType", stdSnippet::arrayType},
     {"stdCreateDirectory", stdSnippet::createDirectory},
     {"stdCreateFile", stdSnippet::createFile},
     {"stdDeleteDirectory", stdSnippet::deleteDirectory},
