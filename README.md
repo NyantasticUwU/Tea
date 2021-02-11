@@ -23,6 +23,9 @@ string tsPrint "Hello, world!\n"
 # Some snippets will return with new variables, prefixed with fs (from snippet)
 call snippet stdPrint
 
+# Remove a variable from memory
+delete string tsPrint
+
 # Exit with code 0 (arg count - arg count)
 # The emplace keyword is used to emplace variables
 # argc is a predefined variable that stands for arg count
