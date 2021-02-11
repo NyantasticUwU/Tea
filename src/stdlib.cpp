@@ -364,6 +364,27 @@ namespace stdSnippet
         teaInts.push_back({"fsRandomInt", sg_intranddist(sg_randgen)});
     }
 
+    // Tea standard reverse snippet
+    // Takes string tsReverse
+    static void reverse(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsReverse").getvalue()};
+        if (isVar(teaStrings, ts))
+        {
+            std::string &str{const_cast<std::string &>(getTeaVariable(teaStrings, ts).getvalue())};
+            std::reverse(str.begin(), str.end());
+            return;
+        }
+        if (isVar(teaArrays, ts))
+        {
+            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            std::vector<std::any> &arr{const_cast<std::vector<std::any> &>(ta.getdata())};
+            std::reverse(arr.begin(), arr.end());
+            return;
+        }
+        teaError("Array " + ts + " was not found.", 13);
+    }
+
     // Tea stnadard set random float max snippet
     // Takes int tsRandomFloatMax
     static void setRandomFloatMax(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
@@ -413,6 +434,37 @@ namespace stdSnippet
     {
         const int &t{getTeaVariable(teaInts, "tsSleepTime").getvalue()};
         std::this_thread::sleep_for(static_cast<std::chrono::milliseconds>(t));
+    }
+
+    // Tea standard sort snippet
+    // Takes string tsSort
+    static void sort(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsSort").getvalue()};
+        if (isVar(teaStrings, ts))
+        {
+            std::string &str{const_cast<std::string &>(getTeaVariable(teaStrings, ts).getvalue())};
+            std::sort(str.begin(), str.end());
+            return;
+        }
+        if (isVar(teaArrays, ts))
+        {
+            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            std::vector<std::any> &arr{const_cast<std::vector<std::any> &>(ta.getdata())};
+            const std::string &arrt{ta.gettype()};
+            std::sort(arr.begin(), arr.end(),
+                [&](const std::any &a1, const std::any &a2) -> const bool {
+                    if (arrt == "string")
+                        return std::any_cast<TeaString>(a1).getvalue() < std::any_cast<TeaString>(a2).getvalue();
+                    if (arrt == "int")
+                        return std::any_cast<TeaInt>(a1).getvalue() < std::any_cast<TeaInt>(a2).getvalue();
+                    if (arrt == "float")
+                        return std::any_cast<TeaFloat>(a1).getvalue() < std::any_cast<TeaFloat>(a2).getvalue();
+                    return false;
+                });
+            return;
+        }
+        teaError("Array " + ts + " was not found.", 13);
     }
 
     // Tea standard string length snippet
@@ -557,12 +609,14 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdPrintLine", stdSnippet::printLine},
     {"stdRandomFloat", stdSnippet::randomFloat},
     {"stdRandomInt", stdSnippet::randomInt},
+    {"stdReverse", stdSnippet::reverse},
     {"stdSetRandomFloatMax", stdSnippet::setRandomFloatMax},
     {"stdSetRandomFloatMin", stdSnippet::setRandomFloatMin},
     {"stdSetRandomIntMax", stdSnippet::setRandomIntMax},
     {"stdSetRandomIntMin", stdSnippet::setRandomIntMin},
     {"stdSetRandomSeed", stdSnippet::setRandomSeed},
     {"stdSleep", stdSnippet::sleep},
+    {"stdSort", stdSnippet::sort},
     {"stdStringLength", stdSnippet::stringLength},
     {"stdSubString", stdSnippet::subString},
     {"stdSystem", stdSnippet::system},
