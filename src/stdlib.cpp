@@ -188,6 +188,24 @@ namespace stdSnippet
         std::filesystem::remove(getTeaVariable(teaStrings, "tsDeleteFile").getvalue());
     }
 
+    // Tea standard directory contents snippet
+    // Takes string tsDirectoryContents
+    // Outputs array string[] fsDirectoryContents
+    static void directoryContents(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsDirectoryContents").getvalue()};
+        std::filesystem::directory_iterator dir{ts};
+        std::vector<std::any> vec;
+        for (const std::filesystem::directory_entry &entry : dir)
+        {
+            const std::string &&p{entry.path().string()};
+            vec.push_back(std::make_any<TeaString>("", p));
+        }
+        const int &&size{static_cast<int>(vec.size())};
+        teaArrays.push_back(TeaArray<std::any>{"fsDirectoryContents", "string", size, vec});
+    }
+
     // Tea standard execute snippet
     // Takes string tsExecute
     static void execute(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
@@ -418,6 +436,15 @@ namespace stdSnippet
         teaStrings.push_back({"fsSubString", ts.substr(start, count)});
     }
 
+    // Tea standard system snippet
+    // Takes string tsSystem
+    // Outputs int fsSystem
+    static void system(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsSystem").getvalue()};
+        teaInts.push_back({"fsSystem", std::system(ts.c_str())});
+    }
+
     // Tea standard time snippet
     // Outputs int fsTime
     static void time(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
@@ -514,6 +541,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdCreateFile", stdSnippet::createFile},
     {"stdDeleteDirectory", stdSnippet::deleteDirectory},
     {"stdDeleteFile", stdSnippet::deleteFile},
+    {"stdDirectoryContents", stdSnippet::directoryContents},
     {"stdExecute", stdSnippet::execute},
     {"stdFileAppend", stdSnippet::fileAppend},
     {"stdFileAppendLine", stdSnippet::fileAppendLine},
@@ -537,6 +565,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdSleep", stdSnippet::sleep},
     {"stdStringLength", stdSnippet::stringLength},
     {"stdSubString", stdSnippet::subString},
+    {"stdSystem", stdSnippet::system},
     {"stdTime", stdSnippet::time},
     {"stdTimeLocal", stdSnippet::timeLocal},
     {"stdToFloat", stdSnippet::toFloat},
