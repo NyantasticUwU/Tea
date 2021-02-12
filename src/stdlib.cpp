@@ -105,6 +105,68 @@ namespace stdSnippet
         ++const_cast<int &>(ta.getsize());
     }
 
+    // Tea standard array max snippet
+    // Takes string tsArrayMax
+    // Outputs int|float fsArrayMax
+    static void arrayMax(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayMax").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const std::vector<std::any> &vec{ta.getdata()};
+        const std::string &type{ta.gettype()};
+        if (type == "int")
+        {
+            const std::any &a{*std::max_element(vec.begin(), vec.end(),
+                [](const std::any &a1, const std::any &a2) -> const bool {
+                    return std::any_cast<TeaInt>(a1).getvalue() < std::any_cast<TeaInt>(a2).getvalue();
+                })};
+            teaInts.push_back({"fsArrayMax", std::any_cast<TeaInt>(a).getvalue()});
+            return;
+        }
+        if (type == "float")
+        {
+            const std::any &a{*std::max_element(vec.begin(), vec.end(),
+                [](const std::any &a1, const std::any &a2) -> const bool {
+                    return std::any_cast<TeaFloat>(a1).getvalue() < std::any_cast<TeaFloat>(a2).getvalue();
+                })};
+            teaFloats.push_back({"fsArrayMax", std::any_cast<TeaFloat>(a).getvalue()});
+            return;
+        }
+        teaError("Could not find valid array for stdArrayMax.", 13);
+    }
+
+    // Tea standard array min snippet
+    // Takes string tsArrayMin
+    // Outputs int|float fsArrayMin
+    static void arrayMin(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsArrayMin").getvalue()};
+        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const std::vector<std::any> &vec{ta.getdata()};
+        const std::string &type{ta.gettype()};
+        if (type == "int")
+        {
+            const std::any &a{*std::max_element(vec.begin(), vec.end(),
+                [](const std::any &a1, const std::any &a2) -> const bool {
+                    return std::any_cast<TeaInt>(a1).getvalue() > std::any_cast<TeaInt>(a2).getvalue();
+                })};
+            teaInts.push_back({"fsArrayMin", std::any_cast<TeaInt>(a).getvalue()});
+            return;
+        }
+        if (type == "float")
+        {
+            const std::any &a{*std::max_element(vec.begin(), vec.end(),
+                [](const std::any &a1, const std::any &a2) -> const bool {
+                    return std::any_cast<TeaFloat>(a1).getvalue() > std::any_cast<TeaFloat>(a2).getvalue();
+                })};
+            teaFloats.push_back({"fsArrayMin", std::any_cast<TeaFloat>(a).getvalue()});
+            return;
+        }
+        teaError("Could not find valid array for stdArrayMin.", 13);
+    }
+
     // Tea standard array remove snippet
     // Takes string tsArrayRemove, int tsArrayRemoveIndex
     static void arrayRemove(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
@@ -428,6 +490,27 @@ namespace stdSnippet
         sg_randgen.seed(getTeaVariable(teaInts, "tsSeed").getvalue());
     }
 
+    // Tea standard shuffle snippet
+    // Takes string tsShuffle
+    static void shuffle(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &teaArrays)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsShuffle").getvalue()};
+        if (isVar(teaStrings, ts))
+        {
+            std::string &str{const_cast<std::string &>(getTeaVariable(teaStrings, ts).getvalue())};
+            std::shuffle(str.begin(), str.end(), sg_randgen);
+            return;
+        }
+        if (isVar(teaArrays, ts))
+        {
+            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            std::vector<std::any> &vec{const_cast<std::vector<std::any> &>(ta.getdata())};
+            std::shuffle(vec.begin(), vec.end(), sg_randgen);
+            return;
+        }
+        teaError("tsShuffle (string | array) was not found.", 13);
+    }
+
     // Tea standard sleep snippet
     // Takes int tsSleepTime
     static void sleep(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
@@ -584,6 +667,8 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdArrayAppend", stdSnippet::arrayAppend},
     {"stdArrayCapacity", stdSnippet::arrayCapacity},
     {"stdArrayInsert", stdSnippet::arrayInsert},
+    {"stdArrayMax", stdSnippet::arrayMax},
+    {"stdArrayMin", stdSnippet::arrayMin},
     {"stdArrayRemove", stdSnippet::arrayRemove},
     {"stdArrayReserve", stdSnippet::arrayReserve},
     {"stdArrayShrink", stdSnippet::arrayShrink},
@@ -615,6 +700,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdSetRandomIntMax", stdSnippet::setRandomIntMax},
     {"stdSetRandomIntMin", stdSnippet::setRandomIntMin},
     {"stdSetRandomSeed", stdSnippet::setRandomSeed},
+    {"stdShuffle", stdSnippet::shuffle},
     {"stdSleep", stdSnippet::sleep},
     {"stdSort", stdSnippet::sort},
     {"stdStringLength", stdSnippet::stringLength},

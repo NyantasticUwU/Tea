@@ -37,8 +37,11 @@ void kCall(
                 return;
             }
         }
-        if (handleStandardSnippet(s_snippetName, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays))
-            return;
+        if (s_snippetName[0U] == 's' && s_snippetName[1U] == 't' && s_snippetName[2U] == 'd')
+        {
+            if (handleStandardSnippet(s_snippetName, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays))
+                return;
+        }
         teaSyntaxError(line, filename, "Snippet could not be found.");
     }
     teaSyntaxError(line, filename, "Invalid call type.");
