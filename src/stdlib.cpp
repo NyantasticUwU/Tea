@@ -535,16 +535,21 @@ namespace stdSnippet
             const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
             std::vector<std::any> &arr{const_cast<std::vector<std::any> &>(ta.getdata())};
             const std::string &arrt{ta.gettype()};
-            std::sort(arr.begin(), arr.end(),
-                [&](const std::any &a1, const std::any &a2) -> const bool {
-                    if (arrt == "string")
+            if (arrt == "string")
+                std::sort(arr.begin(), arr.end(),
+                    [&](const std::any &a1, const std::any &a2) -> const bool {
                         return std::any_cast<TeaString>(a1).getvalue() < std::any_cast<TeaString>(a2).getvalue();
-                    if (arrt == "int")
+                    });
+            else if (arrt == "int")
+                std::sort(arr.begin(), arr.end(),
+                    [&](const std::any &a1, const std::any &a2) -> const bool {
                         return std::any_cast<TeaInt>(a1).getvalue() < std::any_cast<TeaInt>(a2).getvalue();
-                    if (arrt == "float")
+                    });
+            else if (arrt == "float")
+                std::sort(arr.begin(), arr.end(),
+                    [&](const std::any &a1, const std::any &a2) -> const bool {
                         return std::any_cast<TeaFloat>(a1).getvalue() < std::any_cast<TeaFloat>(a2).getvalue();
-                    return false;
-                });
+                    });
             return;
         }
         teaError("Array " + ts + " was not found.", 13);

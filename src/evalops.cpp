@@ -7,7 +7,7 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static const std::vector<std::string> scg_ops[TEA_NUMBER_OF_OPERATOR_GROUPS]{
+static const std::vector<const char *> scg_ops[TEA_NUMBER_OF_OPERATOR_GROUPS]{
     {"("},
     {" ^ "},
     {" * ", " / ", " % "},
@@ -926,7 +926,7 @@ static const bool checkSign(const char &c)
 static const std::string searchOperatorsByGroup(const std::string &statement)
 {
     const std::size_t &&statementSize{statement.size()};
-    for (const std::vector<std::string> &opg : scg_ops)
+    for (const std::vector<const char *> &opg : scg_ops)
     {
         bool &&isInString{false};
         for (std::size_t &&i{0U}; i < statementSize; ++i)
@@ -944,9 +944,9 @@ static const std::string searchOperatorsByGroup(const std::string &statement)
             }
             if (!isInString)
             {
-                for (const std::string &c : opg)
+                for (const char *const &c : opg)
                 {
-                    if (c == statement.substr(i, c.size()) && checkSign(sc))
+                    if (c == statement.substr(i, std::strlen(c)) && checkSign(sc))
                         return c;
                 }
             }

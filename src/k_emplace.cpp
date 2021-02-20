@@ -11,24 +11,24 @@ static const std::string &getArrayValue(const TeaArray<std::any> &teaArray, cons
     static std::string s_out;
     const std::string &type{teaArray.gettype()};
     const int &&indexPos{[&]() -> const int {
-            const std::size_t &&varnameSize{varname.size()};
-            if (varname[nameEnd] != '[')
-                teaSyntaxError(line, filename, "Opening brace never found.");
-            std::string iPosStr;
-            for (std::size_t &&i{nameEnd + 1U}; i < varnameSize; ++i)
+        const std::size_t &&varnameSize{varname.size()};
+        if (varname[nameEnd] != '[')
+            teaSyntaxError(line, filename, "Opening brace never found.");
+        std::string iPosStr;
+        for (std::size_t &&i{nameEnd + 1U}; i < varnameSize; ++i)
+        {
+            if (varname[i] == ']')
             {
-                if (varname[i] == ']')
-                {
-                    const int &&ret{std::stoi(iPosStr, &s_pos)};
-                    if (s_pos != iPosStr.size() || std::to_string(ret)[0U] != iPosStr[0U])
-                        teaSyntaxError(line, filename, "Invalid array subscript syntax.");
-                    return ret;
-                }
-                iPosStr.push_back(varname[i]);
+                const int &&ret{std::stoi(iPosStr, &s_pos)};
+                if (s_pos != iPosStr.size() || std::to_string(ret)[0U] != iPosStr[0U])
+                    teaSyntaxError(line, filename, "Invalid array subscript syntax.");
+                return ret;
             }
-            teaSyntaxError(line, filename, "Closing brace never found.");
-            return std::stoi(iPosStr);
-        }()};
+            iPosStr.push_back(varname[i]);
+        }
+        teaSyntaxError(line, filename, "Closing brace never found.");
+        return std::stoi(iPosStr);
+    }()};
     if (teaArray.getsize() <= indexPos || indexPos < 0)
         teaSyntaxError(line, filename, "Array index out of range for " + teaArray.getname() + '.');
     if (type == "string")
@@ -44,6 +44,52 @@ static const std::string &getArrayValue(const TeaArray<std::any> &teaArray, cons
     else
         teaSyntaxError(line, filename, "Array of invalid type.");
     return s_out;
+}
+
+// Fills full array string
+static const std::string &fillFullArrayString(const TeaArray<std::any> &teaArray, const bool &isInString,
+    const int &line, const char *&filename)
+{
+    static std::string s_fullArray;
+    static std::string s_toFill;
+    s_fullArray.clear();
+    const std::string &arrt{teaArray.gettype()};
+    const std::vector<std::any> &data{teaArray.getdata()};
+    if (arrt == "string")
+    {
+        for (const std::any &element : data)
+        {
+            s_toFill.clear();
+            if (!isInString)
+                s_toFill.push_back('"');
+            s_toFill.append(std::any_cast<TeaString>(element).getvalue());
+            if (!isInString)
+                s_toFill.push_back('"');
+            s_fullArray.append(s_toFill + ' ');
+        }
+    }
+    else if (arrt == "int")
+    {
+        for (const std::any &element : data)
+        {
+            s_toFill.clear();
+            s_toFill.append(std::to_string(std::any_cast<TeaInt>(element).getvalue()));
+            s_fullArray.append(s_toFill + ' ');
+        }
+    }
+    else if (arrt == "float")
+    {
+        for (const std::any &element : data)
+        {
+            s_toFill.clear();
+            s_toFill.append(std::to_string(std::any_cast<TeaFloat>(element).getvalue()));
+            s_fullArray.append(s_toFill + ' ');
+        }
+    }
+    else
+        teaSyntaxError(line, filename, "Invalid array type.");
+    s_fullArray.pop_back();
+    return s_fullArray;
 }
 
 // Emplaces variable into statement
@@ -103,8 +149,17 @@ static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bo
             prestatement.replace(
                 prestatement.begin() + braceOpenPos,
                 prestatement.begin() + braceClosePos + 1U,
-                getArrayValue(ta, varname, ta.getname().size(), isInString, line, filename)
-            );
+                getArrayValue(ta, varname, ta.getname().size(), isInString, line, filename));
+            statementSize = prestatement.size();
+            isVarFound = true;
+            return;
+        }
+        else if (ta.getname() == varname)
+        {
+            prestatement.replace(
+                prestatement.begin() + braceOpenPos,
+                prestatement.begin() + braceClosePos + 1U,
+                fillFullArrayString(ta, isInString, line, filename));
             statementSize = prestatement.size();
             isVarFound = true;
             return;
