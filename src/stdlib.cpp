@@ -16,6 +16,8 @@ using int_dist_t = std::uniform_int_distribution<int>;
 using float_dist_t = std::uniform_real_distribution<float>;
 
 // Defining static globals
+static const int *sg_pline;
+static const char *sg_pfilename;
 static std::mt19937 sg_randgen{std::random_device{}()};
 static int_dist_t sg_intranddist;
 static float_dist_t sg_floatranddist;
@@ -32,7 +34,7 @@ static const T &getTeaVariable(const std::vector<T> &typevec, const std::string 
         if (t.getname() == varname)
             return t;
     }
-    teaError("Unable to find " + varname + '.', 13);
+    teaSyntaxError(*sg_pline, sg_pfilename, "Unable to find " + varname + '.');
     return *typevec.end();
 }
 
@@ -67,7 +69,7 @@ namespace stdSnippet
         else if (arrayType == "float")
             newElement = std::make_any<TeaFloat>(getTeaVariable(teaFloats, "tsArrayAppendValue"));
         else
-            teaError("Invalid array type.", 13);
+            teaSyntaxError(*sg_pline, sg_pfilename, "Invalid array type.");
         const_cast<std::vector<std::any> &>(ta.getdata()).push_back(newElement);
         ++const_cast<int &>(ta.getsize());
     }
@@ -100,7 +102,7 @@ namespace stdSnippet
         else if (arrayType == "float")
             newElement = std::make_any<TeaFloat>(getTeaVariable(teaFloats, "tsArrayInsertValue"));
         else
-            teaError("Invalid array type.", 13);
+            teaSyntaxError(*sg_pline, sg_pfilename, "Invalid array type.");
         const_cast<std::vector<std::any> &>(ta.getdata()).insert(ta.getdata().begin() + index, newElement);
         ++const_cast<int &>(ta.getsize());
     }
@@ -133,7 +135,7 @@ namespace stdSnippet
             teaFloats.push_back({"fsArrayMax", std::any_cast<TeaFloat>(a).getvalue()});
             return;
         }
-        teaError("Could not find valid array for stdArrayMax.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Could not find valid array for stdArrayMax.");
     }
 
     // Tea standard array min snippet
@@ -164,7 +166,7 @@ namespace stdSnippet
             teaFloats.push_back({"fsArrayMin", std::any_cast<TeaFloat>(a).getvalue()});
             return;
         }
-        teaError("Could not find valid array for stdArrayMin.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Could not find valid array for stdArrayMin.");
     }
 
     // Tea standard array remove snippet
@@ -275,7 +277,7 @@ namespace stdSnippet
     {
         const std::vector<std::string> &&teafile{{getTeaVariable(teaStrings, "tsExecute").getvalue()}};
         int &&line{0};
-        const char *&&filename{"stdExecute"};
+        const char *&filename{sg_pfilename};
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
     }
 
@@ -444,7 +446,7 @@ namespace stdSnippet
             std::reverse(arr.begin(), arr.end());
             return;
         }
-        teaError("Array " + ts + " was not found.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Array " + ts + " was not found.");
     }
 
     // Tea stnadard set random float max snippet
@@ -508,7 +510,7 @@ namespace stdSnippet
             std::shuffle(vec.begin(), vec.end(), sg_randgen);
             return;
         }
-        teaError("tsShuffle (string | array) was not found.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "tsShuffle (string | array) was not found.");
     }
 
     // Tea standard sleep snippet
@@ -552,7 +554,7 @@ namespace stdSnippet
                     });
             return;
         }
-        teaError("Array " + ts + " was not found.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Array " + ts + " was not found.");
     }
 
     // Tea standard string length snippet
@@ -624,7 +626,7 @@ namespace stdSnippet
             teaFloats.push_back({"fsToFloat", std::stof(getTeaVariable(teaStrings, "tsToFloat").getvalue())});
             return;
         }
-        teaError("Unable to convert variable to float.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Unable to convert variable to float.");
     }
 
     // Tea standard to int snippet
@@ -643,7 +645,7 @@ namespace stdSnippet
             teaInts.push_back({"fsToInt", std::stoi(getTeaVariable(teaStrings, "tsToInt").getvalue())});
             return;
         }
-        teaError("Unable to convert variable to int.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Unable to convert variable to int.");
     }
 
     // Tea standard to string snippet
@@ -663,7 +665,7 @@ namespace stdSnippet
                 {"fsToString", std::to_string(getTeaVariable(teaFloats, "tsToString").getvalue())});
             return;
         }
-        teaError("Unable to convert variable to string.", 13);
+        teaSyntaxError(*sg_pline, sg_pfilename, "Unable to convert variable to string.");
     }
 } // namespace stdSnippet
 
@@ -718,9 +720,12 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdToString", stdSnippet::toString}};
 
 // Handles snippet by given name
-const bool handleStandardSnippet(const std::string &snippetName, teaString_t &teaStrings, teaInt_t &teaInts,
-    teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+const bool handleStandardSnippet(const std::string &snippetName, const int &line, const char *&filename,
+    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
+    teaArray_t &teaArrays)
 {
+    sg_pline = &line;
+    sg_pfilename = filename;
     for (const TeaStandardSnippet &tss : g_teastandardsnippets)
     {
         if (tss.name == snippetName)

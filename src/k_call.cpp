@@ -39,7 +39,9 @@ void kCall(
         }
         if (s_snippetName[0U] == 's' && s_snippetName[1U] == 't' && s_snippetName[2U] == 'd')
         {
-            if (handleStandardSnippet(s_snippetName, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays))
+            const bool &&isStandardSnippetFound{handleStandardSnippet(s_snippetName, line, filename, teaStrings,
+                teaInts, teaFloats, teaSnippets, teaArrays)};
+            if (isStandardSnippetFound)
                 return;
         }
         teaSyntaxError(line, filename, "Snippet could not be found.");
