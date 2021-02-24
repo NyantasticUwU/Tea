@@ -2,7 +2,6 @@
 #include "createvar.hpp"
 #include "error.hpp"
 #include <algorithm>
-#include <vector>
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons

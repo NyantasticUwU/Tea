@@ -1,6 +1,8 @@
+.idea
 .msvc
 .vs
 .vscode
+build
 main.tea
 notes.txt
 Tea.ilk

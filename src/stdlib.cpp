@@ -3,7 +3,6 @@
 #include "error.hpp"
 #include "runtea.hpp"
 #include "stdlib.hpp"
-#include "stringsupport.hpp"
 #include "TeaStandardSnippet.hpp"
 #include <filesystem>
 #include <fstream>
