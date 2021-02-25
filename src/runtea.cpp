@@ -95,7 +95,7 @@ void loopTeaStatements(
         // Assign keyword called
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_ASSIGN]))
         {
-            kAssign(statement, line, filename, teaStrings, teaInts, teaFloats);
+            kAssign(statement, line, filename, teaStrings, teaInts, teaFloats, teaArrays);
             continue;
         }
         // Call keyword called

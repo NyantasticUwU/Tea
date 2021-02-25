@@ -1,5 +1,6 @@
 #include "error.hpp"
 #include "k_assign.hpp"
+#include "runtea.hpp"
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
@@ -66,6 +67,23 @@ static void verifyNumericVar(const int &line, const char *&filename)
         teaSyntaxError(line, filename, "Invalid numeric type.");
 }
 
+// Verifies array index and returns it
+static const int verifyArrayIndex(const std::size_t &arrayNameSize, const int &line, const char *&filename)
+{
+    static std::string s_indexstr;
+    s_indexstr.clear();
+    if (sg_varname[arrayNameSize] != '[' || sg_varname.back() != ']')
+        teaSyntaxError(line, filename, "Invalid array subscript.");
+    const std::size_t &&varnameSize{sg_varname.size()};
+    for (std::size_t &&i{arrayNameSize + 1U}; i < varnameSize; ++i)
+        s_indexstr.push_back(sg_varname[i]);
+    s_indexstr.pop_back();
+    const int &&index{std::stoi(s_indexstr)};
+    if (s_indexstr != std::to_string(index))
+        teaSyntaxError(line, filename, "Invalid array subscript.");
+    return index;
+}
+
 // Changes string variable
 static void changeStringVariable(teaString_t &teaStrings, const int &line, const char *&filename)
 {
@@ -111,10 +129,38 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
     teaSyntaxError(line, filename, "Variable name was not found.");
 }
 
+// Changes array variable
+static void changeArrayVariable(teaArray_t &teaArrays, const int &line, const char *&filename)
+{
+    for (TeaArray<std::any> &teaArray : teaArrays)
+    {
+        if (startsWithKeyword(sg_varname, teaArray.getname().c_str()))
+        {
+            const int &&index{verifyArrayIndex(teaArray.getname().size(), line, filename)};
+            if (index < 0 || index > static_cast<int>(teaArray.getsize() - 1U))
+                teaSyntaxError(line, filename, "Invalid array index.");
+            const std::string &arrayType{teaArray.gettype()};
+            const std::any &any{teaArray.getdata()[index]};
+            if (arrayType == "string")
+            {
+                const std::string &&var{sg_var.substr(1U, sg_var.size() - 2U)};
+                const_cast<std::string &>(std::any_cast<const TeaString &>(any).getvalue()) = var;
+            }
+            else if (arrayType == "int")
+                const_cast<int &>(std::any_cast<const TeaInt &>(any).getvalue()) = std::stoi(sg_var);
+            else if (arrayType == "float")
+                const_cast<float &>(std::any_cast<const TeaFloat &>(any).getvalue()) = std::stof(sg_var);
+            else
+                teaSyntaxError(line, filename, "Invalid array type.");
+            return;
+        }
+    }
+    teaSyntaxError(line, filename, "Variable name was not found.");
+}
+
 // Called when the assign keyword is called in tea
-void kAssign(
-    const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-    teaInt_t &teaInts, teaFloat_t &teaFloats)
+void kAssign(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
+    teaInt_t &teaInts, teaFloat_t &teaFloats, teaArray_t &teaArrays)
 {
     const std::size_t &&statementSize{statement.size()};
     getAssignmentType(statement, statementSize, line, filename);
@@ -126,6 +172,8 @@ void kAssign(
         changeIntVariable(teaInts, line, filename);
     else if (sg_assignmentType == "float")
         changeFloatVariable(teaFloats, line, filename);
+    else if (sg_assignmentType == "array")
+        changeArrayVariable(teaArrays, line, filename);
     else
         teaSyntaxError(line, filename, "Invalid assignment type.");
 }
