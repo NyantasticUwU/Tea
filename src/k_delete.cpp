@@ -33,11 +33,12 @@ void kDelete(
     getType(statement, statementSize);
     if (sg_type == "string")
     {
+        const std::string &&substr{statement.substr(sg_i)};
         teaString_t::iterator &&s_nameIndex{std::find_if(
             teaStrings.begin(),
             teaStrings.end(),
             [&](const TeaString &ts) -> const bool {
-                return ts.getname() == statement.substr(sg_i, statementSize);
+                return ts.getname() == substr;
             })};
         if (s_nameIndex == teaStrings.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -45,11 +46,12 @@ void kDelete(
     }
     else if (sg_type == "int")
     {
+        const std::string &&substr{statement.substr(sg_i)};
         teaInt_t::iterator &&s_nameIndex{std::find_if(
             teaInts.begin(),
             teaInts.end(),
             [&](const TeaInt &ti) -> const bool {
-                return ti.getname() == statement.substr(sg_i);
+                return ti.getname() == substr;
             })};
         if (s_nameIndex == teaInts.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -57,11 +59,12 @@ void kDelete(
     }
     else if (sg_type == "float")
     {
+        const std::string &&substr{statement.substr(sg_i)};
         teaFloat_t::iterator &&s_nameIndex{std::find_if(
             teaFloats.begin(),
             teaFloats.end(),
             [&](const TeaFloat &tf) -> const bool {
-                return tf.getname() == statement.substr(sg_i);
+                return tf.getname() == substr;
             })};
         if (s_nameIndex == teaFloats.end())
             teaSyntaxError(line, filename, "Variable name not found.");
@@ -69,11 +72,12 @@ void kDelete(
     }
     else if (sg_type == "snippet")
     {
+        const std::string &&substr{statement.substr(sg_i)};
         teaSnippet_t::iterator &&s_nameIndex{std::find_if(
             teaSnippets.begin(),
             teaSnippets.end(),
             [&](const TeaSnippet &ts) -> const bool {
-                return ts.getname() == statement.substr(sg_i);
+                return ts.getname() == substr;
             })};
         if (s_nameIndex == teaSnippets.end())
             teaSyntaxError(line, filename, "Snippet name not found.");
@@ -81,11 +85,12 @@ void kDelete(
     }
     else if (sg_type == "array")
     {
+        const std::string &&substr{statement.substr(sg_i)};
         teaArray_t::iterator &&s_nameIndex{std::find_if(
             teaArrays.begin(),
             teaArrays.end(),
             [&](const TeaArray<std::any> &ta) -> const bool {
-                return ta.getname() == statement.substr(sg_i);
+                return ta.getname() == substr;
             })};
         if (s_nameIndex == teaArrays.end())
             teaSyntaxError(line, filename, "Array name not found.");
