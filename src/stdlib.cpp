@@ -49,6 +49,23 @@ static const bool isVar(const std::vector<T> &typevec, const std::string &varnam
         });
 }
 
+// Removes duplicate tea types with same names
+template <typename T>
+static void removeDuplicates(std::vector<T> &typevec)
+{
+    using TeaTypeVectorIterator = typename std::vector<T>::iterator;
+    const TeaTypeVectorIterator &&begin{typevec.begin() - 1};
+    for (TeaTypeVectorIterator &&i{typevec.end() - 1}; i != begin;)
+    {
+        const std::string &iteaTypeName{i->getname()};
+        for (TeaTypeVectorIterator j{--i}; j != begin; --j)
+        {
+            if (iteaTypeName == j->getname())
+                typevec.erase(j++);
+        }
+    }
+}
+
 // Contains all std snippets
 namespace stdSnippet
 {
@@ -220,6 +237,17 @@ namespace stdSnippet
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayType").getvalue()};
         const std::string &fs{getTeaVariable(teaArrays, ts).gettype()};
         teaStrings.push_back({"fsArrayType", fs});
+    }
+
+    // Tea standard collect garbage snippet
+    static void collectGarbage(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+        teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+    {
+        removeDuplicates(teaStrings);
+        removeDuplicates(teaInts);
+        removeDuplicates(teaFloats);
+        removeDuplicates(teaSnippets);
+        removeDuplicates(teaArrays);
     }
 
     // Tea standard create directory snippet
@@ -680,6 +708,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"stdArrayShrink", stdSnippet::arrayShrink},
     {"stdArraySize", stdSnippet::arraySize},
     {"stdArrayType", stdSnippet::arrayType},
+    {"stdCollectGarbage", stdSnippet::collectGarbage},
     {"stdCreateDirectory", stdSnippet::createDirectory},
     {"stdCreateFile", stdSnippet::createFile},
     {"stdDeleteDirectory", stdSnippet::deleteDirectory},
