@@ -153,7 +153,7 @@ void loopTeaStatements(
         // Import keyword called
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_IMPORT]))
         {
-            kImport(statement, line, filename, teaStrings, teaInts, teaFloats);
+            kImport(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
             continue;
         }
         // Include keyword called
