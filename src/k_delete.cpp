@@ -22,6 +22,24 @@ static void getType(const std::string &statement, const std::size_t &statementSi
     }
 }
 
+// Removes variable from tea type vector if name matches
+template <typename T>
+static void deleteVariableByName(const std::string &substr, std::vector<T> &typevec, const int &line,
+    const char *&filename)
+{
+    using TeaTypeVectorIterator = typename std::vector<T>::iterator;
+    const TeaTypeVectorIterator &&begin{typevec.begin() - 1};
+    for (TeaTypeVectorIterator &&i{typevec.end() - 1}; i != begin; --i)
+    {
+        if (i->getname() == substr)
+        {
+            typevec.erase(i);
+            return;
+        }
+    }
+    teaSyntaxError(line, filename, "Variable name not found.");
+}
+
 // Called when the delete keyword is called in tea
 void kDelete(
     const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
@@ -31,71 +49,17 @@ void kDelete(
         teaSyntaxError(line, filename);
     const std::size_t &&statementSize{statement.size()};
     getType(statement, statementSize);
+    const std::string &&substr{statement.substr(sg_i)};
     if (sg_type == "string")
-    {
-        const std::string &&substr{statement.substr(sg_i)};
-        teaString_t::iterator &&s_nameIndex{std::find_if(
-            teaStrings.begin(),
-            teaStrings.end(),
-            [&](const TeaString &ts) -> const bool {
-                return ts.getname() == substr;
-            })};
-        if (s_nameIndex == teaStrings.end())
-            teaSyntaxError(line, filename, "Variable name not found.");
-        teaStrings.erase(s_nameIndex);
-    }
+        deleteVariableByName(substr, teaStrings, line, filename);
     else if (sg_type == "int")
-    {
-        const std::string &&substr{statement.substr(sg_i)};
-        teaInt_t::iterator &&s_nameIndex{std::find_if(
-            teaInts.begin(),
-            teaInts.end(),
-            [&](const TeaInt &ti) -> const bool {
-                return ti.getname() == substr;
-            })};
-        if (s_nameIndex == teaInts.end())
-            teaSyntaxError(line, filename, "Variable name not found.");
-        teaInts.erase(s_nameIndex);
-    }
+        deleteVariableByName(substr, teaInts, line, filename);
     else if (sg_type == "float")
-    {
-        const std::string &&substr{statement.substr(sg_i)};
-        teaFloat_t::iterator &&s_nameIndex{std::find_if(
-            teaFloats.begin(),
-            teaFloats.end(),
-            [&](const TeaFloat &tf) -> const bool {
-                return tf.getname() == substr;
-            })};
-        if (s_nameIndex == teaFloats.end())
-            teaSyntaxError(line, filename, "Variable name not found.");
-        teaFloats.erase(s_nameIndex);
-    }
+        deleteVariableByName(substr, teaFloats, line, filename);
     else if (sg_type == "snippet")
-    {
-        const std::string &&substr{statement.substr(sg_i)};
-        teaSnippet_t::iterator &&s_nameIndex{std::find_if(
-            teaSnippets.begin(),
-            teaSnippets.end(),
-            [&](const TeaSnippet &ts) -> const bool {
-                return ts.getname() == substr;
-            })};
-        if (s_nameIndex == teaSnippets.end())
-            teaSyntaxError(line, filename, "Snippet name not found.");
-        teaSnippets.erase(s_nameIndex);
-    }
+        deleteVariableByName(substr, teaSnippets, line, filename);
     else if (sg_type == "array")
-    {
-        const std::string &&substr{statement.substr(sg_i)};
-        teaArray_t::iterator &&s_nameIndex{std::find_if(
-            teaArrays.begin(),
-            teaArrays.end(),
-            [&](const TeaArray<std::any> &ta) -> const bool {
-                return ta.getname() == substr;
-            })};
-        if (s_nameIndex == teaArrays.end())
-            teaSyntaxError(line, filename, "Array name not found.");
-        teaArrays.erase(s_nameIndex);
-    }
+        deleteVariableByName(substr, teaArrays, line, filename);
     else
         teaSyntaxError(line, filename, "Invalid type specifier.");
 }
