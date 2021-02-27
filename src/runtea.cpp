@@ -13,7 +13,6 @@
 #include "k_float.hpp"
 #include "k_if.hpp"
 #include "k_import.hpp"
-#include "k_include.hpp"
 #include "k_int.hpp"
 #include "k_snippet.hpp"
 #include "k_string.hpp"
@@ -154,12 +153,6 @@ void loopTeaStatements(
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_IMPORT]))
         {
             kImport(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
-            continue;
-        }
-        // Include keyword called
-        else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_INCLUDE]))
-        {
-            kInclude(statement, line, filename);
             continue;
         }
         // Int keyword called

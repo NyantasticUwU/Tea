@@ -21,7 +21,6 @@ const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "float",
     "if",
     "import",
-    "include",
     "int",
     "snippet",
     "string",
