@@ -8,9 +8,8 @@
 #include <functional>
 
 // Using declarations
-using standardsnippet_t = std::function<void(
-    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
-    teaArray_t &teaArrays)>;
+using standardsnippet_t = std::function<void(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays)>;
 
 // Represents a snippet within teas std lib
 struct TeaStandardSnippet final

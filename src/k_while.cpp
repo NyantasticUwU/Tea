@@ -6,10 +6,9 @@
 #include "runtea.hpp"
 
 // Creates a mutable string from the unchanged statement
-static void createMutableString(
-    std::string &mutableUnchangedStatement, const std::string &unchangedStatement, const int &line,
-    const char *&filename, const teaString_t &teaStrings, const teaInt_t &teaInts, const teaFloat_t &teaFloats,
-    const teaArray_t &teaArrays)
+static inline void createMutableString(std::string &mutableUnchangedStatement,
+    const std::string &unchangedStatement, const int &line, const char *&filename, const teaString_t &teaStrings,
+    const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)
 {
     mutableUnchangedStatement = unchangedStatement;
     if (startsWithKeyword(mutableUnchangedStatement, "emplace "))
@@ -18,8 +17,7 @@ static void createMutableString(
 }
 
 // Called when while keyword is called in tea
-void kWhile(
-    const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
+void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
     int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
     teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
 {

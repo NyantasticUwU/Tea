@@ -4,7 +4,7 @@
 #include "stringsupport.hpp"
 
 // Extracting value from array in the form of a string
-static const std::string &getArrayValue(const TeaArray<std::any> &teaArray, const std::string &varname,
+static inline const std::string &getArrayValue(const TeaArray<std::any> &teaArray, const std::string &varname,
     const std::size_t &nameEnd, const bool isInString, const int &line, const char *&filename)
 {
     static std::size_t s_pos;
@@ -47,7 +47,7 @@ static const std::string &getArrayValue(const TeaArray<std::any> &teaArray, cons
 }
 
 // Fills full array string
-static const std::string &fillFullArrayString(const TeaArray<std::any> &teaArray, const bool &isInString,
+static inline const std::string &fillFullArrayString(const TeaArray<std::any> &teaArray, const bool &isInString,
     const int &line, const char *&filename)
 {
     static std::string s_fullArray;
@@ -93,7 +93,7 @@ static const std::string &fillFullArrayString(const TeaArray<std::any> &teaArray
 }
 
 // Emplaces variable into statement
-static void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
+static inline void emplaceVar(std::string &prestatement, std::size_t &statementSize, bool &isVarFound,
     const std::string &varname, const std::size_t &braceOpenPos, const std::size_t &braceClosePos,
     const bool &isInString, const int &line, const char *&filename, const teaString_t &teaStrings,
     const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)

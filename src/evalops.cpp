@@ -20,7 +20,8 @@ static int sg_leftOperatorStartIndex; // Indicates start of left operand
 static int sg_operatorIndex;
 
 // Searches for operator
-static const int searchOperator(const std::string &statement, const std::string &op, const bool &isSpaceBefore)
+static inline const int searchOperator(const std::string &statement, const std::string &op,
+    const bool &isSpaceBefore)
 {
     bool &&isInString{false};
     const std::size_t &&statementSize{statement.size()};
@@ -45,7 +46,7 @@ static const int searchOperator(const std::string &statement, const std::string 
 }
 
 // Gets left operand
-static const std::string getLeftOperand(const std::string &statement, const std::string &)
+static inline const std::string getLeftOperand(const std::string &statement, const std::string &)
 {
     std::string leftOperand;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 2; ++sg_i)
@@ -53,7 +54,7 @@ static const std::string getLeftOperand(const std::string &statement, const std:
     return leftOperand;
 }
 // Gets left operand
-static const int getLeftOperand(const std::string &statement, const int &)
+static inline const int getLeftOperand(const std::string &statement, const int &)
 {
     std::string intstr;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
@@ -61,7 +62,7 @@ static const int getLeftOperand(const std::string &statement, const int &)
     return std::stoi(intstr);
 }
 // Gets left operand
-static const float getLeftOperand(const std::string &statement, const float &)
+static inline const float getLeftOperand(const std::string &statement, const float &)
 {
     std::string floatstr;
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
@@ -70,7 +71,8 @@ static const float getLeftOperand(const std::string &statement, const float &)
 }
 
 // Gets right operand
-static const std::string getRightOperand(const std::string &statement, const int &opsize, const std::string &)
+static inline const std::string getRightOperand(const std::string &statement, const int &opsize,
+    const std::string &)
 {
     std::string rightOperand;
     const int &&statementSize{static_cast<int>(statement.size())};
@@ -90,7 +92,7 @@ static const std::string getRightOperand(const std::string &statement, const int
     return rightOperand;
 }
 // Gets right operand
-static const int getRightOperand(const std::string &statement, const int &opsize, const int &)
+static inline const int getRightOperand(const std::string &statement, const int &opsize, const int &)
 {
     int &&statementSize{static_cast<int>(statement.size())};
     std::string intstr;
@@ -106,7 +108,7 @@ static const int getRightOperand(const std::string &statement, const int &opsize
     return std::stoi(intstr, nullptr, 0);
 }
 // Gets right operand
-static const float getRightOperand(const std::string &statement, const int &opsize, const float &)
+static inline const float getRightOperand(const std::string &statement, const int &opsize, const float &)
 {
     int &&statementSize{static_cast<int>(statement.size())};
     std::string floatstr;
@@ -124,7 +126,7 @@ static const float getRightOperand(const std::string &statement, const int &opsi
 
 // Checks if right operand is int or float
 // Returns true if int false if float
-static const bool isROIntOrFloat(const std::string &statement, const int &opsize)
+static inline const bool isROIntOrFloat(const std::string &statement, const int &opsize)
 {
     int &&statementSize{static_cast<int>(statement.size())};
     for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
@@ -141,7 +143,7 @@ static const bool isROIntOrFloat(const std::string &statement, const int &opsize
 }
 // Checks if left operand is int or float
 // Returns true if int false if float
-static const bool isLOIntOrFloat(const std::string &statement)
+static inline const bool isLOIntOrFloat(const std::string &statement)
 {
     bool &&isInt{true};
     for (sg_i = sg_operatorIndex - 2; sg_i >= 0; --sg_i)
@@ -923,7 +925,7 @@ static const bool checkSign(const char &c)
 }
 
 // Searches for operators by group
-static const std::string searchOperatorsByGroup(const std::string &statement)
+static inline const std::string searchOperatorsByGroup(const std::string &statement)
 {
     const std::size_t &&statementSize{statement.size()};
     for (const std::vector<const char *> &opg : scg_ops)

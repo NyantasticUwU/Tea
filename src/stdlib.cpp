@@ -26,7 +26,7 @@ static std::ofstream sg_of;
 
 // Gets variable by name from tea type vector
 template <typename T>
-static const T &getTeaVariable(const std::vector<T> &typevec, const std::string &varname)
+static inline const T &getTeaVariable(const std::vector<T> &typevec, const std::string &varname)
 {
     for (const T &t : typevec)
     {
@@ -39,7 +39,7 @@ static const T &getTeaVariable(const std::vector<T> &typevec, const std::string 
 
 // Checks if any vars are equal to tsVariableName
 template <typename T>
-static const bool isVar(const std::vector<T> &typevec, const std::string &varname)
+static inline const bool isVar(const std::vector<T> &typevec, const std::string &varname)
 {
     return std::any_of(
         typevec.begin(),
@@ -51,7 +51,7 @@ static const bool isVar(const std::vector<T> &typevec, const std::string &varnam
 
 // Removes duplicate tea types with same names
 template <typename T>
-static void removeDuplicates(std::vector<T> &typevec)
+static inline void removeDuplicates(std::vector<T> &typevec)
 {
     using TeaTypeVectorIterator = typename std::vector<T>::iterator;
     const TeaTypeVectorIterator &&begin{typevec.begin() - 1};

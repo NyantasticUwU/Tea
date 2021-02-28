@@ -5,9 +5,8 @@
 // Makes sure declaration type is valid
 static void assertType(const std::string &type, const int &line, const char *&filename)
 {
-    if (type == "string" || type == "int" || type == "float" || type == "snippet" || type == "array")
-        return;
-    teaSyntaxError(line, filename, "Invalid declaration type.");
+    if (type != "string" && type != "int" && type != "float" && type != "snippet" && type != "array")
+        teaSyntaxError(line, filename, "Invalid declaration type.");
 }
 
 // Called when the declare keyword is called in tea

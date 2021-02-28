@@ -7,9 +7,8 @@
 static std::string sg_content;
 
 // Checks if the string literal is closed
-static void checkStringLiteral(
-    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename,
-    const int &kwlen)
+static inline void checkStringLiteral(const std::string &statement, const std::size_t &statementSize,
+    const int &line, const char *&filename, const int &kwlen)
 {
     int &&quoteCount{0};
     for (std::size_t &&i{static_cast<std::size_t>(kwlen + 1)}; i < statementSize; ++i)
@@ -30,7 +29,7 @@ static void checkStringLiteral(
 }
 
 // Loops through each character in the string literal and adds it to the command string
-static void getContent(const std::string &statement, const std::size_t &statementSize, const int &kwlen)
+static inline void getContent(const std::string &statement, const std::size_t &statementSize, const int &kwlen)
 {
     sg_content.clear();
     for (std::size_t &&i{static_cast<std::size_t>(kwlen + 2)}; i < statementSize; ++i)
@@ -39,8 +38,8 @@ static void getContent(const std::string &statement, const std::size_t &statemen
 }
 
 // Extracts chars inside string literal and puts it in command
-std::string &getStringLiteral(
-    const std::string &statement, const int &line, const char *&filename, const int &kwlen)
+std::string &getStringLiteral(const std::string &statement, const int &line, const char *&filename,
+    const int &kwlen)
 {
     if (statement.size() < 9U)
         teaSyntaxError(line, filename);

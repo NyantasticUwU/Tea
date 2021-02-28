@@ -8,7 +8,7 @@ static std::size_t sg_i;
 static std::string sg_type;
 
 // Gets variable type
-static void getType(const std::string &statement, const std::size_t &statementSize)
+static inline void getType(const std::string &statement, const std::size_t &statementSize)
 {
     sg_type.clear();
     for (sg_i = 7U; sg_i < statementSize; ++sg_i)
@@ -24,7 +24,7 @@ static void getType(const std::string &statement, const std::size_t &statementSi
 
 // Removes variable from tea type vector if name matches
 template <typename T>
-static void deleteVariableByName(const std::string &substr, std::vector<T> &typevec, const int &line,
+static inline void deleteVariableByName(const std::string &substr, std::vector<T> &typevec, const int &line,
     const char *&filename)
 {
     using TeaTypeVectorIterator = typename std::vector<T>::iterator;
@@ -41,8 +41,7 @@ static void deleteVariableByName(const std::string &substr, std::vector<T> &type
 }
 
 // Called when the delete keyword is called in tea
-void kDelete(
-    const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
+void kDelete(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
     teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
 {
     if (std::count(statement.begin(), statement.end(), ' ') != 2)

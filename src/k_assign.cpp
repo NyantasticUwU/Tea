@@ -10,8 +10,8 @@ static std::string sg_var;
 static std::string sg_varname;
 
 // Gets assignment type
-static void getAssignmentType(
-    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
+static void getAssignmentType(const std::string &statement, const std::size_t &statementSize, const int &line,
+    const char *&filename)
 {
     sg_assignmentType.clear();
     for (sg_i = 7U; sg_i < statementSize; ++sg_i)
@@ -25,8 +25,8 @@ static void getAssignmentType(
 }
 
 // Gets var name
-static void getVarname(
-    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
+static void getVarname(const std::string &statement, const std::size_t &statementSize, const int &line,
+    const char *&filename)
 {
     sg_varname.clear();
     for (++sg_i; sg_i < statementSize; ++sg_i)
@@ -40,8 +40,8 @@ static void getVarname(
 }
 
 // Gets var
-static void getVar(
-    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename)
+static void getVar(const std::string &statement, const std::size_t &statementSize, const int &line,
+    const char *&filename)
 {
     sg_var.clear();
     for (++sg_i; sg_i < statementSize; ++sg_i)

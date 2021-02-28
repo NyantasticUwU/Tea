@@ -3,6 +3,6 @@
 #include <string>
 
 // Called when tea keyword is called in tea
-void kExit(const std::string &statement);
+void kExit(const std::string &statement, const int &line, const char *&filename);
 
 #endif

@@ -24,7 +24,7 @@
 extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 
 // Checks if statement starts with the given keyword
-const bool startsWithKeyword(const std::string &statement, const char *const &teaKeyword) noexcept
+inline const bool startsWithKeyword(const std::string &statement, const char *const &teaKeyword) noexcept
 {
     static std::size_t s_statementSize;
     s_statementSize = statement.size();
@@ -39,8 +39,7 @@ const bool startsWithKeyword(const std::string &statement, const char *const &te
 }
 
 // Runs tea string vector
-void runTea(
-    const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
+void runTea(const std::vector<std::string> &teafile, const char *&filename, const teaString_t *const &pteaStrings,
     const teaInt_t *const &pteaInts, const teaFloat_t *const &pteaFloats, const teaSnippet_t *const &pteaSnippets,
     const teaArray_t *const &pteaArrays)
 {
@@ -65,9 +64,9 @@ void runTea(
 }
 
 // Runs tea statement
-void loopTeaStatements(
-    const std::vector<std::string> &teafile, int &line, const char *&filename, teaString_t &teaStrings,
-    teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const char *&filename,
+    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
+    teaArray_t &teaArrays)
 {
     // Looping through tea file lines
     const int &&teafileSize{static_cast<int>(teafile.size())};
@@ -133,7 +132,7 @@ void loopTeaStatements(
         // Exit keyword called
         else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_EXIT]))
         {
-            kExit(statement);
+            kExit(statement, line, filename);
             continue;
         }
         // Float keyword called

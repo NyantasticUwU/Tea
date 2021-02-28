@@ -16,9 +16,8 @@ std::string g_varname;
 extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];
 
 // Checks for amount of spaces
-static void checkSpaces(
-    const std::string &statement, const std::size_t &statementSize, const int &line, const char *&filename,
-    const int &kwlen)
+static void checkSpaces(const std::string &statement, const std::size_t &statementSize, const int &line,
+    const char *&filename, const int &kwlen)
 {
     bool &&isInString{false};
     int &&spaceCount{0};
