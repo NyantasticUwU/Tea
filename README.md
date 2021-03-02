@@ -21,7 +21,7 @@ string tsPrint "Hello, world!\n"
 # As of now tea's standard library only consists of snippets
 # All standard library snippets start with the std prefix
 # Some snippets will return with new variables, prefixed with fs (from snippet)
-call snippet stdPrint
+call snippet Tea::IO::Print
 
 # Remove a variable from memory
 delete string tsPrint
