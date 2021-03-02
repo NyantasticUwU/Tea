@@ -3,7 +3,7 @@
 #define TEA_NUMBER_OF_OPERATOR_GROUPS 6
 #define TEA_VERSION "0.0.0"
 
-// Tea keyword enumeration for indexing g_teakeywords (defined in main.cpp)
+// Tea keyword enumeration for indexing g_teakeywords (defined in stdlib.cpp)
 enum
 {
     TEA_KEYWORD_ARRAY,

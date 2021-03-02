@@ -699,7 +699,30 @@ namespace stdSnippet
 } // namespace stdSnippet
 
 // Defining globals
-const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
+const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]
+{
+    "array",
+    "assign",
+    "call",
+    "declare",
+    "delete",
+    "elif",
+    "else",
+    "emplace",
+    "end",
+    "exit",
+    "float",
+    "if",
+    "import",
+    "int",
+    "namespace",
+    "snippet",
+    "string",
+    "system",
+    "while"
+};
+const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]
+{
     {"Tea::Array::Append", stdSnippet::arrayAppend},
     {"Tea::Array::Capacity", stdSnippet::arrayCapacity},
     {"Tea::Array::Insert", stdSnippet::arrayInsert},
@@ -747,7 +770,8 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
     {"Tea::TimeLocal", stdSnippet::timeLocal},
     {"Tea::ToFloat", stdSnippet::toFloat},
     {"Tea::ToInt", stdSnippet::toInt},
-    {"Tea::ToString", stdSnippet::toString}};
+    {"Tea::ToString", stdSnippet::toString}
+};
 
 // Handles snippet by given name
 const bool handleStandardSnippet(const std::string &snippetName, const int &line, const char *&filename,

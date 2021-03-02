@@ -1,32 +1,9 @@
 #include "cmd.hpp"
-#include "constants.hpp"
 #include "error.hpp"
 #include "fileIO.hpp"
 #include "init.hpp"
 #include "parsefile.hpp"
 #include "runtea.hpp"
-
-// Defining globals
-const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
-    "array",
-    "assign",
-    "call",
-    "declare",
-    "delete",
-    "elif",
-    "else",
-    "emplace",
-    "end",
-    "exit",
-    "float",
-    "if",
-    "import",
-    "int",
-    "namespace",
-    "snippet",
-    "string",
-    "system",
-    "while"};
 
 // Main entry point of program
 int main(const int argc, const char **argv)
