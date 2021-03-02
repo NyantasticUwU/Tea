@@ -37,13 +37,10 @@ void kCall(const std::string &statement, const int &line, const char *&filename,
                 return;
             }
         }
-        if (s_snippetName[0U] == 's' && s_snippetName[1U] == 't' && s_snippetName[2U] == 'd')
-        {
-            const bool &&isStandardSnippetFound{handleStandardSnippet(s_snippetName, line, filename, teaStrings,
-                teaInts, teaFloats, teaSnippets, teaArrays, currentNamespace)};
-            if (isStandardSnippetFound)
-                return;
-        }
+        const bool &&isStandardSnippetFound{handleStandardSnippet(s_snippetName, line, filename, teaStrings,
+            teaInts, teaFloats, teaSnippets, teaArrays, currentNamespace)};
+        if (isStandardSnippetFound)
+            return;
         teaSyntaxError(line, filename, "Snippet could not be found.");
     }
     teaSyntaxError(line, filename, "Invalid call type.");
