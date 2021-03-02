@@ -22,6 +22,7 @@ const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]{
     "if",
     "import",
     "int",
+    "namespace",
     "snippet",
     "string",
     "system",
@@ -40,7 +41,7 @@ int main(const int argc, const char **argv)
         teaInt_t &&teaInts{TeaInt{"argc", argc}};
         teaArray_t teaArrays;
         fillTeaArgs(argc, argv, teaArrays);
-        runTea(mainfile, filename, nullptr, &teaInts, nullptr, nullptr, &teaArrays);
+        runTea(mainfile, filename, "", nullptr, &teaInts, nullptr, nullptr, &teaArrays);
     }
     catch (...)
     {

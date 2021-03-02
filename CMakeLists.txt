@@ -27,6 +27,7 @@ add_executable(Tea
         src/k_if.cpp
         src/k_import.cpp
         src/k_int.cpp
+        src/k_namespace.cpp
         src/k_snippet.cpp
         src/k_string.cpp
         src/k_system.cpp

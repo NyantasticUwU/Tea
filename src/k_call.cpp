@@ -16,7 +16,8 @@ static void getCharacters(const std::string &statement, std::string &str, std::s
 
 // Called when the call keyword is called in tea
 void kCall(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-    teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+    teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays,
+    const std::string &currentNamespace)
 {
     static std::string s_callType;
     static std::string s_snippetName;
@@ -32,14 +33,14 @@ void kCall(const std::string &statement, const int &line, const char *&filename,
             {
                 int &&ln{0};
                 loopTeaStatements(ts.getbody(), ln, filename, teaStrings, teaInts, teaFloats, teaSnippets,
-                    teaArrays);
+                    teaArrays, currentNamespace);
                 return;
             }
         }
         if (s_snippetName[0U] == 's' && s_snippetName[1U] == 't' && s_snippetName[2U] == 'd')
         {
             const bool &&isStandardSnippetFound{handleStandardSnippet(s_snippetName, line, filename, teaStrings,
-                teaInts, teaFloats, teaSnippets, teaArrays)};
+                teaInts, teaFloats, teaSnippets, teaArrays, currentNamespace)};
             if (isStandardSnippetFound)
                 return;
         }

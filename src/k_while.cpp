@@ -19,7 +19,7 @@ static inline void createMutableString(std::string &mutableUnchangedStatement,
 // Called when while keyword is called in tea
 void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
     int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays, const std::string &currentNamespace)
 {
     const int whileLine{line};
     std::string mutableUnchangedStatement;
@@ -28,7 +28,8 @@ void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, con
     while (isIfTrue(mutableUnchangedStatement, line, filename, 5))
     {
         line = whileLine;
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
+            currentNamespace);
         createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
             teaFloats, teaArrays);
     }

@@ -17,6 +17,7 @@ using float_dist_t = std::uniform_real_distribution<float>;
 // Defining static globals
 static const int *sg_pline;
 static const char *sg_pfilename;
+static const std::string *sg_pcurrentNamespace;
 static std::mt19937 sg_randgen{std::random_device{}()};
 static int_dist_t sg_intranddist;
 static float_dist_t sg_floatranddist;
@@ -305,7 +306,8 @@ namespace stdSnippet
         const std::vector<std::string> &&teafile{{getTeaVariable(teaStrings, "tsExecute").getvalue()}};
         int &&line{0};
         const char *&filename{sg_pfilename};
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
+            *sg_pcurrentNamespace);
     }
 
     // Tea standard file append snippet
@@ -750,10 +752,11 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]{
 // Handles snippet by given name
 const bool handleStandardSnippet(const std::string &snippetName, const int &line, const char *&filename,
     teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
-    teaArray_t &teaArrays)
+    teaArray_t &teaArrays, const std::string &currentNamespace)
 {
     sg_pline = &line;
     sg_pfilename = filename;
+    sg_pcurrentNamespace = &currentNamespace;
     for (const TeaStandardSnippet &tss : g_teastandardsnippets)
     {
         if (tss.name == snippetName)

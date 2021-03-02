@@ -175,13 +175,14 @@ static const std::vector<std::any> getFloatData(const std::string &statement, co
 }
 
 // Called when the array keyword is called in tea
-void kArray(const std::string &statement, const int &line, const char *&filename, teaArray_t &teaArrays)
+void kArray(const std::string &statement, const int &line, const char *&filename, teaArray_t &teaArrays,
+    const std::string &currentNamespace)
 {
     const std::size_t &&statementSize{statement.size()};
     const std::string &type{getArrayType(statement, statementSize, line, filename)};
     const int &&size{getArraySize(statement, statementSize, line, filename)};
     createvar(getPreArrayName(statement, statementSize, line, filename), line, filename, 0);
-    const std::string &name{g_varname};
+    const std::string &&name{currentNamespace + g_varname};
     // Array type is string
     if (type == "string")
     {

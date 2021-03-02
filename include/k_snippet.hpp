@@ -4,6 +4,6 @@
 
 // Called when the snippet keyword is called in tea
 void kSnippet(const std::vector<std::string> &teafile, const std::string &statement, int &line,
-    const char *&filename, teaSnippet_t &teaSnippets);
+    const char *&filename, teaSnippet_t &teaSnippets, const std::string &currentNamespace);
 
 #endif

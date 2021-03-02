@@ -9,6 +9,6 @@
 // Called when while keyword is called in tea
 void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
     int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets, teaArray_t &teaArrays);
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays, const std::string &currentNamespace);
 
 #endif

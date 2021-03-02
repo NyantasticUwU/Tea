@@ -33,10 +33,11 @@ const bool isEnteringBlock(const std::string &statement) noexcept
 // Called when if keyword is called in tea
 void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const std::string &statement, int &line,
     const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+    teaSnippet_t &teaSnippets, teaArray_t &teaArrays, const std::string &currentNamespace)
 {
     if (isIfTrue(statement, line, filename, 2))
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
+        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
+            currentNamespace);
     else
     {
         int &&nif{0};
@@ -63,13 +64,14 @@ void kIf(const std::vector<std::string> &teafile, const int &teafileSize, const 
             {
                 ++line;
                 kIf(teafile, teafileSize, nextline.substr(2U, nextline.size()), line, filename, teaStrings,
-                    teaInts, teaFloats, teaSnippets, teaArrays);
+                    teaInts, teaFloats, teaSnippets, teaArrays, currentNamespace);
                 return;
             }
             if (nextline == "else" && !nif)
             {
                 ++line;
-                loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
+                loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
+                    currentNamespace);
                 return;
             }
             ++line;
