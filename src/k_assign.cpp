@@ -132,7 +132,7 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
 // Changes array variable
 static void changeArrayVariable(teaArray_t &teaArrays, const int &line, const char *&filename)
 {
-    for (TeaArray<std::any> &teaArray : teaArrays)
+    for (TeaArray &teaArray : teaArrays)
     {
         if (startsWithKeyword(sg_varname, teaArray.getname().c_str()))
         {

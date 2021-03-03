@@ -4,7 +4,7 @@
 #include "stringsupport.hpp"
 
 // Extracting value from array in the form of a string
-static inline const std::string &getArrayValue(const TeaArray<std::any> &teaArray, const std::string &varname,
+static inline const std::string &getArrayValue(const TeaArray &teaArray, const std::string &varname,
     const std::size_t &nameEnd, const bool isInString, const int &line, const char *&filename)
 {
     static std::size_t s_pos;
@@ -47,7 +47,7 @@ static inline const std::string &getArrayValue(const TeaArray<std::any> &teaArra
 }
 
 // Fills full array string
-static inline const std::string &fillFullArrayString(const TeaArray<std::any> &teaArray, const bool &isInString,
+static inline const std::string &fillFullArrayString(const TeaArray &teaArray, const bool &isInString,
     const int &line, const char *&filename)
 {
     static std::string s_fullArray;
@@ -140,7 +140,7 @@ static inline void emplaceVar(std::string &prestatement, std::size_t &statementS
             return;
         }
     }
-    for (const TeaArray<std::any> &ta : teaArrays)
+    for (const TeaArray &ta : teaArrays)
     {
         if (startsWithKeyword(varname, ta.getname().c_str()))
         {

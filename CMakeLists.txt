@@ -37,6 +37,7 @@ add_executable(Tea
         src/runtea.cpp
         src/stdlib.cpp
         src/stringsupport.cpp
+        src/TeaArray.cpp
         src/TeaFloat.cpp
         src/TeaInt.cpp
         src/TeaSnippet.cpp

@@ -5,63 +5,43 @@
 #include <vector>
 
 // Represents a fixed-length array in tea
-template <typename T>
 class TeaArray final
 {
     std::string m_name;
     std::string m_type;
     int m_size;
-    std::vector<T> m_data;
+    std::vector<std::any> m_data;
 
 public:
     // Default constructor
     TeaArray(const std::string &name = {}, const std::string &type = {}, const int &size = 0,
-        const std::vector<T> &data = {}) : m_name{name}, m_type{type}, m_size{size}
-    {
-        m_data = data;
-    }
+        const std::vector<std::any> &data = {});
     // Default deconstructor
-    ~TeaArray() {}
+    ~TeaArray();
 
     // Operator[]
-    const T &operator[](const int &index) const noexcept { return m_data[index]; }
+    const std::any &operator[](const int &index) const noexcept;
 
     // Gets name
-    const std::string &getname() const noexcept { return m_name; }
+    const std::string &getname() const noexcept;
     // Gets type
-    const std::string &gettype() const noexcept { return m_type; }
+    const std::string &gettype() const noexcept;
     // Gets size
-    const int &getsize() const noexcept { return m_size; }
+    const int &getsize() const noexcept;
     // Gets data
-    const std::vector<T> &getdata() const noexcept { return m_data; }
+    const std::vector<std::any> &getdata() const noexcept;
 
     // Sets name
-    TeaArray &setname(const std::string &newname)
-    {
-        m_name = newname;
-        return *this;
-    }
+    TeaArray &setname(const std::string &newname);
     // Sets type
-    TeaArray &settype(const std::string &newtype)
-    {
-        m_type = newtype;
-        return *this;
-    }
+    TeaArray &settype(const std::string &newtype);
     // Sets size
-    TeaArray &setsize(const int &newsize) noexcept
-    {
-        m_size = newsize;
-        return *this;
-    }
+    TeaArray &setsize(const int &newsize) noexcept;
     // Sets data
-    TeaArray &setdata(const std::vector<T> &newdata)
-    {
-        m_data = newdata;
-        return *this;
-    }
+    TeaArray &setdata(const std::vector<std::any> &newdata);
 };
 
 // Type def for tea array vector
-using teaArray_t = std::vector<TeaArray<std::any>>;
+using teaArray_t = std::vector<TeaArray>;
 
 #endif

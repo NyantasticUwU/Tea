@@ -76,7 +76,7 @@ namespace stdSnippet
         teaArray_t &teaArrays)
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayAppend").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const std::string &arrayType{ta.gettype()};
         std::any newElement;
         if (arrayType == "string")
@@ -98,7 +98,7 @@ namespace stdSnippet
         teaArray_t &teaArrays)
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayCapacity").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         teaInts.push_back({"fsArrayCapacity", static_cast<int>(ta.getdata().capacity())});
     }
 
@@ -109,7 +109,7 @@ namespace stdSnippet
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayInsert").getvalue()};
         const int &index{getTeaVariable(teaInts, "tsArrayInsertIndex").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const std::string &arrayType{ta.gettype()};
         std::any newElement;
         if (arrayType == "string")
@@ -131,7 +131,7 @@ namespace stdSnippet
         teaArray_t &teaArrays)
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayMax").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const std::vector<std::any> &vec{ta.getdata()};
         const std::string &type{ta.gettype()};
         if (type == "int")
@@ -162,7 +162,7 @@ namespace stdSnippet
         teaArray_t &teaArrays)
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayMin").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const std::vector<std::any> &vec{ta.getdata()};
         const std::string &type{ta.gettype()};
         if (type == "int")
@@ -193,7 +193,7 @@ namespace stdSnippet
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayRemove").getvalue()};
         const int &index{getTeaVariable(teaInts, "tsArrayRemoveIndex").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const_cast<std::vector<std::any> &>(ta.getdata()).erase(ta.getdata().begin() + index);
         --const_cast<int &>(ta.getsize());
     }
@@ -205,7 +205,7 @@ namespace stdSnippet
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayReserve").getvalue()};
         const int &size{getTeaVariable(teaInts, "tsArrayReserveSize").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const_cast<std::vector<std::any> &>(ta.getdata()).reserve(size);
     }
 
@@ -215,7 +215,7 @@ namespace stdSnippet
         teaArray_t &teaArrays)
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsArrayShrink").getvalue()};
-        const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+        const TeaArray &ta{getTeaVariable(teaArrays, ts)};
         const_cast<std::vector<std::any> &>(ta.getdata()).shrink_to_fit();
     }
 
@@ -295,7 +295,7 @@ namespace stdSnippet
             vec.push_back(std::make_any<TeaString>("", p));
         }
         const int &&size{static_cast<int>(vec.size())};
-        teaArrays.push_back(TeaArray<std::any>{"fsDirectoryContents", "string", size, vec});
+        teaArrays.push_back(TeaArray{"fsDirectoryContents", "string", size, vec});
     }
 
     // Tea standard execute snippet
@@ -470,7 +470,7 @@ namespace stdSnippet
         }
         if (isVar(teaArrays, ts))
         {
-            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            const TeaArray &ta{getTeaVariable(teaArrays, ts)};
             std::vector<std::any> &arr{const_cast<std::vector<std::any> &>(ta.getdata())};
             std::reverse(arr.begin(), arr.end());
             return;
@@ -534,7 +534,7 @@ namespace stdSnippet
         }
         if (isVar(teaArrays, ts))
         {
-            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            const TeaArray &ta{getTeaVariable(teaArrays, ts)};
             std::vector<std::any> &vec{const_cast<std::vector<std::any> &>(ta.getdata())};
             std::shuffle(vec.begin(), vec.end(), sg_randgen);
             return;
@@ -563,7 +563,7 @@ namespace stdSnippet
         }
         if (isVar(teaArrays, ts))
         {
-            const TeaArray<std::any> &ta{getTeaVariable(teaArrays, ts)};
+            const TeaArray &ta{getTeaVariable(teaArrays, ts)};
             std::vector<std::any> &arr{const_cast<std::vector<std::any> &>(ta.getdata())};
             const std::string &arrt{ta.gettype()};
             if (arrt == "string")

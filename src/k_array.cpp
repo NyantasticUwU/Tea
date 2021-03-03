@@ -188,7 +188,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getStringData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray<std::any>{name, type, size, data});
+        teaArrays.push_back(TeaArray{name, type, size, data});
         return;
     }
     // Array type is int
@@ -196,7 +196,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getIntData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray<std::any>{name, type, size, data});
+        teaArrays.push_back(TeaArray{name, type, size, data});
         return;
     }
     // Array type is float
@@ -204,7 +204,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getFloatData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray<std::any>{name, type, size, data});
+        teaArrays.push_back(TeaArray{name, type, size, data});
         return;
     }
     teaSyntaxError(line, filename, "Invalid array type.");

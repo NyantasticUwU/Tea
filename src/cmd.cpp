@@ -52,5 +52,5 @@ void fillTeaArgs(const int &argc, const char **&argv, teaArray_t &teaArrays)
     data.reserve(static_cast<std::size_t>(argc));
     for (int &&i{0}; i < argc; ++i)
         data.push_back(std::make_any<TeaString>("", argv[i]));
-    teaArrays.push_back(TeaArray<std::any>{"args", "string", argc, data});
+    teaArrays.push_back(TeaArray{"args", "string", argc, data});
 }
