@@ -70,6 +70,112 @@ static inline void removeDuplicates(std::vector<T> &typevec)
 // Contains all std snippets
 namespace stdSnippet
 {
+    // Tea standard abs snippet
+    // Takes string tsAbs
+    // Outputs int|float fsAbs
+    static void abs(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
+        teaArray_t &)
+    {
+        const std::string &ts{getTeaVariable(teaStrings, "tsAbs").getvalue()};
+        if (isVar(teaInts, ts))
+            teaInts.push_back({"fsAbs", std::abs(getTeaVariable(teaInts, ts).getvalue())});
+        else if (isVar(teaFloats, ts))
+            teaFloats.push_back({"fsAbs", std::abs(getTeaVariable(teaFloats, ts).getvalue())});
+        else
+            teaSyntaxError(*sg_pline, sg_pfilename, "Could not find tsAbs.");
+    }
+
+    // Tea standard acos snippet
+    // Takes int|float tsAcos
+    // Outputs float fsAcos
+    static void acos(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAcos"))
+            teaFloats.push_back({"fsAcos",
+                static_cast<float>(std::acos(getTeaVariable(teaInts, "tsAcos").getvalue()))});
+        else
+            teaFloats.push_back({"fsAcos", std::acos(getTeaVariable(teaFloats, "tsAcos").getvalue())});
+    }
+
+    // Tea standard acosh snippet
+    // Takes int|float tsAcosh
+    // Outputs float fsAcosh
+    static void acosh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAcosh"))
+            teaFloats.push_back({"fsAcosh",
+                static_cast<float>(std::acosh(getTeaVariable(teaInts, "tsAcosh").getvalue()))});
+        else
+            teaFloats.push_back({"fsAcosh", std::acosh(getTeaVariable(teaFloats, "tsAcosh").getvalue())});
+    }
+
+    // Tea standard acsin snippet
+    // Takes int|float tsAsin
+    // Outputs float fsAsin
+    static void asin(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAsin"))
+            teaFloats.push_back({"fsAsin",
+                static_cast<float>(std::asin(getTeaVariable(teaInts, "tsAsin").getvalue()))});
+        else
+            teaFloats.push_back({"fsAsin", std::asin(getTeaVariable(teaFloats, "tsAsin").getvalue())});
+    }
+
+    // Tea standard asinh snippet
+    // Takes int|float tsAsinh
+    // Outputs float fsAsinh
+    static void asinh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAsinh"))
+            teaFloats.push_back({"fsAsinh",
+                static_cast<float>(std::asinh(getTeaVariable(teaInts, "tsAsinh").getvalue()))});
+        else
+            teaFloats.push_back({"fsAsinh", std::asinh(getTeaVariable(teaFloats, "tsAsinh").getvalue())});
+    }
+
+    // Tea standard atan snippet
+    // Takes int|float tsAtan
+    // Outputs float fsAtan
+    static void atan(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAtan"))
+            teaFloats.push_back({"fsAtan",
+                static_cast<float>(std::atan(getTeaVariable(teaInts, "tsAtan").getvalue()))});
+        else
+            teaFloats.push_back({"fsAtan", std::atan(getTeaVariable(teaFloats, "tsAtan").getvalue())});
+    }
+
+    // Tea standard atan2 snippet
+    // Takes int|float tsAtan2X, int|float tsAtan2Y
+    // Outputs float fsAtan2
+    static void atan2(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAtan2X") && isVar(teaInts, "tsAtan2Y"))
+        {
+            const int &x{getTeaVariable(teaInts, "tsAtan2X").getvalue()};
+            const int &y{getTeaVariable(teaInts, "tsAtan2Y").getvalue()};
+            teaFloats.push_back({"fsAtan2", static_cast<float>(std::atan2(y, x))});
+        }
+        else
+        {
+            const float &x{getTeaVariable(teaFloats, "tsAtan2X").getvalue()};
+            const float &y{getTeaVariable(teaFloats, "tsAtan2Y").getvalue()};
+            teaFloats.push_back({"fsAtan2", std::atan2(y, x)});
+        }
+    }
+
+    // Tea standard atanh snippet
+    // Takes int|float tsAtanh
+    // Outputs float fsAtanh
+    static void atanh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsAtanh"))
+            teaFloats.push_back({"fsAtanh",
+                static_cast<float>(std::atanh(getTeaVariable(teaInts, "tsAtanh").getvalue()))});
+        else
+            teaFloats.push_back({"fsAtanh", std::atanh(getTeaVariable(teaFloats, "tsAtanh").getvalue())});
+    }
+
     // Tea standard array append snippet
     // Takes string tsArrayAppend, string|int|float tsArrayAppendValue
     static void arrayAppend(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &,
@@ -240,6 +346,45 @@ namespace stdSnippet
         teaStrings.push_back({"fsArrayType", fs});
     }
 
+    // Tea standard cbrt snippet
+    // Takes int|float tsCbrt
+    // Outputs float fsCbrt
+    static void cbrt(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsCbrt"))
+            teaFloats.push_back({"fsCbrt",
+                static_cast<float>(std::cbrt(getTeaVariable(teaInts, "tsCbrt").getvalue()))});
+        else
+            teaFloats.push_back({"fsCbrt", std::cbrt(getTeaVariable(teaFloats, "tsCbrt").getvalue())});
+    }
+
+    // Tea standard ceil snippet
+    // Takes float tsCeil
+    // Outputs int fsCeil
+    static void ceil(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        teaInts.push_back({"fsCeil", static_cast<int>(std::ceil(getTeaVariable(teaFloats, "tsCeil").getvalue()))});
+    }
+
+    // Tea standard copy sign snippet
+    // Takes int|float tsCopySignX, int|float tsCopySignY
+    // Outputs int|float fsCopySign
+    static void copySign(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsCopySignX") && isVar(teaInts, "tsCopySignY"))
+        {
+            const int &x{getTeaVariable(teaInts, "tsCopySignX").getvalue()};
+            const int &y{getTeaVariable(teaInts, "tsCopySignY").getvalue()};
+            teaInts.push_back({"fsCopySign", static_cast<int>(std::copysign(x, y))});
+        }
+        else
+        {
+            const float &x{getTeaVariable(teaFloats, "tsCopySignX").getvalue()};
+            const float &y{getTeaVariable(teaFloats, "tsCopySignY").getvalue()};
+            teaFloats.push_back({"fsCopySign", std::copysign(x, y)});
+        }
+    }
+
     // Tea standard collect garbage snippet
     static void collectGarbage(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
         teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
@@ -249,6 +394,30 @@ namespace stdSnippet
         removeDuplicates(teaFloats);
         removeDuplicates(teaSnippets);
         removeDuplicates(teaArrays);
+    }
+
+    // Tea standard cos snippet
+    // Takes int|float tsCos
+    // Outputs float fsCos
+    static void cos(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsCos"))
+            teaFloats.push_back({"fsCos",
+                static_cast<float>(std::cos(getTeaVariable(teaInts, "tsCos").getvalue()))});
+        else
+            teaFloats.push_back({"fsCos", std::cos(getTeaVariable(teaFloats, "tsCos").getvalue())});
+    }
+
+    // Tea standard cosh snippet
+    // Takes int|float tsCosh
+    // Outputs float fsCosh
+    static void cosh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsCosh"))
+            teaFloats.push_back({"fsCosh",
+                static_cast<float>(std::cosh(getTeaVariable(teaInts, "tsCosh").getvalue()))});
+        else
+            teaFloats.push_back({"fsCosh", std::cosh(getTeaVariable(teaFloats, "tsCosh").getvalue())});
     }
 
     // Tea standard create directory snippet
@@ -298,6 +467,16 @@ namespace stdSnippet
         teaArrays.push_back(TeaArray{"fsDirectoryContents", "string", size, vec});
     }
 
+    // Tea standard directory exists snippet
+    // Takes string tsDirectoryExists
+    // Outputs int fsDirectoryExists
+    static void directoryExists(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &,
+        teaArray_t &)
+    {
+        const std::string &dir{getTeaVariable(teaStrings, "tsDirectoryExists").getvalue()};
+        teaInts.push_back({"fsDirectoryExists", std::filesystem::is_directory(dir)});
+    }
+
     // Tea standard execute snippet
     // Takes string tsExecute
     static void execute(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
@@ -308,6 +487,30 @@ namespace stdSnippet
         const char *&filename{sg_pfilename};
         loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
             *sg_pcurrentNamespace);
+    }
+
+    // Tea standard exp snippet
+    // Takes int|float tsExp
+    // Outputs float fsExp
+    static void exp(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsExp"))
+            teaFloats.push_back({"fsExp",
+                static_cast<float>(std::exp(getTeaVariable(teaInts, "tsExp").getvalue()))});
+        else
+            teaFloats.push_back({"fsExp", std::exp(getTeaVariable(teaFloats, "tsExp").getvalue())});
+    }
+
+    // Tea standard exp2 snippet
+    // Takes int|float tsExp2
+    // Outputs float fsExp2
+    static void exp2(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsExp2"))
+            teaFloats.push_back({"fsExp2",
+                static_cast<float>(std::exp2(getTeaVariable(teaInts, "tsExp2").getvalue()))});
+        else
+            teaFloats.push_back({"fsExp2", std::exp2(getTeaVariable(teaFloats, "tsExp2").getvalue())});
     }
 
     // Tea standard file append snippet
@@ -326,6 +529,15 @@ namespace stdSnippet
         sg_of.open(getTeaVariable(teaStrings, "tsFileAppendLineFile").getvalue(), std::ios_base::app);
         sg_of << getTeaVariable(teaStrings, "tsFileAppendLineOut").getvalue() << '\n';
         sg_of.close();
+    }
+
+    // Tea standard file exists snippet
+    // Takes string tsFileExists
+    // Outputs int fsFileExists
+    static void fileExists(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
+    {
+        const std::string &file{getTeaVariable(teaStrings, "tsFileExists").getvalue()};
+        teaInts.push_back({"fsFileExists", std::filesystem::is_regular_file(file)});
     }
 
     // Tea standard file get line count
@@ -404,6 +616,38 @@ namespace stdSnippet
         sg_of.close();
     }
 
+    // Tea standard floor snippet
+    // Takes float tsFloor
+    // Outputs int fsFloor
+    static void floor(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        teaInts.push_back({"fsFloor",
+            static_cast<int>(std::floor(getTeaVariable(teaFloats, "tsFloor").getvalue()))});
+    }
+
+    // Tea standard gamma snippet
+    // Takes int|float tsGamma
+    // Outputs float fsGamma
+    static void gamma(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsGamma"))
+            teaFloats.push_back({"fsGamma",
+                static_cast<float>(std::tgamma(getTeaVariable(teaInts, "tsGamma").getvalue()))});
+        else
+            teaFloats.push_back({"fsGamma", std::tgamma(getTeaVariable(teaFloats, "tsGamma").getvalue())});
+    }
+
+    // Tea standard ilogb snippet
+    // Takes int|float tsILogB
+    // Outputs int fsILogB
+    static void ilogb(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsILogB"))
+            teaInts.push_back({"fsILogB", std::ilogb(getTeaVariable(teaInts, "tsILogB").getvalue())});
+        else
+            teaInts.push_back({"fsILogB", std::ilogb(getTeaVariable(teaFloats, "tsILogB").getvalue())});
+    }
+
     // Tea standard input snippet
     // Outputs string fsInput
     static void input(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
@@ -427,6 +671,80 @@ namespace stdSnippet
             teaInts.push_back(TeaInt{"fsIsVariable", 1});
         else
             teaInts.push_back(TeaInt{"fsIsVariable", 0});
+    }
+
+    // Tea standard log snippet
+    // Takes int|float tsLog
+    // Outputs float fsLog
+    static void log(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsLog"))
+            teaFloats.push_back({"fsLog",
+                static_cast<float>(std::log(getTeaVariable(teaInts, "tsLog").getvalue()))});
+        else
+            teaFloats.push_back({"fsLog", std::log(getTeaVariable(teaFloats, "tsLog").getvalue())});
+    }
+
+    // Tea standard log10 snippet
+    // Takes int|float tsLog10
+    // Outputs float fsLog10
+    static void log10(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsLog10"))
+            teaFloats.push_back({"fsLog10",
+                static_cast<float>(std::log10(getTeaVariable(teaInts, "tsLog10").getvalue()))});
+        else
+            teaFloats.push_back({"fsLog10", std::log10(getTeaVariable(teaFloats, "tsLog10").getvalue())});
+    }
+
+    // Tea standard log2 snippet
+    // Takes int|float tsLog2
+    // Outputs float fsLog2
+    static void log2(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsLog2"))
+            teaFloats.push_back({"fsLog2",
+                static_cast<float>(std::log2(getTeaVariable(teaInts, "tsLog2").getvalue()))});
+        else
+            teaFloats.push_back({"fsLog2", std::log2(getTeaVariable(teaFloats, "tsLog2").getvalue())});
+    }
+
+    // Tea standard mod snippet
+    // Takes int|float tsModX, int|float tsModY
+    // Outputs int|float fsMod
+    static void mmod(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsModX") && isVar(teaInts, "tsModY"))
+        {
+            const int &x{getTeaVariable(teaInts, "tsModX").getvalue()};
+            const int &y{getTeaVariable(teaInts, "tsModY").getvalue()};
+            teaInts.push_back({"fsMod", x % y});
+        }
+        else
+        {
+            const float &x{getTeaVariable(teaFloats, "tsModX").getvalue()};
+            const float &y{getTeaVariable(teaFloats, "tsModY").getvalue()};
+            teaFloats.push_back({"fsMod", std::fmod(x, y)});
+        }
+    }
+
+    // Tea standard pow snippet
+    // Takes int|float tsPowX, int|float tsPowY
+    // Outputs float fsPow
+    static void pow(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsPowX") && isVar(teaInts, "tsPowY"))
+        {
+            const int &x{getTeaVariable(teaInts, "tsPowX").getvalue()};
+            const int &y{getTeaVariable(teaInts, "tsPowY").getvalue()};
+            teaFloats.push_back({"fsPow", static_cast<float>(std::pow(x, y))});
+        }
+        else
+        {
+            const float &x{getTeaVariable(teaFloats, "tsPowX").getvalue()};
+            const float &y{getTeaVariable(teaFloats, "tsPowY").getvalue()};
+            teaFloats.push_back({"fsPow", std::pow(x, y)});
+        }
     }
 
     // Tea standard print snippet
@@ -478,8 +796,17 @@ namespace stdSnippet
         teaSyntaxError(*sg_pline, sg_pfilename, "Array " + ts + " was not found.");
     }
 
+    // Tea standard round snippet
+    // Takes float tsRound
+    // Outputs int fsRound
+    static void round(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        teaInts.push_back({"fsRound",
+            static_cast<int>(std::round(getTeaVariable(teaFloats, "tsRound").getvalue()))});
+    }
+
     // Tea stnadard set random float max snippet
-    // Takes int tsRandomFloatMax
+    // Takes float tsRandomFloatMax
     static void setRandomFloatMax(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
     {
         const float &&a{sg_floatranddist.a()};
@@ -488,7 +815,7 @@ namespace stdSnippet
     }
 
     // Tea standard set random float min snippet
-    // Takes int tsRandomFloatMin
+    // Takes float tsRandomFloatMin
     static void setRandomFloatMin(teaString_t &, teaInt_t &, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
     {
         const float &a{getTeaVariable(teaFloats, "tsRandomFloatMin").getvalue()};
@@ -542,6 +869,30 @@ namespace stdSnippet
         teaSyntaxError(*sg_pline, sg_pfilename, "tsShuffle (string | array) was not found.");
     }
 
+    // Tea standard sin snippet
+    // Takes int|float tsSin
+    // Outputs float fsSin
+    static void sin(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsSin"))
+            teaFloats.push_back({"fsSin",
+                static_cast<float>(std::sin(getTeaVariable(teaInts, "tsSin").getvalue()))});
+        else
+            teaFloats.push_back({"fsSin", std::sin(getTeaVariable(teaFloats, "tsSin").getvalue())});
+    }
+
+    // Tea standard sinh snippet
+    // Takes int|float tsSinh
+    // Outputs float fsSinh
+    static void sinh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsSinh"))
+            teaFloats.push_back({"fsSinh",
+                static_cast<float>(std::sinh(getTeaVariable(teaInts, "tsSinh").getvalue()))});
+        else
+            teaFloats.push_back({"fsSinh", std::sinh(getTeaVariable(teaFloats, "tsSinh").getvalue())});
+    }
+
     // Tea standard sleep snippet
     // Takes int tsSleepTime
     static void sleep(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
@@ -586,6 +937,18 @@ namespace stdSnippet
         teaSyntaxError(*sg_pline, sg_pfilename, "Array " + ts + " was not found.");
     }
 
+    // Tea standard sqrt snippet
+    // Takes int|float tsSqrt
+    // Outputs float fsSqrt
+    static void sqrt(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsSqrt"))
+            teaFloats.push_back({"fsSqrt",
+                static_cast<float>(std::sqrt(getTeaVariable(teaInts, "tsSqrt").getvalue()))});
+        else
+            teaFloats.push_back({"fsSqrt", std::sqrt(getTeaVariable(teaFloats, "tsSqrt").getvalue())});
+    }
+
     // Tea standard string length snippet
     // Takes string tsStringLength
     // Outputs int fsStringLength
@@ -614,6 +977,30 @@ namespace stdSnippet
     {
         const std::string &ts{getTeaVariable(teaStrings, "tsSystem").getvalue()};
         teaInts.push_back({"fsSystem", std::system(ts.c_str())});
+    }
+
+    // Tea standard tan snippet
+    // Takes int|float tsTan
+    // Outputs float fsTan
+    static void tan(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsTan"))
+            teaFloats.push_back({"fsTan",
+                static_cast<float>(std::tan(getTeaVariable(teaInts, "tsTan").getvalue()))});
+        else
+            teaFloats.push_back({"fsTan", std::tan(getTeaVariable(teaFloats, "tsTan").getvalue())});
+    }
+
+    // Tea standard tanh snippet
+    // Takes int|float tsTanh
+    // Outputs float fsTanh
+    static void tanh(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsTanh"))
+            teaFloats.push_back({"fsTanh",
+                static_cast<float>(std::tanh(getTeaVariable(teaInts, "tsTanh").getvalue()))});
+        else
+            teaFloats.push_back({"fsTanh", std::tanh(getTeaVariable(teaFloats, "tsTanh").getvalue())});
     }
 
     // Tea standard time snippet
@@ -696,6 +1083,25 @@ namespace stdSnippet
         }
         teaSyntaxError(*sg_pline, sg_pfilename, "Unable to convert variable to string.");
     }
+
+    // Tea standard truncate snippet
+    // Takes int|float tsTruncate
+    // Outputs float fsTruncate
+    static void truncate(teaString_t &, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &, teaArray_t &)
+    {
+        if (isVar(teaInts, "tsTruncate"))
+            teaFloats.push_back({"fsTruncate",
+                static_cast<float>(std::trunc(getTeaVariable(teaInts, "tsTruncate").getvalue()))});
+        else
+            teaFloats.push_back({"fsTruncate", std::trunc(getTeaVariable(teaFloats, "tsTruncate").getvalue())});
+    }
+
+    // Tea standard version snippet
+    // Outputs string fsVersion
+    static void version(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
+    {
+        teaStrings.push_back({"fsVersion", TEA_VERSION});
+    }
 } // namespace stdSnippet
 
 // Defining globals
@@ -737,13 +1143,16 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]
     {"Tea::Core::Execute", stdSnippet::execute},
     {"Tea::Core::IsVariable", stdSnippet::isVariable},
     {"Tea::Core::System", stdSnippet::system},
+    {"Tea::Core::Version", stdSnippet::version},
     {"Tea::IO::Directory::Contents", stdSnippet::directoryContents},
     {"Tea::IO::Directory::Create", stdSnippet::createDirectory},
     {"Tea::IO::Directory::Delete", stdSnippet::deleteDirectory},
+    {"Tea::IO::Directory::Exists", stdSnippet::directoryExists},
     {"Tea::IO::File::Append", stdSnippet::fileAppend},
     {"Tea::IO::File::AppendLine", stdSnippet::fileAppendLine},
     {"Tea::IO::File::Create", stdSnippet::createFile},
     {"Tea::IO::File::Delete", stdSnippet::deleteFile},
+    {"Tea::IO::File::Exists", stdSnippet::fileExists},
     {"Tea::IO::File::GetLineCount", stdSnippet::fileGetLineCount},
     {"Tea::IO::File::GetSize", stdSnippet::fileGetSize},
     {"Tea::IO::File::Read", stdSnippet::fileRead},
@@ -753,6 +1162,36 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]
     {"Tea::IO::Input", stdSnippet::input},
     {"Tea::IO::Print", stdSnippet::print},
     {"Tea::IO::PrintLine", stdSnippet::printLine},
+    {"Tea::Math::Abs", stdSnippet::abs},
+    {"Tea::Math::Acos", stdSnippet::acos},
+    {"Tea::Math::Acosh", stdSnippet::acosh},
+    {"Tea::Math::Asin", stdSnippet::asin},
+    {"Tea::Math::Asinh", stdSnippet::asinh},
+    {"Tea::Math::Atan", stdSnippet::atan},
+    {"Tea::Math::Atan2", stdSnippet::atan2},
+    {"Tea::Math::Atanh", stdSnippet::atanh},
+    {"Tea::Math::Cbrt", stdSnippet::cbrt},
+    {"Tea::Math::Ceil", stdSnippet::ceil},
+    {"Tea::Math::CopySign", stdSnippet::copySign},
+    {"Tea::Math::Cos", stdSnippet::cos},
+    {"Tea::Math::Cosh", stdSnippet::cosh},
+    {"Tea::Math::Exp", stdSnippet::exp},
+    {"Tea::Math::Exp2", stdSnippet::exp2},
+    {"Tea::Math::Floor", stdSnippet::floor},
+    {"Tea::Math::Gamma", stdSnippet::gamma},
+    {"Tea::Math::ILogB", stdSnippet::ilogb},
+    {"Tea::Math::Log", stdSnippet::log},
+    {"Tea::Math::Log10", stdSnippet::log10},
+    {"Tea::Math::Log2", stdSnippet::log2},
+    {"Tea::Math::Mod", stdSnippet::mmod},
+    {"Tea::Math::Pow", stdSnippet::pow},
+    {"Tea::Math::Round", stdSnippet::round},
+    {"Tea::Math::Sin", stdSnippet::sin},
+    {"Tea::Math::Sinh", stdSnippet::sinh},
+    {"Tea::Math::Sqrt", stdSnippet::sqrt},
+    {"Tea::Math::Tan", stdSnippet::tan},
+    {"Tea::Math::Tanh", stdSnippet::tanh},
+    {"Tea::Math::Truncate", stdSnippet::truncate},
     {"Tea::Random::RandomFloat", stdSnippet::randomFloat},
     {"Tea::Random::RandomInt", stdSnippet::randomInt},
     {"Tea::Random::SetRandomFloatMax", stdSnippet::setRandomFloatMax},
