@@ -24,8 +24,8 @@ static void stripLine(std::string &line)
 // Parses given file (c-str) into a string vector containing each line in the file
 const std::vector<std::string> &parseFile(std::vector<std::string> &file, const char *&filename)
 {
-    static std::ifstream s_f;
-    static std::string s_line;
+    static thread_local std::ifstream s_f;
+    static thread_local std::string s_line;
     // Creating and opening input file stream
     s_f.open(filename);
     if (!s_f)

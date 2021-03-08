@@ -4,13 +4,13 @@
 #include "k_snippet.hpp"
 
 // Declaring external globals for defining variables in tea
-extern std::string g_varname;
+extern thread_local std::string g_varname;
 
 // Called when the snippet keyword is called in tea
 void kSnippet(const std::vector<std::string> &teafile, const std::string &statement, int &line,
 	const char *&filename, teaSnippet_t &teaSnippets, const std::string &currentNamespace)
 {
-	static teaSnippetBody_t s_body;
+	static thread_local teaSnippetBody_t s_body;
 	s_body.clear();
 	// Getting return type
 	createvar(statement + ' ', line, filename, 7);

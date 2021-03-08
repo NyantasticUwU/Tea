@@ -3,8 +3,8 @@
 #include "kwstr.hpp"
 
 // Declaring external globals for defining variables in tea
-extern int g_secondSpaceIndex;
-extern std::string g_varname;
+extern thread_local int g_secondSpaceIndex;
+extern thread_local std::string g_varname;
 
 // Called when string keyword is called in tea
 void kString(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,

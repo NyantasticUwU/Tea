@@ -7,7 +7,7 @@
 // Checks if tea if statement evaluates to true
 const bool isIfTrue(const std::string &statement, const int &line, const char *&filename, const int &kwlen)
 {
-    static std::string s_evaluation;
+    static thread_local std::string s_evaluation;
     s_evaluation.clear();
     const std::size_t &&statementSize{statement.size()};
     if (statementSize < static_cast<std::size_t>(kwlen + 2))

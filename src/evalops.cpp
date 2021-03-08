@@ -15,9 +15,9 @@ static const std::vector<const char *> scg_ops[TEA_NUMBER_OF_OPERATOR_GROUPS]{
     {" == ", " != ", " < ", " > ", " <= ", " >= "},
     {" && ", " || "}};
 static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
-static int sg_i;
-static int sg_leftOperatorStartIndex; // Indicates start of left operand
-static int sg_operatorIndex;
+static thread_local int sg_i;
+static thread_local int sg_leftOperatorStartIndex; // Indicates start of left operand
+static thread_local int sg_operatorIndex;
 
 // Searches for operator
 static inline const int searchOperator(const std::string &statement, const std::string &op,

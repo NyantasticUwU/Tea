@@ -15,15 +15,15 @@ using int_dist_t = std::uniform_int_distribution<int>;
 using float_dist_t = std::uniform_real_distribution<float>;
 
 // Defining static globals
-static const int *sg_pline;
-static const char *sg_pfilename;
-static const std::string *sg_pcurrentNamespace;
-static std::mt19937 sg_randgen{std::random_device{}()};
-static int_dist_t sg_intranddist;
-static float_dist_t sg_floatranddist;
-static std::string sg_line;
-static std::ifstream sg_if;
-static std::ofstream sg_of;
+static thread_local const int *sg_pline;
+static thread_local const char *sg_pfilename;
+static thread_local const std::string *sg_pcurrentNamespace;
+static thread_local std::mt19937 sg_randgen{std::random_device{}()};
+static thread_local int_dist_t sg_intranddist;
+static thread_local float_dist_t sg_floatranddist;
+static thread_local std::string sg_line;
+static thread_local std::ifstream sg_if;
+static thread_local std::ofstream sg_of;
 
 // Gets variable by name from tea type vector
 template <typename T>
@@ -570,7 +570,7 @@ namespace stdSnippet
     // Outputs string fsFileReadString
     static void fileRead(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
-        static std::string s_read;
+        static thread_local std::string s_read;
         s_read.clear();
         sg_if.open(getTeaVariable(teaStrings, "tsFileReadFile").getvalue());
         while (std::getline(sg_if, sg_line))
@@ -652,7 +652,7 @@ namespace stdSnippet
     // Outputs string fsInput
     static void input(teaString_t &teaStrings, teaInt_t &, teaFloat_t &, teaSnippet_t &, teaArray_t &)
     {
-        static std::string s_in;
+        static thread_local std::string s_in;
         std::getline(std::cin, s_in);
         teaStrings.push_back({"fsInput", s_in});
     }

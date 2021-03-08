@@ -9,8 +9,8 @@ static constexpr char scg_validChars[64]{"0123456789abcdefghijklmnopqrstuvwxyzAB
 
 // Defining non-static globals
 // These are used by outside files
-int g_secondSpaceIndex;
-std::string g_varname;
+thread_local int g_secondSpaceIndex;
+thread_local std::string g_varname;
 
 // Declaring globals
 extern const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS];

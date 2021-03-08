@@ -2,7 +2,7 @@
 #include "stringsupport.hpp"
 
 // Defining static globals
-static std::string sg_newstr;
+static thread_local std::string sg_newstr;
 
 // Formats tea string
 void formatTeaString(std::string &str)

@@ -12,7 +12,7 @@ static void assertType(const std::string &type, const int &line, const char *&fi
 // Called when the declare keyword is called in tea
 void kDeclare(const std::string &statement, const int &line, const char *&filename)
 {
-    static std::string s_type;
+    static thread_local std::string s_type;
     s_type.clear();
     std::size_t &&i{8U};
     for (const std::size_t &&statementSize{statement.size()}; i < statementSize; ++i)

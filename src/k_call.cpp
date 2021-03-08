@@ -19,8 +19,8 @@ void kCall(const std::string &statement, const int &line, const char *&filename,
     teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets, teaArray_t &teaArrays,
     const std::string &currentNamespace)
 {
-    static std::string s_callType;
-    static std::string s_snippetName;
+    static thread_local std::string s_callType;
+    static thread_local std::string s_snippetName;
     s_callType.clear();
     getCharacters(statement, s_callType, 5U, ' ');
     if (s_callType == "snippet")

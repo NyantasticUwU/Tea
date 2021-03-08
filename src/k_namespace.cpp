@@ -3,7 +3,7 @@
 #include "runtea.hpp"
 
 // Declaring external globals for defining variables in tea
-extern std::string g_varname;
+extern thread_local std::string g_varname;
 
 // Called when the namespace keyword is called in tea
 void kNamespace(const std::vector<std::string> &teafile, const std::string &statement, int &line,

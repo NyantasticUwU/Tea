@@ -4,10 +4,10 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static std::string sg_assignmentType;
-static std::size_t sg_i;
-static std::string sg_var;
-static std::string sg_varname;
+static thread_local std::string sg_assignmentType;
+static thread_local std::size_t sg_i;
+static thread_local std::string sg_var;
+static thread_local std::string sg_varname;
 
 // Gets assignment type
 static void getAssignmentType(const std::string &statement, const std::size_t &statementSize, const int &line,
@@ -70,7 +70,7 @@ static void verifyNumericVar(const int &line, const char *&filename)
 // Verifies array index and returns it
 static const int verifyArrayIndex(const std::size_t &arrayNameSize, const int &line, const char *&filename)
 {
-    static std::string s_indexstr;
+    static thread_local std::string s_indexstr;
     s_indexstr.clear();
     if (sg_varname[arrayNameSize] != '[' || sg_varname.back() != ']')
         teaSyntaxError(line, filename, "Invalid array subscript.");

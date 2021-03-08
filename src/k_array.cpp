@@ -7,18 +7,18 @@
 #include "TeaString.hpp"
 
 // Defining static globals
-static std::size_t sg_i;
-static std::string sg_element;
-static std::vector<std::any> sg_data;
+static thread_local std::size_t sg_i;
+static thread_local std::string sg_element;
+static thread_local std::vector<std::any> sg_data;
 
 // Declaring external globals
-extern std::string g_varname;
+extern thread_local std::string g_varname;
 
 // Gets array type
 static const std::string &getArrayType(const std::string &statement, const std::size_t &statementSize,
     const int &line, const char *&filename)
 {
-    static std::string s_type;
+    static thread_local std::string s_type;
     s_type.clear();
     for (sg_i = 6U; sg_i < statementSize; ++sg_i)
     {
@@ -34,8 +34,8 @@ static const std::string &getArrayType(const std::string &statement, const std::
 static const int getArraySize(const std::string &statement, const std::size_t &statementSize, const int &line,
     const char *&filename)
 {
-    static std::size_t s_pos;
-    static std::string s_sizestr;
+    static thread_local std::size_t s_pos;
+    static thread_local std::string s_sizestr;
     s_sizestr.clear();
     for (++sg_i; sg_i < statementSize; ++sg_i)
     {
@@ -56,7 +56,7 @@ static const int getArraySize(const std::string &statement, const std::size_t &s
 static const std::string &getPreArrayName(const std::string &statement, const std::size_t &statementSize,
     const int &line, const char *&filename)
 {
-    static std::string s_prename;
+    static thread_local std::string s_prename;
     s_prename.clear();
     bool &&isSpaceFound{false};
     for (++sg_i; sg_i < statementSize; ++sg_i)

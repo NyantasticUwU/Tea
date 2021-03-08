@@ -4,8 +4,8 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static std::size_t sg_i;
-static std::string sg_type;
+static thread_local std::size_t sg_i;
+static thread_local std::string sg_type;
 
 // Gets variable type
 static inline void getType(const std::string &statement, const std::size_t &statementSize)

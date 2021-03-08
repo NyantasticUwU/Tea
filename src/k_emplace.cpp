@@ -7,8 +7,8 @@
 static inline const std::string &getArrayValue(const TeaArray &teaArray, const std::string &varname,
     const std::size_t &nameEnd, const bool isInString, const int &line, const char *&filename)
 {
-    static std::size_t s_pos;
-    static std::string s_out;
+    static thread_local std::size_t s_pos;
+    static thread_local std::string s_out;
     const std::string &type{teaArray.gettype()};
     const int &&indexPos{[&]() -> const int {
         const std::size_t &&varnameSize{varname.size()};
@@ -50,8 +50,8 @@ static inline const std::string &getArrayValue(const TeaArray &teaArray, const s
 static inline const std::string &fillFullArrayString(const TeaArray &teaArray, const bool &isInString,
     const int &line, const char *&filename)
 {
-    static std::string s_fullArray;
-    static std::string s_toFill;
+    static thread_local std::string s_fullArray;
+    static thread_local std::string s_toFill;
     s_fullArray.clear();
     const std::string &arrt{teaArray.gettype()};
     const std::vector<std::any> &data{teaArray.getdata()};
@@ -102,7 +102,7 @@ static inline void emplaceVar(std::string &prestatement, std::size_t &statementS
     {
         if (ts.getname() == varname)
         {
-            static std::string s_str;
+            static thread_local std::string s_str;
             s_str = ts.getvalue();
             unformatTeaString(s_str);
             prestatement.replace(
@@ -172,9 +172,9 @@ static inline void emplaceVar(std::string &prestatement, std::size_t &statementS
 void kEmplace(std::string &prestatement, const int &line, const char *&filename, const teaString_t &teaStrings,
     const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)
 {
-    static bool s_isVarFound;
-    static std::size_t s_braceClosePos, s_braceOpenPos;
-    static std::string s_varname;
+    static thread_local bool s_isVarFound;
+    static thread_local std::size_t s_braceClosePos, s_braceOpenPos;
+    static thread_local std::string s_varname;
     s_varname.clear();
     bool &&isInBrace{false};
     bool &&isInString{false};

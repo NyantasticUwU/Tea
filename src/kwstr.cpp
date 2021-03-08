@@ -4,7 +4,7 @@
 
 // Defining static globals (hence the sg_ prefix)
 // These are defined here for performance reasons
-static std::string sg_content;
+static thread_local std::string sg_content;
 
 // Checks if the string literal is closed
 static inline void checkStringLiteral(const std::string &statement, const std::size_t &statementSize,
