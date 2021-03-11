@@ -1162,6 +1162,7 @@ const char *g_teakeywords[TEA_NUMBER_OF_KEYWORDS]
     "float",
     "if",
     "import",
+    "inline",
     "int",
     "namespace",
     "snippet",

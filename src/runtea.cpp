@@ -13,6 +13,7 @@
 #include "k_float.hpp"
 #include "k_if.hpp"
 #include "k_import.hpp"
+#include "k_inline.hpp"
 #include "k_int.hpp"
 #include "k_namespace.hpp"
 #include "k_snippet.hpp"
@@ -155,6 +156,12 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
         {
             kImport(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
                 currentNamespace);
+            continue;
+        }
+        // Inline keyword called
+        else if (startsWithKeyword(statement, g_teakeywords[TEA_KEYWORD_INLINE]))
+        {
+            kInline(statement, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays);
             continue;
         }
         // Int keyword called
