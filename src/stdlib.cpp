@@ -735,6 +735,31 @@ namespace stdSnippet
             teaFloats.push_back({"fsLog2", std::log2(getTeaVariable(teaFloats, "tsLog2").getvalue())});
     }
 
+    // Tea standard make inlined snippet
+    // Takes string tsMakeInlined
+    static void makeInlined(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+        teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
+    {
+        static const std::string *s_name;
+        const std::string &ts{getTeaVariable(teaStrings, "tsMakeInlined").getvalue()};
+        if (isVar(teaStrings, ts))
+            s_name = &getTeaVariable(teaStrings, ts).getname();
+        else if (isVar(teaInts, ts))
+            s_name = &getTeaVariable(teaInts, ts).getname();
+        else if (isVar(teaFloats, ts))
+            s_name = &getTeaVariable(teaFloats, ts).getname();
+        else if (isVar(teaSnippets, ts))
+            s_name = &getTeaVariable(teaSnippets, ts).getname();
+        else if (isVar(teaArrays, ts))
+            s_name = &getTeaVariable(teaArrays, ts).getname();
+        else
+            teaSyntaxError(*sg_pline, sg_pfilename, "Unable to find " + ts + '.');
+        std::string &name{const_cast<std::string &>(*s_name)};
+        const std::size_t &&dcpos{name.find_last_of("::") + 1U};
+        if (dcpos != name.npos)
+            name.erase(name.begin(), name.begin() + dcpos);
+    }
+
     // Tea standard mod snippet
     // Takes int|float tsModX, int|float tsModY
     // Outputs int|float fsMod
@@ -1185,6 +1210,7 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]
     {"Tea::Core::CollectGarbage", stdSnippet::collectGarbage},
     {"Tea::Core::Execute", stdSnippet::execute},
     {"Tea::Core::IsVariable", stdSnippet::isVariable},
+    {"Tea::Core::MakeInlined", stdSnippet::makeInlined},
     {"Tea::Core::System", stdSnippet::system},
     {"Tea::Core::Version", stdSnippet::version},
     {"Tea::IO::Directory::Contents", stdSnippet::directoryContents},
