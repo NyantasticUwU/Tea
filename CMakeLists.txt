@@ -42,6 +42,7 @@ add_executable(Tea
         src/TeaInt.cpp
         src/TeaSnippet.cpp
         src/TeaString.cpp
+        src/terminate.cpp
         main.cpp)
 
 target_link_libraries(Tea fmt)

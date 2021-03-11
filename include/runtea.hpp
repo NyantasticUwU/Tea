@@ -20,4 +20,8 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
     teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
     teaArray_t &teaArrays, const std::string &currentNamespace);
 
+// Runs tea statements for a thread
+void loopTeaStatementsOnThread(const std::vector<std::string> teafile, const std::string filename,
+    const std::string currentNamespace);
+
 #endif

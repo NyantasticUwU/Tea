@@ -200,3 +200,11 @@ void loopTeaStatements(const std::vector<std::string> &teafile, int &line, const
             teaSyntaxError(line, filename);
     }
 }
+
+// Runs tea statements for a thread
+void loopTeaStatementsOnThread(const std::vector<std::string> teafile, const std::string filename,
+    const std::string currentNamespace)
+{
+    const char *&&fn{filename.c_str()};
+    runTea(teafile, fn, currentNamespace);
+}

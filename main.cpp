@@ -20,10 +20,6 @@ int main(const int argc, const char **argv)
         fillTeaArgs(argc, argv, teaArrays);
         runTea(mainfile, filename, "", nullptr, &teaInts, nullptr, nullptr, &teaArrays);
     }
-    catch (...)
-    {
-        // Exit with code -1
-        teaError("An unknown error has occured. Exiting with code -1.", -1);
-    }
+    catch (...) { teaError("An unknown error has occured. Exiting with code -1.", -1); }
     return 0;
 }

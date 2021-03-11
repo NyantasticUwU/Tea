@@ -4,6 +4,7 @@
 #include "runtea.hpp"
 #include "stdlib.hpp"
 #include "TeaStandardSnippet.hpp"
+#include "TeaThread.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -24,6 +25,9 @@ static thread_local float_dist_t sg_floatranddist;
 static thread_local std::string sg_line;
 static thread_local std::ifstream sg_if;
 static thread_local std::ofstream sg_of;
+
+// Defining globals
+std::vector<TeaThread> g_threads;
 
 // Gets variable by name from tea type vector
 template <typename T>
@@ -660,9 +664,8 @@ namespace stdSnippet
     // Tea standard is variable snippet
     // Takes string tsVariableName
     // Outputs int fsIsVariable
-    static void isVariable(
-        teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
-        teaArray_t &teaArrays)
+    static void isVariable(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
+        teaSnippet_t &teaSnippets, teaArray_t &teaArrays)
     {
         const std::string &varname{getTeaVariable(teaStrings, "tsVariableName").getvalue()};
         if (isVar(teaStrings, varname) || isVar(teaInts, varname) ||
@@ -671,6 +674,29 @@ namespace stdSnippet
             teaInts.push_back(TeaInt{"fsIsVariable", 1});
         else
             teaInts.push_back(TeaInt{"fsIsVariable", 0});
+    }
+
+    // Tea standard join snippet
+    // Takes int tsThreadID
+    static void joinThread(teaString_t &, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &, teaArray_t &)
+    {
+        const int &id{getTeaVariable(teaInts, "tsThreadID").getvalue()};
+        const std::size_t &&threadsSize{g_threads.size()};
+        for (std::size_t &&i{0U}; i < threadsSize; ++i)
+        {
+            TeaThread &teaThread{g_threads[i]};
+            if (teaThread.id == id)
+            {
+                std::thread *&thread{teaThread.threadptr};
+                if (thread)
+                {
+                    thread->join();
+                    delete thread;
+                    thread = nullptr;
+                    return;
+                }
+            }
+        }
     }
 
     // Tea standard log snippet
@@ -949,6 +975,22 @@ namespace stdSnippet
             teaFloats.push_back({"fsSqrt", std::sqrt(getTeaVariable(teaFloats, "tsSqrt").getvalue())});
     }
 
+    // Tea standard start thread snippet
+    // Takes string tsStartThread
+    // Outputs int fsThreadID
+    static void startThread(teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &, teaSnippet_t &teaSnippets,
+        teaArray_t &)
+    {
+        static int s_threadID{0};
+        const std::string &ts{getTeaVariable(teaStrings, "tsStartThread").getvalue()};
+        const teaSnippetBody_t &body{getTeaVariable(teaSnippets, ts).getbody()};
+        const std::size_t &&napos{ts.find_last_of("::")};
+        const std::string &&ns{(napos != ts.npos) ? ts.substr(0U, napos + 1U) : ""};
+        std::thread *&&newThread{new std::thread{loopTeaStatementsOnThread, body, ts, ns}};
+        g_threads.push_back({newThread, ++s_threadID});
+        teaInts.push_back({"fsThreadID", s_threadID});
+    }
+
     // Tea standard string length snippet
     // Takes string tsStringLength
     // Outputs int fsStringLength
@@ -1201,10 +1243,12 @@ const TeaStandardSnippet g_teastandardsnippets[TEA_NUMBER_OF_STANDARD_SNIPPETS]
     {"Tea::Random::SetRandomSeed", stdSnippet::setRandomSeed},
     {"Tea::Reverse", stdSnippet::reverse},
     {"Tea::Shuffle", stdSnippet::shuffle},
-    {"Tea::Sleep", stdSnippet::sleep},
     {"Tea::Sort", stdSnippet::sort},
     {"Tea::StringLength", stdSnippet::stringLength},
     {"Tea::SubString", stdSnippet::subString},
+    {"Tea::Thread::Join", stdSnippet::joinThread},
+    {"Tea::Thread::Sleep", stdSnippet::sleep},
+    {"Tea::Thread::StartThread", stdSnippet::startThread},
     {"Tea::Time", stdSnippet::time},
     {"Tea::TimeLocal", stdSnippet::timeLocal},
     {"Tea::ToFloat", stdSnippet::toFloat},
