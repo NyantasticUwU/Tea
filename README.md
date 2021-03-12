@@ -13,13 +13,13 @@ Logo author: [Marquitta Spagnolo](https://pixy.org/author/Marquitta_Spagnolo/)
 ## Syntax
 ```py
 # Make a string of text
-# The standard library stdPrint snippet requires a string with the name tsPrint
+# The standard library Tea::IO::Print snippet requires a string with the name tsPrint
 # The ts prefix stands for "to snippet"
 string tsPrint "Hello, world!\n"
 
 # Print to stdout
 # As of now tea's standard library only consists of snippets
-# All standard library snippets start with the std prefix
+# All standard library snippets reside in the Tea namespace
 # Some snippets will return with new variables, prefixed with fs (from snippet)
 call snippet Tea::IO::Print
 
