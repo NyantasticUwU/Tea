@@ -18,6 +18,8 @@ static constexpr char scg_validNumerics[15]{"0123456789.xX-"};
 static thread_local int sg_i;
 static thread_local int sg_leftOperatorStartIndex; // Indicates start of left operand
 static thread_local int sg_operatorIndex;
+static thread_local std::string sg_leftOperand;
+static thread_local std::string sg_rightOperand;
 
 // Searches for operator
 static inline const int searchOperator(const std::string &statement, const std::string &op,
@@ -48,33 +50,33 @@ static inline const int searchOperator(const std::string &statement, const std::
 // Gets left operand
 static inline const std::string getLeftOperand(const std::string &statement, const std::string &)
 {
-    std::string leftOperand;
+    sg_leftOperand.clear();
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 2; ++sg_i)
-        leftOperand.push_back(statement[sg_i]);
-    return leftOperand;
+        sg_leftOperand.push_back(statement[sg_i]);
+    return sg_leftOperand;
 }
 // Gets left operand
 static inline const int getLeftOperand(const std::string &statement, const int &)
 {
-    std::string intstr;
+    sg_leftOperand.clear();
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
-        intstr.push_back(statement[sg_i]);
-    return std::stoi(intstr);
+        sg_leftOperand.push_back(statement[sg_i]);
+    return std::stoi(sg_leftOperand);
 }
 // Gets left operand
 static inline const float getLeftOperand(const std::string &statement, const float &)
 {
-    std::string floatstr;
+    sg_leftOperand.clear();
     for (sg_i = sg_leftOperatorStartIndex + 1; sg_i < sg_operatorIndex - 1; ++sg_i)
-        floatstr.push_back(statement[sg_i]);
-    return std::stof(floatstr);
+        sg_leftOperand.push_back(statement[sg_i]);
+    return std::stof(sg_leftOperand);
 }
 
 // Gets right operand
 static inline const std::string getRightOperand(const std::string &statement, const int &opsize,
     const std::string &)
 {
-    std::string rightOperand;
+    sg_rightOperand.clear();
     const int &&statementSize{static_cast<int>(statement.size())};
     for (sg_i = sg_operatorIndex + opsize + 2; sg_i < statementSize; ++sg_i)
     {
@@ -82,20 +84,20 @@ static inline const std::string getRightOperand(const std::string &statement, co
             break;
         if (statement[sg_i] == '\\' && (statement[sg_i + 1] == '\\' || statement[sg_i + 1] == '"'))
         {
-            rightOperand.push_back(statement[sg_i]);
+            sg_rightOperand.push_back(statement[sg_i]);
             ++sg_i;
-            rightOperand.push_back(statement[sg_i]);
+            sg_rightOperand.push_back(statement[sg_i]);
             continue;
         }
-        rightOperand.push_back(statement[sg_i]);
+        sg_rightOperand.push_back(statement[sg_i]);
     }
-    return rightOperand;
+    return sg_rightOperand;
 }
 // Gets right operand
 static inline const int getRightOperand(const std::string &statement, const int &opsize, const int &)
 {
     int &&statementSize{static_cast<int>(statement.size())};
-    std::string intstr;
+    sg_rightOperand.clear();
     for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
     {
         if (std::none_of(
@@ -103,15 +105,15 @@ static inline const int getRightOperand(const std::string &statement, const int 
             std::end(scg_validNumerics),
             [&](const char &c) noexcept -> const bool { return c == statement[sg_i]; }))
             break;
-        intstr.push_back(statement[sg_i]);
+        sg_rightOperand.push_back(statement[sg_i]);
     }
-    return std::stoi(intstr, nullptr, 0);
+    return std::stoi(sg_rightOperand, nullptr, 0);
 }
 // Gets right operand
 static inline const float getRightOperand(const std::string &statement, const int &opsize, const float &)
 {
     int &&statementSize{static_cast<int>(statement.size())};
-    std::string floatstr;
+    sg_rightOperand.clear();
     for (sg_i = sg_operatorIndex + opsize + 1; sg_i < statementSize; ++sg_i)
     {
         if (std::none_of(
@@ -119,9 +121,9 @@ static inline const float getRightOperand(const std::string &statement, const in
             std::end(scg_validNumerics),
             [&](const char &c) noexcept -> const bool { return c == statement[sg_i]; }))
             break;
-        floatstr.push_back(statement[sg_i]);
+        sg_rightOperand.push_back(statement[sg_i]);
     }
-    return std::stof(floatstr);
+    return std::stof(sg_rightOperand);
 }
 
 // Checks if right operand is int or float
@@ -210,11 +212,11 @@ static void evalopex(std::string &statement)
     // int ^ _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int ^ int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -223,7 +225,7 @@ static void evalopex(std::string &statement)
         // int ^ float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -233,11 +235,11 @@ static void evalopex(std::string &statement)
     // float ^ _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float ^ int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -246,7 +248,7 @@ static void evalopex(std::string &statement)
         // float ^ float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -261,11 +263,11 @@ static void evalopasterisk(std::string &statement)
     // int * _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int * int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -274,7 +276,7 @@ static void evalopasterisk(std::string &statement)
         // int * float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -284,11 +286,11 @@ static void evalopasterisk(std::string &statement)
     // float * _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float * int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -297,7 +299,7 @@ static void evalopasterisk(std::string &statement)
         // float * float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -312,11 +314,11 @@ static void evalopfwslash(std::string &statement)
     // int / _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int / int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -325,7 +327,7 @@ static void evalopfwslash(std::string &statement)
         // int / float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -335,11 +337,11 @@ static void evalopfwslash(std::string &statement)
     // float / _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float / int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -348,7 +350,7 @@ static void evalopfwslash(std::string &statement)
         // float / float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -363,11 +365,11 @@ static void evalopmod(std::string &statement, const int &line, const char *&file
     // int % _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int % int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -386,11 +388,11 @@ static void evalopplus(std::string &statement)
     // string + _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string + string
         if (statement[sg_operatorIndex + 2] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 1, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 1, "")};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 leftOperand.size() + rightOperand.size() + 5,
@@ -399,7 +401,7 @@ static void evalopplus(std::string &statement)
         // string + int
         else if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 leftOperand.size() + std::to_string(rightOperand).size() + 4,
@@ -408,7 +410,7 @@ static void evalopplus(std::string &statement)
         // string + float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 leftOperand.size() + sg_i - sg_operatorIndex + 2,
@@ -418,11 +420,11 @@ static void evalopplus(std::string &statement)
     // int + _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int + string
         if (statement[sg_operatorIndex + 2] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 1, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 1, "")};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + rightOperand.size() + 5,
@@ -431,7 +433,7 @@ static void evalopplus(std::string &statement)
         // int + int
         else if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -440,7 +442,7 @@ static void evalopplus(std::string &statement)
         // int + float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -450,11 +452,11 @@ static void evalopplus(std::string &statement)
     // float + _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float + string
         if (statement[sg_operatorIndex + 2] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 1, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 1, "")};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + rightOperand.size() + 3,
@@ -463,7 +465,7 @@ static void evalopplus(std::string &statement)
         // float + int
         else if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -472,7 +474,7 @@ static void evalopplus(std::string &statement)
         // float + float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -487,11 +489,11 @@ static void evalopminus(std::string &statement)
     // int - _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int - int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -500,7 +502,7 @@ static void evalopminus(std::string &statement)
         // int - float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -510,11 +512,11 @@ static void evalopminus(std::string &statement)
     // float - _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float - int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -523,7 +525,7 @@ static void evalopminus(std::string &statement)
         // float - float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -538,11 +540,11 @@ static void evalopequal(std::string &statement, const int &line, const char *&fi
     // string == _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string == string
         if (statement[sg_operatorIndex + 3] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 2, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 2, "")};
             statement.replace(
                 sg_leftOperatorStartIndex,
                 leftOperand.size() + rightOperand.size() + 8,
@@ -554,11 +556,11 @@ static void evalopequal(std::string &statement, const int &line, const char *&fi
     // int == _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int == int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 4,
@@ -577,11 +579,11 @@ static void evalopnotequal(std::string &statement, const int &line, const char *
     // string != _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string != string
         if (statement[sg_operatorIndex + 3] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 2, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 2, "")};
             statement.replace(
                 sg_leftOperatorStartIndex,
                 leftOperand.size() + rightOperand.size() + 8,
@@ -593,11 +595,11 @@ static void evalopnotequal(std::string &statement, const int &line, const char *
     // int != _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int != int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 4,
@@ -616,11 +618,11 @@ static void evalopless(std::string &statement, const int &line, const char *&fil
     // string < _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string < string
         if (statement[sg_operatorIndex + 2] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 1, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 1, "")};
             statement.replace(
                 sg_leftOperatorStartIndex,
                 leftOperand.size() + rightOperand.size() + 7,
@@ -632,11 +634,11 @@ static void evalopless(std::string &statement, const int &line, const char *&fil
     // int < _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int < int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -645,7 +647,7 @@ static void evalopless(std::string &statement, const int &line, const char *&fil
         // int < float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -655,11 +657,11 @@ static void evalopless(std::string &statement, const int &line, const char *&fil
     // float < _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float < int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -668,7 +670,7 @@ static void evalopless(std::string &statement, const int &line, const char *&fil
         // float < float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -683,11 +685,11 @@ static void evalopgreater(std::string &statement, const int &line, const char *&
     // string > _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string > string
         if (statement[sg_operatorIndex + 2] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 1, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 1, "")};
             statement.replace(
                 sg_leftOperatorStartIndex,
                 leftOperand.size() + rightOperand.size() + 7,
@@ -699,11 +701,11 @@ static void evalopgreater(std::string &statement, const int &line, const char *&
     // int > _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int > int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 3,
@@ -712,7 +714,7 @@ static void evalopgreater(std::string &statement, const int &line, const char *&
         // int > float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 1,
@@ -722,11 +724,11 @@ static void evalopgreater(std::string &statement, const int &line, const char *&
     // float > _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float > int
         if (isROIntOrFloat(statement, 1))
         {
-            const int rightOperand{getRightOperand(statement, 1, 0)};
+            const int &&rightOperand{getRightOperand(statement, 1, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 1,
@@ -735,7 +737,7 @@ static void evalopgreater(std::string &statement, const int &line, const char *&
         // float > float
         else
         {
-            const float rightOperand{getRightOperand(statement, 1, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 1, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex - 1,
@@ -750,11 +752,11 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
     // string <= _
     if (statement[sg_operatorIndex - 2] == '"')
     {
-        const std::string leftOperand{getLeftOperand(statement, "")};
+        const std::string &&leftOperand{getLeftOperand(statement, "")};
         // string <= string
         if (statement[sg_operatorIndex + 3] == '"')
         {
-            const std::string rightOperand{getRightOperand(statement, 2, "")};
+            const std::string &&rightOperand{getRightOperand(statement, 2, "")};
             statement.replace(
                 sg_leftOperatorStartIndex,
                 leftOperand.size() + rightOperand.size() + 8,
@@ -766,11 +768,11 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
     // int <= _
     else if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int <= int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 4,
@@ -779,7 +781,7 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
         // int <= float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 2,
@@ -789,11 +791,11 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
     // float <= _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float <= int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 2,
@@ -802,7 +804,7 @@ static void evaloplessequal(std::string &statement, const int &line, const char 
         // float <= float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex,
@@ -817,11 +819,11 @@ static void evalopand(std::string &statement)
     // int && _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int && int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 4,
@@ -830,7 +832,7 @@ static void evalopand(std::string &statement)
         // int && float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 2,
@@ -840,11 +842,11 @@ static void evalopand(std::string &statement)
     // float && _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float && int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 2,
@@ -853,7 +855,7 @@ static void evalopand(std::string &statement)
         // float && float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex,
@@ -868,11 +870,11 @@ static void evalopor(std::string &statement)
     // int || _
     if (isLOIntOrFloat(statement))
     {
-        const int leftOperand{getLeftOperand(statement, 0)};
+        const int &&leftOperand{getLeftOperand(statement, 0)};
         // int || int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + std::to_string(rightOperand).size() + 4,
@@ -881,7 +883,7 @@ static void evalopor(std::string &statement)
         // int || float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 std::to_string(leftOperand).size() + sg_i - sg_operatorIndex + 2,
@@ -891,11 +893,11 @@ static void evalopor(std::string &statement)
     // float || _
     else
     {
-        const float leftOperand{getLeftOperand(statement, 0.0f)};
+        const float &&leftOperand{getLeftOperand(statement, 0.0f)};
         // float || int
         if (isROIntOrFloat(statement, 2))
         {
-            const int rightOperand{getRightOperand(statement, 2, 0)};
+            const int &&rightOperand{getRightOperand(statement, 2, 0)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + std::to_string(rightOperand).size() + 2,
@@ -904,7 +906,7 @@ static void evalopor(std::string &statement)
         // float || float
         else
         {
-            const float rightOperand{getRightOperand(statement, 2, 0.0f)};
+            const float &&rightOperand{getRightOperand(statement, 2, 0.0f)};
             statement.replace(
                 sg_leftOperatorStartIndex + 1,
                 sg_operatorIndex - sg_leftOperatorStartIndex + sg_i - sg_operatorIndex,
