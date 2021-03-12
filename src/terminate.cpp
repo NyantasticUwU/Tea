@@ -5,18 +5,22 @@
 // Declaring globals
 extern std::vector<TeaThread> g_threads;
 
-// Cleans up tea
-void terminateTea()
+// Contains all necessities for the Tea C++ API
+namespace tea
 {
-    const std::size_t &&threadsSize{g_threads.size()};
-    for (std::size_t &&i{0U}; i < threadsSize; ++i)
+    // Cleans up tea
+    void terminateTea()
     {
-        std::thread *&thread{g_threads[i].threadptr};
-        if (thread)
+        const std::size_t &&threadsSize{g_threads.size()};
+        for (std::size_t &&i{0U}; i < threadsSize; ++i)
         {
-            thread->detach();
-            delete thread;
-            thread = nullptr;
+            std::thread *&thread{g_threads[i].threadptr};
+            if (thread)
+            {
+                thread->detach();
+                delete thread;
+                thread = nullptr;
+            }
         }
     }
 }

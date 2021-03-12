@@ -7,7 +7,7 @@
 
 // Handles snippet by given name
 const bool handleStandardSnippet(const std::string &snippetName, const int &line, const char *&filename,
-    teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats, teaSnippet_t &teaSnippets,
-    teaArray_t &teaArrays, const std::string &currentNamespace);
+    tea::teaString_t &teaStrings, tea::teaInt_t &teaInts, tea::teaFloat_t &teaFloats,
+    tea::teaSnippet_t &teaSnippets, tea::teaArray_t &teaArrays, const std::string &currentNamespace);
 
 #endif

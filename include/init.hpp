@@ -1,7 +1,11 @@
 #ifndef TEA_INIT_HPP_INCLUDED
 #define TEA_INIT_HPP_INCLUDED
 
-// Initializes tea (doesn't do much as of now)
-void init();
+// Contains all necessities for the Tea C++ API
+namespace tea
+{
+    // Initializes tea
+    void init();
+}
 
 #endif

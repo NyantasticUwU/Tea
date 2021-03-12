@@ -3,33 +3,37 @@
 #include <string>
 #include <vector>
 
-// Represents a tea string (holds string variable name and literal)
-class TeaString final
+// Contains all necessities for the Tea C++ API
+namespace tea
 {
-    std::string m_name;
-    std::string m_value;
-    const char *m_type{"string"};
+    // Represents a tea string (holds string variable name and literal)
+    class TeaString final
+    {
+        std::string m_name;
+        std::string m_value;
+        const char *m_type{"string"};
 
-public:
-    // Default constructor
-    TeaString(const std::string &name = "", const std::string &value = "");
-    // Default deconstructor
-    ~TeaString();
+    public:
+        // Default constructor
+        TeaString(const std::string &name = "", const std::string &value = "");
+        // Default deconstructor
+        ~TeaString();
 
-    // Gets name
-    const std::string &getname() const noexcept;
-    // Gets value
-    const std::string &getvalue() const noexcept;
-    // Gets type
-    const char *gettype() const noexcept;
+        // Gets name
+        const std::string &getname() const noexcept;
+        // Gets value
+        const std::string &getvalue() const noexcept;
+        // Gets type
+        const char *gettype() const noexcept;
 
-    // Sets name
-    TeaString &setname(const std::string &newname);
-    // Sets value
-    TeaString &setvalue(const std::string &newvalue);
-};
+        // Sets name
+        TeaString &setname(const std::string &newname);
+        // Sets value
+        TeaString &setvalue(const std::string &newvalue);
+    };
 
-// Type def for tea string vector
-using teaString_t = std::vector<TeaString>;
+    // Type def for tea string vector
+    using teaString_t = std::vector<TeaString>;
+}
 
 #endif

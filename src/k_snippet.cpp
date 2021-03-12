@@ -8,7 +8,7 @@ extern thread_local std::string g_varname;
 
 // Called when the snippet keyword is called in tea
 void kSnippet(const std::vector<std::string> &teafile, const std::string &statement, int &line,
-	const char *&filename, teaSnippet_t &teaSnippets, const std::string &currentNamespace)
+	const char *&filename, tea::teaSnippet_t &teaSnippets, const std::string &currentNamespace)
 {
 	static thread_local teaSnippetBody_t s_body;
 	s_body.clear();
@@ -39,5 +39,5 @@ void kSnippet(const std::vector<std::string> &teafile, const std::string &statem
 		teaSyntaxError(line, filename, "Snippet body never ended (closed).");
 	// Time to head out
 	++line;
-	teaSnippets.push_back(TeaSnippet{name, s_body});
+	teaSnippets.push_back(tea::TeaSnippet{name, s_body});
 }

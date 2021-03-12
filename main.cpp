@@ -10,15 +10,15 @@ int main(const int argc, const char **argv)
 {
     try
     {
-        init();
+        tea::init();
         const char *&filename{getMainFileName(argc, argv)};
         checkFile(filename);
         std::vector<std::string> _mainfile;
         const std::vector<std::string> &mainfile{parseFile(_mainfile, filename)};
-        teaInt_t &&teaInts{TeaInt{"argc", argc}};
-        teaArray_t teaArrays;
+        tea::teaInt_t &&teaInts{tea::TeaInt{"argc", argc}};
+        tea::teaArray_t teaArrays;
         fillTeaArgs(argc, argv, teaArrays);
-        runTea(mainfile, filename, "", nullptr, &teaInts, nullptr, nullptr, &teaArrays);
+        tea::runTea(mainfile, filename, "", nullptr, &teaInts, nullptr, nullptr, &teaArrays);
     }
     catch (...) { teaError("An unknown error has occured. Exiting with code -1.", -1); }
     return 0;

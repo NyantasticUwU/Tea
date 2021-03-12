@@ -3,33 +3,37 @@
 #include <string>
 #include <vector>
 
-// Represents a tea float (holds string name and float literal)
-class TeaFloat final
+// Contains all necessities for the Tea C++ API
+namespace tea
 {
-    std::string m_name;
-    float m_value;
-    const char *m_type{"float"};
+    // Represents a tea float (holds string name and float literal)
+    class TeaFloat final
+    {
+        std::string m_name;
+        float m_value;
+        const char *m_type{"float"};
 
-public:
-    // Default constructor
-    TeaFloat(const std::string &name = "", const float &value = 0.0f);
-    // Default deconstructor
-    ~TeaFloat();
+    public:
+        // Default constructor
+        TeaFloat(const std::string &name = "", const float &value = 0.0f);
+        // Default deconstructor
+        ~TeaFloat();
 
-    // Gets name
-    const std::string &getname() const noexcept;
-    // Gets value
-    const float &getvalue() const noexcept;
-    // Gets type
-    const char *gettype() const noexcept;
+        // Gets name
+        const std::string &getname() const noexcept;
+        // Gets value
+        const float &getvalue() const noexcept;
+        // Gets type
+        const char *gettype() const noexcept;
 
-    // Sets name
-    TeaFloat &setname(const std::string &name);
-    // Sets value
-    TeaFloat &setvalue(const float &newvalue) noexcept;
-};
+        // Sets name
+        TeaFloat &setname(const std::string &name);
+        // Sets value
+        TeaFloat &setvalue(const float &newvalue) noexcept;
+    };
 
-// Type def for tea float vector
-using teaFloat_t = std::vector<TeaFloat>;
+    // Type def for tea float vector
+    using teaFloat_t = std::vector<TeaFloat>;
+}
 
 #endif

@@ -7,8 +7,9 @@
 
 // Creates a mutable string from the unchanged statement
 static inline void createMutableString(std::string &mutableUnchangedStatement,
-    const std::string &unchangedStatement, const int &line, const char *&filename, const teaString_t &teaStrings,
-    const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays)
+    const std::string &unchangedStatement, const int &line, const char *&filename,
+    const tea::teaString_t &teaStrings, const tea::teaInt_t &teaInts, const tea::teaFloat_t &teaFloats,
+    const tea::teaArray_t &teaArrays)
 {
     mutableUnchangedStatement = unchangedStatement;
     if (startsWithKeyword(mutableUnchangedStatement, "emplace "))
@@ -18,8 +19,9 @@ static inline void createMutableString(std::string &mutableUnchangedStatement,
 
 // Called when while keyword is called in tea
 void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, const std::string unchangedStatement,
-    int &line, const char *&filename, teaString_t &teaStrings, teaInt_t &teaInts, teaFloat_t &teaFloats,
-    teaSnippet_t &teaSnippets, teaArray_t &teaArrays, const std::string &currentNamespace)
+    int &line, const char *&filename, tea::teaString_t &teaStrings, tea::teaInt_t &teaInts,
+    tea::teaFloat_t &teaFloats, tea::teaSnippet_t &teaSnippets, tea::teaArray_t &teaArrays,
+    const std::string &currentNamespace)
 {
     const int whileLine{line};
     std::string mutableUnchangedStatement;
@@ -28,7 +30,7 @@ void kWhile(const std::vector<std::string> &teafile, const int &teafileSize, con
     while (isIfTrue(mutableUnchangedStatement, line, filename, 5))
     {
         line = whileLine;
-        loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
+        tea::loopTeaStatements(teafile, line, filename, teaStrings, teaInts, teaFloats, teaSnippets, teaArrays,
             currentNamespace);
         createMutableString(mutableUnchangedStatement, unchangedStatement, line, filename, teaStrings, teaInts,
             teaFloats, teaArrays);

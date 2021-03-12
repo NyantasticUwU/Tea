@@ -110,7 +110,7 @@ static const std::vector<std::any> getStringData(const std::string &statement, c
             }
             isStartQT = true;
             formatTeaString(sg_element);
-            sg_data.push_back(std::make_any<TeaString>("", sg_element));
+            sg_data.push_back(std::make_any<tea::TeaString>("", sg_element));
             sg_element.clear();
             if (sg_i != statementSize - 1U && (statement[sg_i + 1U] != ' ' || statement[sg_i + 2U] != '"'))
                 teaSyntaxError(line, filename, "Invalid array definition.");
@@ -137,7 +137,7 @@ static const std::vector<std::any> getIntData(const std::string &statement, cons
         {
             if (sg_i == statementSize - 1U)
                 sg_element.push_back(statement[sg_i]);
-            sg_data.push_back(std::make_any<TeaInt>("", std::stoi(sg_element)));
+            sg_data.push_back(std::make_any<tea::TeaInt>("", std::stoi(sg_element)));
             sg_element.clear();
             if (sg_i != statementSize - 1U && statement[sg_i + 1U] == ' ')
                 teaSyntaxError(line, filename, "Invalid array definition.");
@@ -163,7 +163,7 @@ static const std::vector<std::any> getFloatData(const std::string &statement, co
         {
             if (sg_i == statementSize - 1U)
                 sg_element.push_back(statement[sg_i]);
-            sg_data.push_back(std::make_any<TeaFloat>("", std::stof(sg_element)));
+            sg_data.push_back(std::make_any<tea::TeaFloat>("", std::stof(sg_element)));
             sg_element.clear();
             if (sg_i != statementSize - 1U && statement[sg_i + 1U] == ' ')
                 teaSyntaxError(line, filename, "Invalid array definition.");
@@ -175,7 +175,7 @@ static const std::vector<std::any> getFloatData(const std::string &statement, co
 }
 
 // Called when the array keyword is called in tea
-void kArray(const std::string &statement, const int &line, const char *&filename, teaArray_t &teaArrays,
+void kArray(const std::string &statement, const int &line, const char *&filename, tea::teaArray_t &teaArrays,
     const std::string &currentNamespace)
 {
     const std::size_t &&statementSize{statement.size()};
@@ -188,7 +188,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getStringData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray{name, type, size, data});
+        teaArrays.push_back(tea::TeaArray{name, type, size, data});
         return;
     }
     // Array type is int
@@ -196,7 +196,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getIntData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray{name, type, size, data});
+        teaArrays.push_back(tea::TeaArray{name, type, size, data});
         return;
     }
     // Array type is float
@@ -204,7 +204,7 @@ void kArray(const std::string &statement, const int &line, const char *&filename
     {
         const std::vector<std::any> &&data{getFloatData(statement, statementSize, line, filename)};
         assertArraySize(data.size(), size, line, filename);
-        teaArrays.push_back(TeaArray{name, type, size, data});
+        teaArrays.push_back(tea::TeaArray{name, type, size, data});
         return;
     }
     teaSyntaxError(line, filename, "Invalid array type.");

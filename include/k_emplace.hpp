@@ -6,7 +6,8 @@
 #include "TeaString.hpp"
 
 // Emplaces variables into statement
-void kEmplace(std::string &prestatement, const int &line, const char *&filename, const teaString_t &teaStrings,
-    const teaInt_t &teaInts, const teaFloat_t &teaFloats, const teaArray_t &teaArrays);
+void kEmplace(std::string &prestatement, const int &line, const char *&filename,
+    const tea::teaString_t &teaStrings, const tea::teaInt_t &teaInts, const tea::teaFloat_t &teaFloats,
+    const tea::teaArray_t &teaArrays);
 
 #endif

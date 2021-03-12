@@ -85,9 +85,9 @@ static const int verifyArrayIndex(const std::size_t &arrayNameSize, const int &l
 }
 
 // Changes string variable
-static void changeStringVariable(teaString_t &teaStrings, const int &line, const char *&filename)
+static void changeStringVariable(tea::teaString_t &teaStrings, const int &line, const char *&filename)
 {
-    for (TeaString &teaString : teaStrings)
+    for (tea::TeaString &teaString : teaStrings)
     {
         if (teaString.getname() == sg_varname)
         {
@@ -100,9 +100,9 @@ static void changeStringVariable(teaString_t &teaStrings, const int &line, const
 }
 
 // Changes int variable
-static void changeIntVariable(teaInt_t &teaInts, const int &line, const char *&filename)
+static void changeIntVariable(tea::teaInt_t &teaInts, const int &line, const char *&filename)
 {
-    for (TeaInt &teaInt : teaInts)
+    for (tea::TeaInt &teaInt : teaInts)
     {
         if (teaInt.getname() == sg_varname)
         {
@@ -115,9 +115,9 @@ static void changeIntVariable(teaInt_t &teaInts, const int &line, const char *&f
 }
 
 // Changes float variable
-static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const char *&filename)
+static void changeFloatVariable(tea::teaFloat_t &teaFloats, const int &line, const char *&filename)
 {
-    for (TeaFloat &teaFloat : teaFloats)
+    for (tea::TeaFloat &teaFloat : teaFloats)
     {
         if (teaFloat.getname() == sg_varname)
         {
@@ -130,9 +130,9 @@ static void changeFloatVariable(teaFloat_t &teaFloats, const int &line, const ch
 }
 
 // Changes array variable
-static void changeArrayVariable(teaArray_t &teaArrays, const int &line, const char *&filename)
+static void changeArrayVariable(tea::teaArray_t &teaArrays, const int &line, const char *&filename)
 {
-    for (TeaArray &teaArray : teaArrays)
+    for (tea::TeaArray &teaArray : teaArrays)
     {
         if (startsWithKeyword(sg_varname, teaArray.getname().c_str()))
         {
@@ -144,12 +144,12 @@ static void changeArrayVariable(teaArray_t &teaArrays, const int &line, const ch
             if (arrayType == "string")
             {
                 const std::string &&var{sg_var.substr(1U, sg_var.size() - 2U)};
-                const_cast<std::string &>(std::any_cast<const TeaString &>(any).getvalue()) = var;
+                const_cast<std::string &>(std::any_cast<const tea::TeaString &>(any).getvalue()) = var;
             }
             else if (arrayType == "int")
-                const_cast<int &>(std::any_cast<const TeaInt &>(any).getvalue()) = std::stoi(sg_var);
+                const_cast<int &>(std::any_cast<const tea::TeaInt &>(any).getvalue()) = std::stoi(sg_var);
             else if (arrayType == "float")
-                const_cast<float &>(std::any_cast<const TeaFloat &>(any).getvalue()) = std::stof(sg_var);
+                const_cast<float &>(std::any_cast<const tea::TeaFloat &>(any).getvalue()) = std::stof(sg_var);
             else
                 teaSyntaxError(line, filename, "Invalid array type.");
             return;
@@ -159,8 +159,8 @@ static void changeArrayVariable(teaArray_t &teaArrays, const int &line, const ch
 }
 
 // Called when the assign keyword is called in tea
-void kAssign(const std::string &statement, const int &line, const char *&filename, teaString_t &teaStrings,
-    teaInt_t &teaInts, teaFloat_t &teaFloats, teaArray_t &teaArrays)
+void kAssign(const std::string &statement, const int &line, const char *&filename, tea::teaString_t &teaStrings,
+    tea::teaInt_t &teaInts, tea::teaFloat_t &teaFloats, tea::teaArray_t &teaArrays)
 {
     const std::size_t &&statementSize{statement.size()};
     getAssignmentType(statement, statementSize, line, filename);

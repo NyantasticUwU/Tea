@@ -2,11 +2,15 @@
 #include "terminate.hpp"
 #include <cstdlib>
 
-// Initializes tea (doesn't do much as of now)
-void init()
+// Contains all necessities for the Tea C++ API
+namespace tea
 {
-    std::atexit(terminateTea);
+    // Initializes tea
+    void init()
+    {
+        std::atexit(terminateTea);
 #ifdef _WIN32
-    std::system("title Tea");
+        std::system("title Tea");
 #endif
+    }
 }

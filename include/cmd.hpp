@@ -6,6 +6,6 @@
 const char *&getMainFileName(const int &argc, const char **&argv);
 
 // Fills tea string vector with cmd args
-void fillTeaArgs(const int &argc, const char **&argv, teaArray_t &teaArrays);
+void fillTeaArgs(const int &argc, const char **&argv, tea::teaArray_t &teaArrays);
 
 #endif

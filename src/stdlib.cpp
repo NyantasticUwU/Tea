@@ -12,6 +12,7 @@
 #include <thread>
 
 // Using declarations
+using namespace tea;
 using int_dist_t = std::uniform_int_distribution<int>;
 using float_dist_t = std::uniform_real_distribution<float>;
 
@@ -578,7 +579,7 @@ namespace stdSnippet
         s_read.clear();
         sg_if.open(getTeaVariable(teaStrings, "tsFileReadFile").getvalue());
         while (std::getline(sg_if, sg_line))
-            s_read.append(sg_line + '\n');
+            s_read.append(sg_line).push_back('\n');
         sg_if.close();
         teaStrings.push_back({"fsFileReadString", s_read});
     }

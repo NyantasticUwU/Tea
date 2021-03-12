@@ -3,7 +3,7 @@
 #include "TeaArray.hpp"
 
 // Called when the array keyword is called in tea
-void kArray(const std::string &statement, const int &line, const char *&filename, teaArray_t &teaArrays,
+void kArray(const std::string &statement, const int &line, const char *&filename, tea::teaArray_t &teaArrays,
     const std::string &currentNamespace);
 
 #endif

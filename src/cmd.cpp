@@ -46,11 +46,11 @@ const char *&getMainFileName(const int &argc, const char **&argv)
 }
 
 // Fills tea string vector with cmd args
-void fillTeaArgs(const int &argc, const char **&argv, teaArray_t &teaArrays)
+void fillTeaArgs(const int &argc, const char **&argv, tea::teaArray_t &teaArrays)
 {
     std::vector<std::any> data;
     data.reserve(static_cast<std::size_t>(argc));
     for (int &&i{0}; i < argc; ++i)
-        data.push_back(std::make_any<TeaString>("", argv[i]));
-    teaArrays.push_back(TeaArray{"args", "string", argc, data});
+        data.push_back(std::make_any<tea::TeaString>("", argv[i]));
+    teaArrays.push_back(tea::TeaArray{"args", "string", argc, data});
 }
