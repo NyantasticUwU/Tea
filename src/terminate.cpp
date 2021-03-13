@@ -17,10 +17,12 @@ namespace tea
             std::thread *&thread{g_threads[i].threadptr};
             if (thread)
             {
-                thread->detach();
+                try { thread->detach(); }
+                catch (...) {}
                 delete thread;
                 thread = nullptr;
             }
         }
+        g_threads.clear();
     }
 }
